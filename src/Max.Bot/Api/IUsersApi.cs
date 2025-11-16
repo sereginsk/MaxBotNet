@@ -1,0 +1,27 @@
+// 📁 [IUsersApi] - Интерфейс для методов работы с пользователями
+// 🎯 Core function: Определяет контракт для API методов работы с пользователями
+// 🔗 Key dependencies: Max.Bot.Types
+// 💡 Usage: Используется для dependency injection и создания моков в тестах
+
+using Max.Bot.Types;
+
+namespace Max.Bot.Api;
+
+/// <summary>
+/// Interface for user-related API methods.
+/// </summary>
+public interface IUsersApi
+{
+    /// <summary>
+    /// Gets information about a user by their identifier.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the user.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the user information.</returns>
+    /// <exception cref="ArgumentException">Thrown when userId is less than or equal to zero.</exception>
+    /// <exception cref="Max.Bot.Exceptions.MaxApiException">Thrown when the API returns an error response.</exception>
+    /// <exception cref="Max.Bot.Exceptions.MaxNetworkException">Thrown when a network error occurs.</exception>
+    /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
+    Task<User> GetUserAsync(long userId, CancellationToken cancellationToken = default);
+}
+
