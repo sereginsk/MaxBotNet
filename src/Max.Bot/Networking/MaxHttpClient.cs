@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Max.Bot.Configuration;
 using Max.Bot.Exceptions;
+using Max.Bot.Types;
 
 namespace Max.Bot.Networking;
 
@@ -352,13 +353,28 @@ public class MaxHttpClient : IMaxHttpClient
         string? errorMessage = null;
         string? errorCode = null;
 
-        // Use the pre-read response body if available
+        // Try to deserialize as ErrorResponse if response body is available
         if (!string.IsNullOrWhiteSpace(responseBody))
         {
-            // Try to deserialize as error response
-            // For now, use the raw response body as error message
-            // In future phases, we can create a structured error response model
-            errorMessage = responseBody;
+            try
+            {
+                var errorResponse = MaxJsonSerializer.Deserialize<ErrorResponse>(responseBody);
+                if (errorResponse?.Error != null)
+                {
+                    errorMessage = errorResponse.Error.Message ?? responseBody;
+                    errorCode = errorResponse.Error.Code;
+                }
+                else
+                {
+                    // If deserialization succeeded but Error is null, use raw body
+                    errorMessage = responseBody;
+                }
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                // If deserialization fails, use raw response body as error message
+                errorMessage = responseBody;
+            }
         }
 
         if (string.IsNullOrWhiteSpace(errorMessage))

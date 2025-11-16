@@ -147,26 +147,26 @@ Max.Bot.Tests (Тесты)
 ### ФАЗА 3: Базовые модели данных
 
 **Задачи:**
-- [ ] 3.1. Создать базовые модели ответов:
+- [x] 3.1. Создать базовые модели ответов:
   - `Response<T>` - обертка для успешного ответа
   - `Error` - модель ошибки API
   - `ErrorResponse` - ответ с ошибкой
-- [ ] 3.2. Реализовать основные сущности:
+- [x] 3.2. Реализовать основные сущности:
   - `User` (id, username, firstName, lastName, и т.д.)
   - `Chat` (id, type, title, members, и т.д.)
   - `Message` (id, chat, from, text, date, и т.д.)
   - `Update` (id, type, message, и т.д.)
-- [ ] 3.3. Создать Enums:
+- [x] 3.3. Создать Enums:
   - `ChatType` (private, group, channel, и т.д.)
   - `MessageType` (text, image, file, и т.д.)
   - `UpdateType` (message, callback_query, и т.д.)
-- [ ] 3.4. Настроить JSON сериализацию:
+- [x] 3.4. Настроить JSON сериализацию:
   - JsonPropertyName атрибуты
   - JsonConverter для Enums
   - Обработка nullable полей
   - Обработка вложенных объектов
-- [ ] 3.5. Добавить валидацию моделей (Data Annotations, опционально)
-- [ ] 3.6. Написать тесты сериализации/десериализации:
+- [x] 3.5. Добавить валидацию моделей (Data Annotations, опционально)
+- [x] 3.6. Написать тесты сериализации/десериализации:
   - Тесты десериализации из JSON документации
   - Тесты сериализации в JSON
   - Тесты nullable полей

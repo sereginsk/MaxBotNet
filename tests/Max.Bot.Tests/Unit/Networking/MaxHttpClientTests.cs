@@ -437,6 +437,123 @@ public class MaxHttpClientTests
         await act.Should().ThrowAsync<ArgumentNullException>();
     }
 
+    [Fact]
+    public async Task SendAsync_ShouldDeserializeErrorResponse_WhenApiReturnsError()
+    {
+        // Arrange
+        var errorResponseJson = """{"ok":false,"error":{"code":"INVALID_TOKEN","message":"Bot token is invalid","details":{"param":"token"}}}""";
+        var handler = new TestHttpMessageHandler
+        {
+            Response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+            {
+                Content = new StringContent(errorResponseJson, Encoding.UTF8, "application/json")
+            }
+        };
+        var httpClient = new HttpClient(handler);
+        var client = new MaxHttpClient(httpClient, _defaultOptions);
+        var request = new MaxApiRequest
+        {
+            Method = HttpMethod.Get,
+            Endpoint = "test"
+        };
+
+        // Act
+        var act = async () => await client.SendAsync<object>(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<MaxUnauthorizedException>();
+        exception.Which.Message.Should().Contain("Bot token is invalid");
+        exception.Which.ErrorCode.Should().Be("INVALID_TOKEN");
+    }
+
+    [Fact]
+    public async Task SendAsync_ShouldUseRawBody_WhenErrorResponseDeserializationFails()
+    {
+        // Arrange
+        var invalidJson = "not valid json";
+        var handler = new TestHttpMessageHandler
+        {
+            Response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+            {
+                Content = new StringContent(invalidJson, Encoding.UTF8, "application/json")
+            }
+        };
+        var httpClient = new HttpClient(handler);
+        var client = new MaxHttpClient(httpClient, _defaultOptions);
+        var request = new MaxApiRequest
+        {
+            Method = HttpMethod.Get,
+            Endpoint = "test"
+        };
+
+        // Act
+        var act = async () => await client.SendAsync<object>(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<MaxApiException>();
+        exception.Which.Message.Should().Contain("not valid json");
+        exception.Which.ErrorCode.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task SendAsync_ShouldUseDefaultMessage_WhenErrorResponseBodyIsNull()
+    {
+        // Arrange
+        var handler = new TestHttpMessageHandler
+        {
+            Response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+            {
+                Content = null
+            }
+        };
+        var httpClient = new HttpClient(handler);
+        var client = new MaxHttpClient(httpClient, _defaultOptions);
+        var request = new MaxApiRequest
+        {
+            Method = HttpMethod.Get,
+            Endpoint = "test"
+        };
+
+        // Act
+        var act = async () => await client.SendAsync<object>(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<MaxNetworkException>();
+        exception.Which.Message.Should().Contain("HTTP 500");
+        exception.Which.ErrorCode.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task SendAsync_ShouldExtractErrorCode_WhenErrorResponseHasCode()
+    {
+        // Arrange
+        var errorResponseJson = """{"ok":false,"error":{"code":"RATE_LIMIT_EXCEEDED","message":"Too many requests"}}""";
+        var handler = new TestHttpMessageHandler
+        {
+            Response = new HttpResponseMessage(HttpStatusCode.TooManyRequests)
+            {
+                Content = new StringContent(errorResponseJson, Encoding.UTF8, "application/json"),
+                Headers = { { "Retry-After", "60" } }
+            }
+        };
+        var httpClient = new HttpClient(handler);
+        var client = new MaxHttpClient(httpClient, _defaultOptions);
+        var request = new MaxApiRequest
+        {
+            Method = HttpMethod.Get,
+            Endpoint = "test"
+        };
+
+        // Act
+        var act = async () => await client.SendAsync<object>(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<MaxRateLimitException>();
+        exception.Which.Message.Should().Contain("Too many requests");
+        exception.Which.ErrorCode.Should().Be("RATE_LIMIT_EXCEEDED");
+        exception.Which.RetryAfter.Should().Be(TimeSpan.FromSeconds(60));
+    }
+
     private class TestHttpMessageHandler : HttpMessageHandler
     {
         public HttpResponseMessage Response { get; set; } = new(HttpStatusCode.OK);

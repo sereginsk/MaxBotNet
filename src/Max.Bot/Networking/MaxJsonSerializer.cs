@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Max.Bot.Types.Converters;
 
 namespace Max.Bot.Networking;
 
@@ -18,12 +19,18 @@ public static class MaxJsonSerializer
     /// <summary>
     /// Gets the JsonSerializerOptions used for serialization and deserialization.
     /// </summary>
-    /// <value>The JSON serializer options configured for camelCase property naming and null handling.</value>
+    /// <value>The JSON serializer options configured for camelCase property naming, null handling, and custom converters (enum and Unix timestamp).</value>
     public static JsonSerializerOptions Options { get; } = new JsonSerializerOptions
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        WriteIndented = false
+        WriteIndented = false,
+        PropertyNameCaseInsensitive = true,
+        Converters =
+        {
+            new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower),
+            new UnixTimestampJsonConverter()
+        }
     };
 
     /// <summary>
