@@ -92,12 +92,13 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
         // Create or use provided HttpClient
         var client = httpClient ?? new HttpClient();
 
-        // Configure MaxBotClientOptions with token in BaseUrl
+        // Configure MaxBotClientOptions - token is passed via Authorization header, not in URL
         var clientOptions = new MaxBotClientOptions
         {
-            BaseUrl = $"{_options.BaseUrl.TrimEnd('/')}/{_options.Token}",
+            BaseUrl = _options.BaseUrl,
             Timeout = TimeSpan.FromSeconds(30),
-            RetryCount = 3
+            RetryCount = 3,
+            EnableDetailedLogging = true // * Enable detailed logging for debugging
         };
         clientOptions.Validate();
 

@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using Max.Bot.Configuration;
 using Max.Bot.Exceptions;
 using Max.Bot.Types;
@@ -114,7 +115,16 @@ public class MaxHttpClient : IMaxHttpClient
                 var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(responseBody));
                 var responseStream = memoryStream;
 
-                var result = MaxJsonSerializer.Deserialize<TResponse>(responseStream);
+                TResponse result;
+                try
+                {
+                    result = MaxJsonSerializer.Deserialize<TResponse>(responseStream);
+                }
+                catch (Exception deserializeEx)
+                {
+                    _logger?.LogError(deserializeEx, "Failed to deserialize response. Response body: {ResponseBody}", responseBody);
+                    throw new MaxNetworkException($"Failed to deserialize API response: {deserializeEx.Message}. Response body: {responseBody}", deserializeEx);
+                }
 
                 stopwatch.Stop();
                 _logger?.LogDebug(
@@ -320,7 +330,16 @@ public class MaxHttpClient : IMaxHttpClient
                     continue;
                 }
 
-                httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                // * Authorization header - Max API expects "Authorization: <token>" (not Bearer)
+                if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase))
+                {
+                    // * Max API expects just the token, not "Bearer <token>"
+                    httpRequest.Headers.TryAddWithoutValidation("Authorization", header.Value);
+                }
+                else
+                {
+                    httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
             }
         }
 
@@ -348,6 +367,16 @@ public class MaxHttpClient : IMaxHttpClient
         if (response.IsSuccessStatusCode)
         {
             return Task.CompletedTask;
+        }
+
+        // Log error response if detailed logging is enabled
+        if (_options.EnableDetailedLogging)
+        {
+            _logger?.LogError("Error Response Status: {StatusCode} {StatusReason}", (int)response.StatusCode, response.StatusCode);
+            if (responseBody != null)
+            {
+                _logger?.LogError("Error Response Body: {ResponseBody}", responseBody);
+            }
         }
 
         string? errorMessage = null;

@@ -26,8 +26,48 @@ public class Update
     /// Gets or sets the type of the update.
     /// </summary>
     /// <value>The type of the update (message or callback_query).</value>
-    [JsonPropertyName("type")]
-    public UpdateType Type { get; set; }
+    /// <remarks>
+    /// API returns "update_type" field (e.g., "message_created"), but we map it to UpdateType enum.
+    /// If update_type is not present, we infer type from presence of "message" or "callbackQuery" fields.
+    /// </remarks>
+    [JsonPropertyName("update_type")]
+    public string? UpdateTypeRaw { get; set; }
+
+    /// <summary>
+    /// Gets or sets the type of the update as enum.
+    /// </summary>
+    /// <value>The type of the update (message or callback_query).</value>
+    [JsonIgnore]
+    public UpdateType Type
+    {
+        get
+        {
+            // * Infer type from update_type field or from presence of message/callbackQuery
+            if (!string.IsNullOrEmpty(UpdateTypeRaw))
+            {
+                if (UpdateTypeRaw.Contains("message", StringComparison.OrdinalIgnoreCase))
+                {
+                    return UpdateType.Message;
+                }
+                if (UpdateTypeRaw.Contains("callback", StringComparison.OrdinalIgnoreCase))
+                {
+                    return UpdateType.CallbackQuery;
+                }
+            }
+            
+            // * Fallback: infer from presence of message or callbackQuery fields
+            if (Message != null)
+            {
+                return UpdateType.Message;
+            }
+            if (CallbackQuery != null)
+            {
+                return UpdateType.CallbackQuery;
+            }
+            
+            return UpdateType.Message; // Default to Message
+        }
+    }
 
     /// <summary>
     /// Gets or sets the message in this update (if type is Message).

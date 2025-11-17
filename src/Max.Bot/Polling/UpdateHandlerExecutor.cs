@@ -35,17 +35,22 @@ internal static class UpdateHandlerExecutor
 
         try
         {
-            await handler.HandleUpdateAsync(context, handlerCts.Token).ConfigureAwait(false);
-
+            // * For type-specific updates (Message, CallbackQuery), skip HandleUpdateAsync to avoid double processing
+            // This prevents calling both HandleUpdateAsync and HandleMessageAsync/HandleCallbackQueryAsync
+            // User should implement either HandleUpdateAsync (for all) or HandleMessageAsync/HandleCallbackQueryAsync (for specific)
             switch (update.Type)
             {
                 case UpdateType.Message:
+                    // * Skip HandleUpdateAsync for messages - only call HandleMessageAsync to avoid double processing
                     await handler.HandleMessageAsync(context, handlerCts.Token).ConfigureAwait(false);
                     break;
                 case UpdateType.CallbackQuery:
+                    // * Skip HandleUpdateAsync for callbacks - only call HandleCallbackQueryAsync to avoid double processing
                     await handler.HandleCallbackQueryAsync(context, handlerCts.Token).ConfigureAwait(false);
                     break;
                 default:
+                    // * For unknown types, call HandleUpdateAsync first, then HandleUnknownUpdateAsync
+                    await handler.HandleUpdateAsync(context, handlerCts.Token).ConfigureAwait(false);
                     await handler.HandleUnknownUpdateAsync(context, handlerCts.Token).ConfigureAwait(false);
                     break;
             }

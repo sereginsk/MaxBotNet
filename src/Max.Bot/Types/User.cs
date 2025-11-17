@@ -18,7 +18,7 @@ public class User
     /// </summary>
     /// <value>The unique identifier of the user.</value>
     [Range(1, long.MaxValue, ErrorMessage = "User ID must be greater than zero.")]
-    [JsonPropertyName("id")]
+    [JsonPropertyName("user_id")]
     public long Id { get; set; }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class User
     /// </summary>
     /// <value>The first name of the user, or null if not available.</value>
     [StringLength(64, ErrorMessage = "First name must not exceed 64 characters.")]
-    [JsonPropertyName("firstName")]
+    [JsonPropertyName("first_name")]
     public string? FirstName { get; set; }
 
     /// <summary>
@@ -42,14 +42,14 @@ public class User
     /// </summary>
     /// <value>The last name of the user, or null if not available.</value>
     [StringLength(64, ErrorMessage = "Last name must not exceed 64 characters.")]
-    [JsonPropertyName("lastName")]
+    [JsonPropertyName("last_name")]
     public string? LastName { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the user is a bot.
     /// </summary>
     /// <value>True if the user is a bot; otherwise, false.</value>
-    [JsonPropertyName("isBot")]
+    [JsonPropertyName("is_bot")]
     public bool IsBot { get; set; }
 }
 

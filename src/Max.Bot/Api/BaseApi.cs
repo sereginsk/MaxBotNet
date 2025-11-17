@@ -40,10 +40,10 @@ internal abstract class BaseApi
     }
 
     /// <summary>
-    /// Builds the endpoint URL with token included in the path.
+    /// Builds the endpoint URL path.
     /// </summary>
     /// <param name="path">The endpoint path (e.g., "/me", "/messages").</param>
-    /// <returns>The full endpoint path with token (e.g., "/{token}/me").</returns>
+    /// <returns>The normalized endpoint path (e.g., "/me", "/messages").</returns>
     /// <exception cref="ArgumentException">Thrown when path is null or empty.</exception>
     protected string BuildEndpoint(string path)
     {
@@ -53,11 +53,8 @@ internal abstract class BaseApi
         }
 
         // Ensure path starts with '/'
-        var normalizedPath = path.StartsWith('/') ? path : $"/{path}";
-
-        // Build endpoint with token: /{token}{path}
-        // Example: /{token}/me, /{token}/messages
-        return $"/{Options.Token}{normalizedPath}";
+        // Token is passed via Authorization header, not in URL path
+        return path.StartsWith('/') ? path : $"/{path}";
     }
 
     /// <summary>
@@ -82,9 +79,9 @@ internal abstract class BaseApi
             QueryParameters = queryParams
         };
 
-        // Add Authorization header
+        // Add Authorization header with token (format: "Authorization: <token>" as per Max API docs)
         request.Headers ??= new Dictionary<string, string?>();
-        request.Headers["Authorization"] = $"Bearer {Options.Token}";
+        request.Headers["Authorization"] = Options.Token;
 
         return request;
     }
@@ -117,17 +114,84 @@ internal abstract class BaseApi
             return (T)(object)simpleResponse;
         }
 
-        var wrappedResponse = await HttpClient.SendAsync<Response<T>>(request, cancellationToken).ConfigureAwait(false);
-
-        if (!wrappedResponse.Ok || wrappedResponse.Result == null)
+        // * Make ONE HTTP request and try different deserialization strategies
+        // Some endpoints (like /me) return data directly, others return Response<T>
+        // IMPORTANT: For POST/PUT/PATCH requests, we should only make ONE HTTP request to avoid duplicate actions
+        // For GET requests, we can try both deserialization strategies if needed
+        
+        try
         {
+            // First try: deserialize as Response<T>
+            var wrappedResponse = await HttpClient.SendAsync<Response<T>>(request, cancellationToken).ConfigureAwait(false);
+            if (wrappedResponse.Ok && wrappedResponse.Result != null)
+            {
+                return wrappedResponse.Result;
+            }
+            
+            // * If Response<T> deserialized but ok=false or result=null, this could mean:
+            // 1. API error - format is correct but request failed (for POST/PUT/PATCH - throw exception, don't retry)
+            // 2. Format mismatch - endpoint returns data directly (for GET - try direct deserialization)
+            
+            // * For GET requests only: try direct deserialization if Response<T> format doesn't match
+            // For POST/PUT/PATCH: if Response<T> deserialized successfully (even with ok=false), 
+            // this means the format is correct and it's an API error, not a format mismatch
+            // We should NOT make a second request to avoid duplicate actions
+            if (request.Method == HttpMethod.Get)
+            {
+                // * For GET requests: try direct deserialization as T (for endpoints like /me that return data directly)
+                try
+                {
+                    var directResponse = await HttpClient.SendAsync<T>(request, cancellationToken).ConfigureAwait(false);
+                    if (directResponse != null)
+                    {
+                        return directResponse;
+                    }
+                }
+                catch
+                {
+                    // If direct deserialization also fails, throw original error
+                }
+            }
+            
+            // If we get here, either it's a POST/PUT/PATCH with API error, or both deserializations failed for GET
             throw new MaxApiException(
-                "API request failed. The response indicates an error or contains no data.",
+                $"API request returned unsuccessful response. Ok={wrappedResponse.Ok}, Result is null.",
                 null,
                 HttpStatusCode.BadRequest);
         }
-
-        return wrappedResponse.Result;
+        catch (Exceptions.MaxNetworkException ex) when (ex.Message.Contains("Failed to deserialize") && request.Method == HttpMethod.Get)
+        {
+            // * For GET requests only: if deserialization as Response<T> failed due to format mismatch,
+            // try direct deserialization as T (for endpoints like /me that return data directly)
+            // We only do this for GET requests to avoid duplicate actions on POST/PUT/PATCH
+            try
+            {
+                var directResponse = await HttpClient.SendAsync<T>(request, cancellationToken).ConfigureAwait(false);
+                if (directResponse != null)
+                {
+                    return directResponse;
+                }
+            }
+            catch
+            {
+                // If direct deserialization also fails, rethrow original exception
+                throw new MaxApiException(
+                    "API request failed. The response could not be deserialized as Response<T> or T.",
+                    null,
+                    HttpStatusCode.BadRequest);
+            }
+            
+            // If we get here, directResponse was null
+            throw new MaxApiException(
+                "API request failed. The response could not be deserialized as Response<T> or T.",
+                null,
+                HttpStatusCode.BadRequest);
+        }
+        catch (Exceptions.MaxApiException)
+        {
+            // Re-throw API exceptions as-is
+            throw;
+        }
     }
 
     /// <summary>

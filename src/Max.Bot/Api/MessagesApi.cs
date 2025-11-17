@@ -34,14 +34,30 @@ internal class MessagesApi : BaseApi, IMessagesApi
         ValidateChatId(chatId);
         ValidateNotEmpty(text, nameof(text));
 
-        var body = new
+        // * Use SendMessageRequest format with chat_id in query parameters (same as second method)
+        var sendRequest = new SendMessageRequest
         {
-            chatId,
-            text
+            Text = text
         };
 
-        var request = CreateRequest(HttpMethod.Post, "/messages", body);
-        return await ExecuteRequestAsync<Message>(request, cancellationToken).ConfigureAwait(false);
+        var queryParams = new Dictionary<string, string?>
+        {
+            { "chat_id", chatId.ToString() }
+        };
+
+        var request = CreateRequest(HttpMethod.Post, "/messages", sendRequest, queryParams);
+        
+        // * POST /messages returns {"message":{...}}, not {"ok":true,"result":{...}}
+        // We need to handle this special format
+        var messageResponse = await HttpClient.SendAsync<MessageResponse>(request, cancellationToken).ConfigureAwait(false);
+        if (messageResponse?.Message == null)
+        {
+            throw new Exceptions.MaxApiException(
+                "API request returned null message in response.",
+                null,
+                System.Net.HttpStatusCode.BadRequest);
+        }
+        return messageResponse.Message;
     }
 
     /// <inheritdoc />
@@ -88,7 +104,18 @@ internal class MessagesApi : BaseApi, IMessagesApi
         }
 
         var apiRequest = CreateRequest(HttpMethod.Post, "/messages", request, queryParams);
-        return await ExecuteRequestAsync<Message>(apiRequest, cancellationToken).ConfigureAwait(false);
+        
+        // * POST /messages returns {"message":{...}}, not {"ok":true,"result":{...}}
+        // We need to handle this special format
+        var messageResponse = await HttpClient.SendAsync<MessageResponse>(apiRequest, cancellationToken).ConfigureAwait(false);
+        if (messageResponse?.Message == null)
+        {
+            throw new Exceptions.MaxApiException(
+                "API request returned null message in response.",
+                null,
+                System.Net.HttpStatusCode.BadRequest);
+        }
+        return messageResponse.Message;
     }
 
     /// <inheritdoc />

@@ -21,8 +21,8 @@ public class MaxBotOptions
     /// <summary>
     /// Gets or sets the base URL of the Max Bot API.
     /// </summary>
-    /// <value>The base URL of the API. Default is "https://api.max.ru/bot".</value>
-    public string BaseUrl { get; set; } = "https://api.max.ru/bot";
+    /// <value>The base URL of the API. Default is "https://platform-api.max.ru".</value>
+    public string BaseUrl { get; set; } = "https://platform-api.max.ru";
 
     /// <summary>
     /// Gets or sets polling-specific settings that map to <c>GET /updates</c> parameters described in the MAX docs.
