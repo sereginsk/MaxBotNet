@@ -64,7 +64,7 @@ public class Update
                     return UpdateType.CallbackQuery;
                 }
             }
-            
+
             // * Fallback: infer from presence of message or callback_query fields
             if (Message != null)
             {
@@ -74,7 +74,7 @@ public class Update
             {
                 return UpdateType.CallbackQuery;
             }
-            
+
             return UpdateType.Message; // Default to Message
         }
     }

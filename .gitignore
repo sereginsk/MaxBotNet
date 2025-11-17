@@ -403,3 +403,6 @@ FodyWeavers.xsd
 # Max API Documentation (downloaded locally for reference)
 docs/
 test-script
+
+# Cursor IDE rules
+.cursorrules

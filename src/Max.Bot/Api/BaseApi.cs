@@ -116,7 +116,7 @@ internal abstract class BaseApi
         {
             // Get raw response body once
             var responseBody = await HttpClient.SendAsyncRaw(request, cancellationToken).ConfigureAwait(false);
-            
+
             if (string.IsNullOrWhiteSpace(responseBody))
             {
                 throw new MaxApiException(
@@ -171,7 +171,7 @@ internal abstract class BaseApi
             {
                 return wrappedResponse.Result;
             }
-            
+
             // If Response<T> deserialized but ok=false or result=null, this is an API error
             throw new MaxApiException(
                 $"API request returned unsuccessful response. Ok={wrappedResponse.Ok}, Result is null.",
@@ -199,7 +199,7 @@ internal abstract class BaseApi
                     null,
                     HttpStatusCode.BadRequest);
             }
-            
+
             throw new MaxApiException(
                 "API request failed. The response could not be deserialized as Response<T> or T.",
                 null,

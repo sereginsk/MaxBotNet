@@ -1,8 +1,3 @@
-// СЂСџвЂњРѓ [UpdateFilterUtilitiesTests] - Tests for update filtering helpers
-// СЂСџР‹Р‡ Core function: Ensures filters honor type and username restrictions
-// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Configuration, Max.Bot.Polling, Max.Bot.Types, FluentAssertions, xUnit
-// СЂСџвЂ™РЋ Usage: Validates reusable filtering logic used by poller/webhook
-
 using FluentAssertions;
 using Max.Bot.Configuration;
 using Max.Bot.Polling;

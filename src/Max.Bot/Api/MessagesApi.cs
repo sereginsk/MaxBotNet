@@ -41,7 +41,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
         };
 
         var request = CreateRequest(HttpMethod.Post, "/messages", sendRequest, queryParams);
-        
+
         // * POST /messages returns {"message":{...}}, not {"ok":true,"result":{...}}
         // We need to handle this special format
         var messageResponse = await HttpClient.SendAsync<MessageResponse>(request, cancellationToken).ConfigureAwait(false);
@@ -99,7 +99,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
         }
 
         var apiRequest = CreateRequest(HttpMethod.Post, "/messages", request, queryParams);
-        
+
         // * POST /messages returns {"message":{...}}, not {"ok":true,"result":{...}}
         // We need to handle this special format
         var messageResponse = await HttpClient.SendAsync<MessageResponse>(apiRequest, cancellationToken).ConfigureAwait(false);

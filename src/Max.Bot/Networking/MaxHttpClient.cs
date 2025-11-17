@@ -601,8 +601,8 @@ public class MaxHttpClient : IMaxHttpClient
         // * For long polling requests (/updates), timeouts are expected behavior when there are no updates
         // The server keeps the connection open until timeout, so HttpClient timeouts should not trigger retries
         // This prevents unnecessary retry attempts and log noise
-        var isLongPollingRequest = request != null && 
-            request.Method == HttpMethod.Get && 
+        var isLongPollingRequest = request != null &&
+            request.Method == HttpMethod.Get &&
             request.Endpoint.Equals("/updates", StringComparison.OrdinalIgnoreCase);
 
         // Retry on network exceptions (timeouts, connection errors)
