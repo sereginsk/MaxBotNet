@@ -1,7 +1,7 @@
-// 📁 [SendChatActionRequest] - Запрос на отправку действия в чат
-// 🎯 Core function: Представляет запрос для отправки действия бота в чат
-// 🔗 Key dependencies: System.Text.Json.Serialization, Max.Bot.Types.Enums
-// 💡 Usage: Используется в ChatsApi.SendChatActionAsync для отправки действий
+﻿// рџ“Ѓ [SendChatActionRequest] - Р—Р°РїСЂРѕСЃ РЅР° РѕС‚РїСЂР°РІРєСѓ РґРµР№СЃС‚РІРёСЏ РІ С‡Р°С‚
+// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ РґР»СЏ РѕС‚РїСЂР°РІРєРё РґРµР№СЃС‚РІРёСЏ Р±РѕС‚Р° РІ С‡Р°С‚
+// рџ”— Key dependencies: System.Text.Json.Serialization, Max.Bot.Types.Enums
+// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ ChatsApi.SendChatActionAsync РґР»СЏ РѕС‚РїСЂР°РІРєРё РґРµР№СЃС‚РІРёР№
 
 using System.Text.Json.Serialization;
 using Max.Bot.Types.Enums;
@@ -20,5 +20,7 @@ public class SendChatActionRequest
     [JsonPropertyName("action")]
     public ChatAction Action { get; set; }
 }
+
+
 
 

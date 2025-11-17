@@ -1,7 +1,7 @@
-// 📁 [DelegatingUpdateHandlerTests] - Tests for delegate-based handler adapter
-// 🎯 Core function: Validates that delegating handler routes calls correctly
-// 🔗 Key dependencies: Max.Bot.Polling, Max.Bot.Configuration, Max.Bot.Types, Moq, xUnit
-// 💡 Usage: Ensures handler convenience layer behaves as expected
+﻿// рџ“Ѓ [DelegatingUpdateHandlerTests] - Tests for delegate-based handler adapter
+// рџЋЇ Core function: Validates that delegating handler routes calls correctly
+// рџ”— Key dependencies: Max.Bot.Polling, Max.Bot.Configuration, Max.Bot.Types, Moq, xUnit
+// рџ’Ў Usage: Ensures handler convenience layer behaves as expected
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,5 +70,7 @@ public class DelegatingUpdateHandlerTests
         return new UpdateContext(update, api, options);
     }
 }
+
+
 
 

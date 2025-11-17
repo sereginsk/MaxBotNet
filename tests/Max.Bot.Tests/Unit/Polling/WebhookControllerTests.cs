@@ -1,7 +1,7 @@
-// 📁 [WebhookControllerTests] - Tests for webhook controller validation
-// 🎯 Core function: Ensures webhook controller enforces headers and size limits
-// 🔗 Key dependencies: Max.Bot.Polling, Max.Bot.Configuration, Moq, xUnit, FluentAssertions
-// 💡 Usage: Validates security-sensitive webhook behaviors
+﻿// СЂСџвЂњРѓ [WebhookControllerTests] - Tests for webhook controller validation
+// СЂСџР‹Р‡ Core function: Ensures webhook controller enforces headers and size limits
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Polling, Max.Bot.Configuration, Moq, xUnit, FluentAssertions
+// СЂСџвЂ™РЋ Usage: Validates security-sensitive webhook behaviors
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -111,5 +111,7 @@ public class WebhookControllerTests
         public MaxBotOptions Options { get; }
     }
 }
+
+
 
 

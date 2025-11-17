@@ -1,7 +1,7 @@
-// 📁 [UpdateHandlerExecutor] - Вспомогательный исполнитель обработчиков
-// 🎯 Core function: Инкапсулирует вызов IUpdateHandler с таймаутом и логированием
-// 🔗 Key dependencies: System.Threading.Tasks, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Types, Max.Bot.Types.Enums
-// 💡 Usage: Используется UpdatePoller и WebhookController для единообразной обработки
+﻿// рџ“Ѓ [UpdateHandlerExecutor] - Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РёСЃРїРѕР»РЅРёС‚РµР»СЊ РѕР±СЂР°Р±РѕС‚С‡РёРєРѕРІ
+// рџЋЇ Core function: РРЅРєР°РїСЃСѓР»РёСЂСѓРµС‚ РІС‹Р·РѕРІ IUpdateHandler СЃ С‚Р°Р№РјР°СѓС‚РѕРј Рё Р»РѕРіРёСЂРѕРІР°РЅРёРµРј
+// рџ”— Key dependencies: System.Threading.Tasks, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Types, Max.Bot.Types.Enums
+// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ UpdatePoller Рё WebhookController РґР»СЏ РµРґРёРЅРѕРѕР±СЂР°Р·РЅРѕР№ РѕР±СЂР°Р±РѕС‚РєРё
 
 using System;
 using System.Threading;
@@ -70,5 +70,7 @@ internal static class UpdateHandlerExecutor
         }
     }
 }
+
+
 
 

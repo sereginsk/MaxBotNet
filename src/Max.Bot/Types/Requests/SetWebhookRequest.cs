@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Max.Bot.Types.Requests;
@@ -24,5 +24,7 @@ public class SetWebhookRequest
     [JsonPropertyName("drop_pending_updates")]
     public bool? DropPendingUpdates { get; set; }
 }
+
+
 
 

@@ -1,7 +1,7 @@
-// 📁 [DelegatingUpdateHandler] - Адаптер обработчика обновлений
-// 🎯 Core function: Позволяет настраивать обработчики через делегаты
-// 🔗 Key dependencies: System, System.Threading.Tasks, Max.Bot.Types.Enums
-// 💡 Usage: Быстрая интеграция лямбда-обработчиков без наследования
+﻿// рџ“Ѓ [DelegatingUpdateHandler] - РђРґР°РїС‚РµСЂ РѕР±СЂР°Р±РѕС‚С‡РёРєР° РѕР±РЅРѕРІР»РµРЅРёР№
+// рџЋЇ Core function: РџРѕР·РІРѕР»СЏРµС‚ РЅР°СЃС‚СЂР°РёРІР°С‚СЊ РѕР±СЂР°Р±РѕС‚С‡РёРєРё С‡РµСЂРµР· РґРµР»РµРіР°С‚С‹
+// рџ”— Key dependencies: System, System.Threading.Tasks, Max.Bot.Types.Enums
+// рџ’Ў Usage: Р‘С‹СЃС‚СЂР°СЏ РёРЅС‚РµРіСЂР°С†РёСЏ Р»СЏРјР±РґР°-РѕР±СЂР°Р±РѕС‚С‡РёРєРѕРІ Р±РµР· РЅР°СЃР»РµРґРѕРІР°РЅРёСЏ
 
 using System;
 using System.Threading;
@@ -63,5 +63,7 @@ public sealed class DelegatingUpdateHandler : IUpdateHandler
         return _onUnknown?.Invoke(context, cancellationToken) ?? Task.CompletedTask;
     }
 }
+
+
 
 

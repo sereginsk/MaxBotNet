@@ -1,7 +1,7 @@
-// 📁 [MaxPollingOptions] - Настройки long polling для Max API updates
-// 🎯 Core function: Описывает параметры GET /updates (marker, timeout, limit)
-// 🔗 Key dependencies: System, Max.Bot.Types.Enums
-// 💡 Usage: Конфигурирует UpdatePoller и MaxClient long polling поведение
+﻿// рџ“Ѓ [MaxPollingOptions] - РќР°СЃС‚СЂРѕР№РєРё long polling РґР»СЏ Max API updates
+// рџЋЇ Core function: РћРїРёСЃС‹РІР°РµС‚ РїР°СЂР°РјРµС‚СЂС‹ GET /updates (marker, timeout, limit)
+// рџ”— Key dependencies: System, Max.Bot.Types.Enums
+// рџ’Ў Usage: РљРѕРЅС„РёРіСѓСЂРёСЂСѓРµС‚ UpdatePoller Рё MaxClient long polling РїРѕРІРµРґРµРЅРёРµ
 
 using System;
 using System.Collections.Generic;
@@ -131,5 +131,6 @@ public sealed class MaxPollingOptions
         }
     }
 }
+
 
 

@@ -1,7 +1,7 @@
-// 📁 [UpdateHandlerBase] - Базовый класс обработчика обновлений
-// 🎯 Core function: Предоставляет no-op реализации IUpdateHandler
-// 🔗 Key dependencies: System.Threading.Tasks
-// 💡 Usage: Наследуется пользователем для переопределения нужных методов
+﻿// рџ“Ѓ [UpdateHandlerBase] - Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ РѕР±СЂР°Р±РѕС‚С‡РёРєР° РѕР±РЅРѕРІР»РµРЅРёР№
+// рџЋЇ Core function: РџСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚ no-op СЂРµР°Р»РёР·Р°С†РёРё IUpdateHandler
+// рџ”— Key dependencies: System.Threading.Tasks
+// рџ’Ў Usage: РќР°СЃР»РµРґСѓРµС‚СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј РґР»СЏ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёСЏ РЅСѓР¶РЅС‹С… РјРµС‚РѕРґРѕРІ
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,5 +29,7 @@ public abstract class UpdateHandlerBase : IUpdateHandler
     public virtual Task HandleUnknownUpdateAsync(UpdateContext context, CancellationToken cancellationToken) =>
         Task.CompletedTask;
 }
+
+
 
 

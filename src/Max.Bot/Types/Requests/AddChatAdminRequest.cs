@@ -1,7 +1,7 @@
-// 📁 [AddChatAdminRequest] - Запрос на назначение администратора чата
-// 🎯 Core function: Представляет запрос для назначения администратора чата
-// 🔗 Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
-// 💡 Usage: Используется в ChatsApi.AddChatAdminAsync для назначения администратора
+﻿// рџ“Ѓ [AddChatAdminRequest] - Р—Р°РїСЂРѕСЃ РЅР° РЅР°Р·РЅР°С‡РµРЅРёРµ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° С‡Р°С‚Р°
+// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ РґР»СЏ РЅР°Р·РЅР°С‡РµРЅРёСЏ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° С‡Р°С‚Р°
+// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
+// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ ChatsApi.AddChatAdminAsync РґР»СЏ РЅР°Р·РЅР°С‡РµРЅРёСЏ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -23,5 +23,7 @@ public class AddChatAdminRequest
     [JsonPropertyName("user_id")]
     public long UserId { get; set; }
 }
+
+
 
 

@@ -1,7 +1,7 @@
-// 📁 [SampleRegistry] - Registry of available bot samples
-// 🎯 Core function: Maps CLI arguments to IBotSample implementations
-// 🔗 Key dependencies: System.Collections.Generic
-// 💡 Usage: Consumed by Program to locate requested sample
+﻿// рџ“Ѓ [SampleRegistry] - Registry of available bot samples
+// рџЋЇ Core function: Maps CLI arguments to IBotSample implementations
+// рџ”— Key dependencies: System.Collections.Generic
+// рџ’Ў Usage: Consumed by Program to locate requested sample
 
 using System;
 using System.Collections.Generic;
@@ -40,4 +40,5 @@ public static class SampleRegistry
         return Samples.TryGetValue(name, out sample!);
     }
 }
+
 

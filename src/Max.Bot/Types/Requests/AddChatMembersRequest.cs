@@ -1,7 +1,7 @@
-// 📁 [AddChatMembersRequest] - Запрос на добавление участников в чат
-// 🎯 Core function: Представляет запрос для добавления участников в чат
-// 🔗 Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
-// 💡 Usage: Используется в ChatsApi.AddChatMembersAsync для добавления участников
+﻿// рџ“Ѓ [AddChatMembersRequest] - Р—Р°РїСЂРѕСЃ РЅР° РґРѕР±Р°РІР»РµРЅРёРµ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІ С‡Р°С‚
+// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІ С‡Р°С‚
+// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
+// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ ChatsApi.AddChatMembersAsync РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ СѓС‡Р°СЃС‚РЅРёРєРѕРІ
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -24,5 +24,7 @@ public class AddChatMembersRequest
     [JsonPropertyName("user_ids")]
     public long[] UserIds { get; set; } = Array.Empty<long>();
 }
+
+
 
 

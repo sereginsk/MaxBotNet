@@ -1,7 +1,7 @@
-// 📁 [UpdateFilterUtilities] - Утилиты фильтрации обновлений
-// 🎯 Core function: Сопоставляет фильтры типов/юзернеймов и проверяет доставку
-// 🔗 Key dependencies: System.Collections.Generic, Max.Bot.Configuration, Max.Bot.Types, Max.Bot.Types.Enums
-// 💡 Usage: Обеспечивает повторное использование фильтрации между poller и webhook
+﻿// рџ“Ѓ [UpdateFilterUtilities] - РЈС‚РёР»РёС‚С‹ С„РёР»СЊС‚СЂР°С†РёРё РѕР±РЅРѕРІР»РµРЅРёР№
+// рџЋЇ Core function: РЎРѕРїРѕСЃС‚Р°РІР»СЏРµС‚ С„РёР»СЊС‚СЂС‹ С‚РёРїРѕРІ/СЋР·РµСЂРЅРµР№РјРѕРІ Рё РїСЂРѕРІРµСЂСЏРµС‚ РґРѕСЃС‚Р°РІРєСѓ
+// рџ”— Key dependencies: System.Collections.Generic, Max.Bot.Configuration, Max.Bot.Types, Max.Bot.Types.Enums
+// рџ’Ў Usage: РћР±РµСЃРїРµС‡РёРІР°РµС‚ РїРѕРІС‚РѕСЂРЅРѕРµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ С„РёР»СЊС‚СЂР°С†РёРё РјРµР¶РґСѓ poller Рё webhook
 
 using System;
 using System.Collections.Generic;
@@ -69,5 +69,7 @@ internal static class UpdateFilterUtilities
                update.CallbackQuery?.From?.Username;
     }
 }
+
+
 
 

@@ -1,7 +1,7 @@
-// 📁 [LoopbackSampleRuntime] - In-memory runtime for offline samples
-// 🎯 Core function: Captures update handlers without hitting real HTTP
-// 🔗 Key dependencies: Max.Bot.Api, Max.Bot.Polling
-// 💡 Usage: Shared between examples and tests for deterministic scenarios
+﻿// СЂСџвЂњРѓ [LoopbackSampleRuntime] - In-memory runtime for offline samples
+// СЂСџР‹Р‡ Core function: Captures update handlers without hitting real HTTP
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Api, Max.Bot.Polling
+// СЂСџвЂ™РЋ Usage: Shared between examples and tests for deterministic scenarios
 
 using System;
 using System.Threading;
@@ -49,4 +49,6 @@ public sealed class LoopbackSampleRuntime : ISampleRuntime
     /// </summary>
     public Task<IUpdateHandler> WaitForHandlerAsync() => _handlerSource.Task;
 }
+
+
 

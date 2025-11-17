@@ -1,7 +1,7 @@
-// 📁 [UpdateChatRequest] - Запрос на изменение информации о чате
-// 🎯 Core function: Представляет запрос для изменения информации о чате
-// 🔗 Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations, Max.Bot.Types
-// 💡 Usage: Используется в ChatsApi.UpdateChatAsync для изменения чата
+﻿// рџ“Ѓ [UpdateChatRequest] - Р—Р°РїСЂРѕСЃ РЅР° РёР·РјРµРЅРµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С‡Р°С‚Рµ
+// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С‡Р°С‚Рµ
+// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations, Max.Bot.Types
+// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ ChatsApi.UpdateChatAsync РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ С‡Р°С‚Р°
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -54,5 +54,7 @@ public class UpdateChatRequest
     [JsonPropertyName("notify")]
     public bool? Notify { get; set; }
 }
+
+
 
 

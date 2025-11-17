@@ -1,7 +1,7 @@
-// 📁 [UpdatePoller] - Long polling петля Max API
-// 🎯 Core function: Получает обновления через GET /updates и диспетчеризует их
-// 🔗 Key dependencies: System.Threading.Tasks, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration
-// 💡 Usage: Встраивается в MaxClient.StartPollingAsync для фоновой обработки событий
+﻿// рџ“Ѓ [UpdatePoller] - Long polling РїРµС‚Р»СЏ Max API
+// рџЋЇ Core function: РџРѕР»СѓС‡Р°РµС‚ РѕР±РЅРѕРІР»РµРЅРёСЏ С‡РµСЂРµР· GET /updates Рё РґРёСЃРїРµС‚С‡РµСЂРёР·СѓРµС‚ РёС…
+// рџ”— Key dependencies: System.Threading.Tasks, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration
+// рџ’Ў Usage: Р’СЃС‚СЂР°РёРІР°РµС‚СЃСЏ РІ MaxClient.StartPollingAsync РґР»СЏ С„РѕРЅРѕРІРѕР№ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёР№
 
 using System;
 using System.Collections.Generic;
@@ -326,5 +326,6 @@ public sealed class UpdatePoller : IAsyncDisposable
         return builder.ToString();
     }
 }
+
 
 

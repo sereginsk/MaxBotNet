@@ -1,7 +1,7 @@
-// 📁 [SampleBotsTests] - Tests for example bots
-// 🎯 Core function: Validates wiring of sample bots without hitting real API
-// 🔗 Key dependencies: Max.Bot.Examples, Moq, xUnit
-// 💡 Usage: Guards against regressions in documentation samples
+﻿// рџ“Ѓ [SampleBotsTests] - Tests for example bots
+// рџЋЇ Core function: Validates wiring of sample bots without hitting real API
+// рџ”— Key dependencies: Max.Bot.Examples, Moq, xUnit
+// рџ’Ў Usage: Guards against regressions in documentation samples
 
 using System;
 using System.Collections.Generic;
@@ -287,4 +287,5 @@ public class SampleBotsTests
         }
     }
 }
+
 

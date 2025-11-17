@@ -1,7 +1,7 @@
-// 📁 [SubscriptionsApiFixtureTests] - Validates subscriptions API via recorded fixtures
-// 🎯 Core function: Ensures SubscriptionsApi handles webhook/update flows deterministically
-// 🔗 Key dependencies: Max.Bot.Api, Max.Bot.Types, FixtureHttpClientFactory
-// 💡 Usage: Prevents regressions in webhook/setup logic without real HTTP calls
+﻿// рџ“Ѓ [SubscriptionsApiFixtureTests] - Validates subscriptions API via recorded fixtures
+// рџЋЇ Core function: Ensures SubscriptionsApi handles webhook/update flows deterministically
+// рџ”— Key dependencies: Max.Bot.Api, Max.Bot.Types, FixtureHttpClientFactory
+// рџ’Ў Usage: Prevents regressions in webhook/setup logic without real HTTP calls
 
 using System.Collections.Generic;
 using System.Net.Http;
@@ -63,4 +63,5 @@ public class SubscriptionsApiFixtureTests
         update.Message.Chat.Id.Should().Be(4242);
     }
 }
+
 

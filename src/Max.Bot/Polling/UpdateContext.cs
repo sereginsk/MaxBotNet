@@ -1,14 +1,14 @@
-// 📁 [UpdateContext] - Контекст передачи обновления обработчику
-// 🎯 Core function: Инкапсулирует Update, API, опции и сервисы
-// 🔗 Key dependencies: System, System.Collections.Generic, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Types
-// 💡 Usage: Передается в IUpdateHandler для обработки событий
+﻿// рџ“Ѓ [UpdateContext] - РљРѕРЅС‚РµРєСЃС‚ РїРµСЂРµРґР°С‡Рё РѕР±РЅРѕРІР»РµРЅРёСЏ РѕР±СЂР°Р±РѕС‚С‡РёРєСѓ
+// рџЋЇ Core function: РРЅРєР°РїСЃСѓР»РёСЂСѓРµС‚ Update, API, РѕРїС†РёРё Рё СЃРµСЂРІРёСЃС‹
+// рџ”— Key dependencies: System, System.Collections.Generic, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Types
+// рџ’Ў Usage: РџРµСЂРµРґР°РµС‚СЃСЏ РІ IUpdateHandler РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёР№
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
 using Max.Bot.Types;
+using Microsoft.Extensions.Logging;
 
 namespace Max.Bot.Polling;
 
@@ -70,5 +70,7 @@ public sealed class UpdateContext
     /// </summary>
     public IDictionary<string, object?> Items { get; } = new Dictionary<string, object?>(StringComparer.Ordinal);
 }
+
+
 
 

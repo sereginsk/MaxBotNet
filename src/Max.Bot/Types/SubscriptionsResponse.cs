@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Max.Bot.Types;
 
@@ -14,5 +14,7 @@ public class SubscriptionsResponse
     [JsonPropertyName("subscriptions")]
     public Subscription[] Subscriptions { get; set; } = default!;
 }
+
+
 
 

@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Max.Bot.Types;
 
@@ -21,5 +21,7 @@ public class WebhookInfo
     [JsonPropertyName("pending_update_count")]
     public int? PendingUpdateCount { get; set; }
 }
+
+
 
 

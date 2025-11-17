@@ -1,7 +1,7 @@
-// 📁 [IUpdateHandler] - Контракт обработчика обновлений
-// 🎯 Core function: Определяет async методы для каждого UpdateType
-// 🔗 Key dependencies: System.Threading, Max.Bot.Types.Enums
-// 💡 Usage: Реализуется пользователем для обработки событий бота
+﻿// рџ“Ѓ [IUpdateHandler] - РљРѕРЅС‚СЂР°РєС‚ РѕР±СЂР°Р±РѕС‚С‡РёРєР° РѕР±РЅРѕРІР»РµРЅРёР№
+// рџЋЇ Core function: РћРїСЂРµРґРµР»СЏРµС‚ async РјРµС‚РѕРґС‹ РґР»СЏ РєР°Р¶РґРѕРіРѕ UpdateType
+// рџ”— Key dependencies: System.Threading, Max.Bot.Types.Enums
+// рџ’Ў Usage: Р РµР°Р»РёР·СѓРµС‚СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёР№ Р±РѕС‚Р°
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,5 +34,7 @@ public interface IUpdateHandler
     /// </summary>
     Task HandleUnknownUpdateAsync(UpdateContext context, CancellationToken cancellationToken);
 }
+
+
 
 

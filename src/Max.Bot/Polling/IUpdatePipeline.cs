@@ -1,7 +1,7 @@
-// 📁 [IUpdatePipeline] - Контракт обработки webhook и polling обновлений
-// 🎯 Core function: Унифицирует API обработки обновлений для контроллера и poller
-// 🔗 Key dependencies: System.Threading.Tasks, Max.Bot.Types
-// 💡 Usage: Реализуется MaxClient для проксирования обновлений в IUpdateHandler
+﻿// рџ“Ѓ [IUpdatePipeline] - РљРѕРЅС‚СЂР°РєС‚ РѕР±СЂР°Р±РѕС‚РєРё webhook Рё polling РѕР±РЅРѕРІР»РµРЅРёР№
+// рџЋЇ Core function: РЈРЅРёС„РёС†РёСЂСѓРµС‚ API РѕР±СЂР°Р±РѕС‚РєРё РѕР±РЅРѕРІР»РµРЅРёР№ РґР»СЏ РєРѕРЅС‚СЂРѕР»Р»РµСЂР° Рё poller
+// рџ”— Key dependencies: System.Threading.Tasks, Max.Bot.Types
+// рџ’Ў Usage: Р РµР°Р»РёР·СѓРµС‚СЃСЏ MaxClient РґР»СЏ РїСЂРѕРєСЃРёСЂРѕРІР°РЅРёСЏ РѕР±РЅРѕРІР»РµРЅРёР№ РІ IUpdateHandler
 
 using System;
 using System.Threading;
@@ -20,5 +20,7 @@ public interface IUpdatePipeline
     /// </summary>
     Task ProcessWebhookAsync(Update update, IUpdateHandler handler, IServiceProvider? services = null, CancellationToken cancellationToken = default);
 }
+
+
 
 

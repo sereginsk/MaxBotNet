@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Max.Bot.Types;
 
@@ -14,5 +14,7 @@ public class Subscription
     [JsonPropertyName("url")]
     public string Url { get; set; } = default!;
 }
+
+
 
 

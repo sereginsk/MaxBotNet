@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Max.Bot.Types.Requests;
 
@@ -14,5 +14,7 @@ public class DeleteWebhookRequest
     [JsonPropertyName("drop_pending_updates")]
     public bool? DropPendingUpdates { get; set; }
 }
+
+
 
 

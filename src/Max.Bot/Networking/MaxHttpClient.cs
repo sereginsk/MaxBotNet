@@ -1,17 +1,17 @@
-// 📁 [MaxHttpClient] - Реализация HTTP клиента для Max Bot API
-// 🎯 Core function: Отправка HTTP запросов к Max Bot API с сериализацией/десериализацией JSON
-// 🔗 Key dependencies: System.Net.Http, Max.Bot.Configuration, Max.Bot.Exceptions, Max.Bot.Networking
-// 💡 Usage: Основной HTTP клиент для взаимодействия с Max Bot API
+﻿// рџ“Ѓ [MaxHttpClient] - Р РµР°Р»РёР·Р°С†РёСЏ HTTP РєР»РёРµРЅС‚Р° РґР»СЏ Max Bot API
+// рџЋЇ Core function: РћС‚РїСЂР°РІРєР° HTTP Р·Р°РїСЂРѕСЃРѕРІ Рє Max Bot API СЃ СЃРµСЂРёР°Р»РёР·Р°С†РёРµР№/РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРµР№ JSON
+// рџ”— Key dependencies: System.Net.Http, Max.Bot.Configuration, Max.Bot.Exceptions, Max.Bot.Networking
+// рџ’Ў Usage: РћСЃРЅРѕРІРЅРѕР№ HTTP РєР»РёРµРЅС‚ РґР»СЏ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ Max Bot API
 
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Max.Bot.Configuration;
 using Max.Bot.Exceptions;
 using Max.Bot.Types;
+using Microsoft.Extensions.Logging;
 
 namespace Max.Bot.Networking;
 
@@ -531,4 +531,5 @@ public class MaxHttpClient : IMaxHttpClient
         return delay;
     }
 }
+
 

@@ -1,7 +1,7 @@
-// 📁 [EchoBotSample] - Minimal echo bot sample
-// 🎯 Core function: Echoes incoming text messages
-// 🔗 Key dependencies: Max.Bot.Polling, Max.Bot.Types
-// 💡 Usage: Demonstrates DelegatingUpdateHandler wiring
+﻿// рџ“Ѓ [EchoBotSample] - Minimal echo bot sample
+// рџЋЇ Core function: Echoes incoming text messages
+// рџ”— Key dependencies: Max.Bot.Polling, Max.Bot.Types
+// рџ’Ў Usage: Demonstrates DelegatingUpdateHandler wiring
 
 using System;
 using System.Threading;
@@ -46,4 +46,6 @@ public sealed class EchoBotSample : IBotSample
         return SampleUtilities.RunPollingLoopAsync(context, handler, cancellationToken);
     }
 }
+
+
 

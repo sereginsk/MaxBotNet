@@ -1,7 +1,7 @@
-// 📁 [KeyboardBotSample] - Inline keyboard & callback demo
-// 🎯 Core function: Sends inline keyboards and handles callbacks
-// 🔗 Key dependencies: Max.Bot.Polling, Max.Bot.Types, Max.Bot.Types.Requests
-// 💡 Usage: Demonstrates interactive flows (buttons + answer callback)
+﻿// рџ“Ѓ [KeyboardBotSample] - Inline keyboard & callback demo
+// рџЋЇ Core function: Sends inline keyboards and handles callbacks
+// рџ”— Key dependencies: Max.Bot.Polling, Max.Bot.Types, Max.Bot.Types.Requests
+// рџ’Ў Usage: Demonstrates interactive flows (buttons + answer callback)
 
 using System;
 using System.Threading;
@@ -50,12 +50,12 @@ public sealed class KeyboardBotSample : IBotSample
         {
             new[]
             {
-                new InlineKeyboardButton { Text = "👍 Approve", CallbackData = "vote:approve" },
-                new InlineKeyboardButton { Text = "👎 Reject", CallbackData = "vote:reject" }
+                new InlineKeyboardButton { Text = "рџ‘Ќ Approve", CallbackData = "vote:approve" },
+                new InlineKeyboardButton { Text = "рџ‘Ћ Reject", CallbackData = "vote:reject" }
             },
             new[]
             {
-                new InlineKeyboardButton { Text = "📚 Docs", Url = "https://dev.max.ru/docs-api" }
+                new InlineKeyboardButton { Text = "рџ“љ Docs", Url = "https://dev.max.ru/docs-api" }
             }
         });
 
@@ -89,9 +89,9 @@ public sealed class KeyboardBotSample : IBotSample
 
         var responseText = callback.Data switch
         {
-            "vote:approve" => "✅ Approved",
-            "vote:reject" => "❌ Rejected",
-            _ => "ℹ️ Received."
+            "vote:approve" => "вњ… Approved",
+            "vote:reject" => "вќЊ Rejected",
+            _ => "в„№пёЏ Received."
         };
 
         var request = new AnswerCallbackQueryRequest
@@ -103,4 +103,6 @@ public sealed class KeyboardBotSample : IBotSample
         sampleContext.Output.WriteLine($"Callback '{callback.Data}' processed.");
     }
 }
+
+
 

@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Max.Bot.Types;
 using Max.Bot.Types.Requests;
@@ -65,5 +65,7 @@ public interface ISubscriptionsApi
     /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
     Task<GetUpdatesResponse> GetUpdatesAsync(GetUpdatesRequest request, CancellationToken cancellationToken = default);
 }
+
+
 
 

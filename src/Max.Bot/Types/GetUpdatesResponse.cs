@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Max.Bot.Types;
@@ -22,5 +22,7 @@ public class GetUpdatesResponse
     [JsonPropertyName("marker")]
     public long? Marker { get; set; }
 }
+
+
 
 

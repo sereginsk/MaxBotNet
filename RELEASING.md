@@ -50,3 +50,4 @@ dotnet add package Max.Bot --prerelease
 
 Following these steps keeps parity with the Telegram.Bot / VkNet release discipline and prevents drift between libraries, docs, and shipped packages.
 
+

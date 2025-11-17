@@ -1,7 +1,7 @@
-// 📁 [MaxBotOptions] - Базовые опции бота Max Messenger
-// 🎯 Core function: Конфигурация бота (токен, базовый URL API)
-// 🔗 Key dependencies: System
-// 💡 Usage: Настройка MaxClient через MaxBotOptions для работы с Max Messenger Bot API
+﻿// рџ“Ѓ [MaxBotOptions] - Р‘Р°Р·РѕРІС‹Рµ РѕРїС†РёРё Р±РѕС‚Р° Max Messenger
+// рџЋЇ Core function: РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ Р±РѕС‚Р° (С‚РѕРєРµРЅ, Р±Р°Р·РѕРІС‹Р№ URL API)
+// рџ”— Key dependencies: System
+// рџ’Ў Usage: РќР°СЃС‚СЂРѕР№РєР° MaxClient С‡РµСЂРµР· MaxBotOptions РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Max Messenger Bot API
 
 using System;
 
@@ -77,4 +77,5 @@ public class MaxBotOptions
         Handling.Validate();
     }
 }
+
 

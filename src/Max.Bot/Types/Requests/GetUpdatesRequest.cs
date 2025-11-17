@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Max.Bot.Types.Enums;
@@ -40,5 +40,7 @@ public class GetUpdatesRequest
     [JsonPropertyName("types")]
     public List<string>? Types { get; set; }
 }
+
+
 
 

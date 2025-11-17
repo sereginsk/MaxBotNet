@@ -1,13 +1,12 @@
-// 📁 [MaxClient] - Главный клиент библиотеки Max Messenger Bot API
-// 🎯 Core function: Точка входа для взаимодействия с Max Messenger Bot API
-// 🔗 Key dependencies: Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Networking, Max.Bot.Polling
-// 💡 Usage: Основной класс для работы с Max Messenger Bot API
+﻿// рџ“Ѓ [MaxClient] - Р“Р»Р°РІРЅС‹Р№ РєР»РёРµРЅС‚ Р±РёР±Р»РёРѕС‚РµРєРё Max Messenger Bot API
+// рџЋЇ Core function: РўРѕС‡РєР° РІС…РѕРґР° РґР»СЏ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ Max Messenger Bot API
+// рџ”— Key dependencies: Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Networking, Max.Bot.Polling
+// рџ’Ў Usage: РћСЃРЅРѕРІРЅРѕР№ РєР»Р°СЃСЃ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Max Messenger Bot API
 
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
 using Max.Bot.Networking;
@@ -15,6 +14,7 @@ using Max.Bot.Polling;
 using Max.Bot.Types;
 using Max.Bot.Types.Enums;
 using Max.Bot.Types.Requests;
+using Microsoft.Extensions.Logging;
 
 namespace Max.Bot;
 
@@ -219,4 +219,5 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
             cancellationToken);
     }
 }
+
 

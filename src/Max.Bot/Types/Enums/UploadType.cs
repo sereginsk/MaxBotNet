@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Max.Bot.Types.Enums;
 
@@ -31,5 +31,7 @@ public enum UploadType
     [JsonPropertyName("file")]
     File
 }
+
+
 
 

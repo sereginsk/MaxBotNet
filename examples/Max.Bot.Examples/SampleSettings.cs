@@ -1,7 +1,7 @@
-// 📁 [SampleSettings] - Configuration loader for sample bots
-// 🎯 Core function: Reads environment variables for examples
-// 🔗 Key dependencies: System
-// 💡 Usage: Provides tokens/chat ids for running sample bots
+﻿// СЂСџвЂњРѓ [SampleSettings] - Configuration loader for sample bots
+// СЂСџР‹Р‡ Core function: Reads environment variables for examples
+// СЂСџвЂќвЂ” Key dependencies: System
+// СЂСџвЂ™РЋ Usage: Provides tokens/chat ids for running sample bots
 
 using System;
 using System.IO;
@@ -75,4 +75,5 @@ public sealed class SampleSettings
         return new SampleSettings(token.Trim(), chatId, string.IsNullOrWhiteSpace(uploadFilePath) ? null : uploadFilePath);
     }
 }
+
 

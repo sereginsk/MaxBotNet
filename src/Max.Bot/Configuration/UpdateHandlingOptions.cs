@@ -1,7 +1,7 @@
-// 📁 [UpdateHandlingOptions] - Настройки диспетчеризации обновлений
-// 🎯 Core function: Управляет обработчиками (параллелизм, таймауты, фильтры)
-// 🔗 Key dependencies: System, System.Collections.Generic, Max.Bot.Types.Enums
-// 💡 Usage: Настройка IUpdateHandler поведения через MaxBotOptions
+﻿// рџ“Ѓ [UpdateHandlingOptions] - РќР°СЃС‚СЂРѕР№РєРё РґРёСЃРїРµС‚С‡РµСЂРёР·Р°С†РёРё РѕР±РЅРѕРІР»РµРЅРёР№
+// рџЋЇ Core function: РЈРїСЂР°РІР»СЏРµС‚ РѕР±СЂР°Р±РѕС‚С‡РёРєР°РјРё (РїР°СЂР°Р»Р»РµР»РёР·Рј, С‚Р°Р№РјР°СѓС‚С‹, С„РёР»СЊС‚СЂС‹)
+// рџ”— Key dependencies: System, System.Collections.Generic, Max.Bot.Types.Enums
+// рџ’Ў Usage: РќР°СЃС‚СЂРѕР№РєР° IUpdateHandler РїРѕРІРµРґРµРЅРёСЏ С‡РµСЂРµР· MaxBotOptions
 
 using System;
 using System.Collections.Generic;
@@ -70,5 +70,6 @@ public sealed class UpdateHandlingOptions
         }
     }
 }
+
 
 
