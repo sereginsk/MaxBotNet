@@ -3,7 +3,7 @@
   "result": {
     "updates": [
       {
-        "updateId": 128,
+        "update_id": 128,
         "type": "message",
         "message": {
           "id": 9876,

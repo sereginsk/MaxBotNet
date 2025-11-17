@@ -168,7 +168,7 @@ public class MessageTests
     public void MessageBody_ShouldDeserialize()
     {
         // Arrange
-        var json = """{"text":"Hello","attachments":[{"type":"image","photo":{"id":1,"fileId":"photo1","width":100,"height":100}}]}""";
+        var json = """{"text":"Hello","attachments":[{"type":"image","photo":{"id":1,"file_id":"photo1","width":100,"height":100}}]}""";
 
         // Act
         var result = MaxJsonSerializer.Deserialize<MessageBody>(json);
