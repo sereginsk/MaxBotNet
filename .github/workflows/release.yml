@@ -52,7 +52,6 @@ jobs:
           /p:Threshold=${{ env.COVERAGE_THRESHOLD }}
           /p:ThresholdType=line
           /p:ThresholdStat=total
-          /p:DeterministicReport=true
           /p:ExcludeByAttribute="GeneratedCodeAttribute"
 
       - name: Determine package version

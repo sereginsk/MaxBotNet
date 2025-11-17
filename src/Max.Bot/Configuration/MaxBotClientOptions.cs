@@ -49,7 +49,7 @@ public class MaxBotClientOptions
     /// <summary>
     /// Validates the options.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown when BaseUrl is null or empty.</exception>
+    /// <exception cref="ArgumentException">Thrown when BaseUrl is null, empty, not a valid absolute URI, or does not use HTTP or HTTPS scheme.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when Timeout, RetryCount, RetryBaseDelay, or MaxRetryDelay have invalid values.</exception>
     public void Validate()
     {
@@ -61,6 +61,13 @@ public class MaxBotClientOptions
         if (!Uri.TryCreate(BaseUrl, UriKind.Absolute, out var uri) || !uri.IsAbsoluteUri || string.IsNullOrEmpty(uri.Scheme))
         {
             throw new ArgumentException("BaseUrl must be a valid absolute URI.", nameof(BaseUrl));
+        }
+
+        // * Validate that the URI scheme is HTTP or HTTPS
+        if (!uri.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) &&
+            !uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("BaseUrl must use HTTP or HTTPS scheme.", nameof(BaseUrl));
         }
 
         if (Timeout <= TimeSpan.Zero)
