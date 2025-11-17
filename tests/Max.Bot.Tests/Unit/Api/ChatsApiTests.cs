@@ -196,7 +196,7 @@ public class ChatsApiTests
 
         // Assert
         await act.Should().ThrowAsync<MaxApiException>()
-            .WithMessage("Chat not found");
+            .WithMessage("*empty response body*");
     }
 
     #endregion

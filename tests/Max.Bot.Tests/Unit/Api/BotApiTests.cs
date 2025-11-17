@@ -70,7 +70,7 @@ public class BotApiTests
         result.IsBot.Should().BeTrue();
 
         _mockHttpClient.Verify(
-            x => x.SendAsync<Response<User>>(
+            x => x.SendAsyncRaw(
                 It.IsAny<MaxApiRequest>(),
                 It.IsAny<CancellationToken>()),
             Times.Once);
@@ -144,7 +144,7 @@ public class BotApiTests
         result.IsBot.Should().BeTrue();
 
         _mockHttpClient.Verify(
-            x => x.SendAsync<Response<User>>(
+            x => x.SendAsyncRaw(
                 It.IsAny<MaxApiRequest>(),
                 It.IsAny<CancellationToken>()),
             Times.Once);
@@ -180,7 +180,7 @@ public class BotApiTests
     {
         // Arrange
         _mockHttpClient
-            .Setup(x => x.SendAsync<Response<User>>(
+            .Setup(x => x.SendAsyncRaw(
                 It.IsAny<MaxApiRequest>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new MaxUnauthorizedException("Unauthorized", "INVALID_TOKEN", HttpStatusCode.Unauthorized));
@@ -199,7 +199,7 @@ public class BotApiTests
     {
         // Arrange
         _mockHttpClient
-            .Setup(x => x.SendAsync<Response<User>>(
+            .Setup(x => x.SendAsyncRaw(
                 It.IsAny<MaxApiRequest>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new MaxUnauthorizedException("Unauthorized", "INVALID_TOKEN", HttpStatusCode.Unauthorized));
