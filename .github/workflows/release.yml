@@ -1,0 +1,96 @@
+# 📁 release.yml - NuGet publishing workflow
+# 🎯 Core function: Builds, tests, and publishes packages on version tags
+# 🔗 Key dependencies: dotnet 9 SDK, ReportGenerator, NuGet.org feed
+# 💡 Usage: Triggered via git tags (v*), pushes signed packages automatically
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
+  COVERAGE_THRESHOLD: 70
+
+jobs:
+  publish:
+    name: Publish NuGet Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore Max.Bot.sln
+
+      - name: Verify formatting
+        run: dotnet format Max.Bot.sln --verify-no-changes
+
+      - name: Run analyzers
+        run: dotnet format analyzers Max.Bot.sln --verify-no-changes --no-restore
+
+      - name: Build
+        run: dotnet build Max.Bot.sln --configuration Release --no-restore -warnaserror
+
+      - name: Test with coverage
+        run: >
+          dotnet test Max.Bot.sln
+          --configuration Release
+          --no-build
+          /p:CollectCoverage=true
+          /p:CoverletOutput=TestResults/Coverage/
+          /p:CoverletOutputFormat="cobertura%2copencover"
+          /p:Threshold=${{ env.COVERAGE_THRESHOLD }}
+          /p:ThresholdType=line
+          /p:ThresholdStat=total
+          /p:DeterministicReport=true
+          /p:ExcludeByAttribute="GeneratedCodeAttribute"
+
+      - name: Determine package version
+        id: version
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Pack
+        run: >
+          dotnet pack src/Max.Bot/Max.Bot.csproj
+          --configuration Release
+          --no-build
+          /p:ContinuousIntegrationBuild=true
+          /p:Version=${{ steps.version.outputs.value }}
+          /p:PackageVersion=${{ steps.version.outputs.value }}
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-release
+          path: |
+            src/Max.Bot/bin/Release/**/*.nupkg
+            src/Max.Bot/bin/Release/**/*.snupkg
+
+      - name: Publish to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "::error::NUGET_API_KEY secret is not configured."
+            exit 1
+          fi
+
+          shopt -s nullglob
+          for package in src/Max.Bot/bin/Release/**/*.nupkg; do
+            dotnet nuget push "$package" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate
+          done
+
+          for symbols in src/Max.Bot/bin/Release/**/*.snupkg; do
+            dotnet nuget push "$symbols" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate
+          done
+

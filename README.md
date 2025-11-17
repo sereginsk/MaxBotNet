@@ -2,7 +2,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/vpre/Max.Bot.svg)](https://www.nuget.org/packages/Max.Bot)
-[![Build](https://img.shields.io/github/actions/workflow/status/YOUR_REPO/MaxBotNet/ci.yml?label=CI)](https://github.com/YOUR_REPO/MaxBotNet/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/MaxBotNet/MaxBotNet/ci.yml?label=CI)](https://github.com/MaxBotNet/MaxBotNet/actions)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 Полнофункциональная библиотека для работы с [Max Messenger Bot API](https://dev.max.ru/docs-api) на .NET 9. Проект фокусируется на типобезопасности, удобстве интеграции и масштабируемости корпоративных ботов.
@@ -53,7 +53,17 @@ await client.Messages.SendMessageAsync(
 
 - `dotnet build -warnaserror` — проверяет, что все публичные API имеют XML-доки.
 - `dotnet test` — >400 модульных тестов, включая `DocumentationCoverageTests` и проверки сериализации.
-- Smoke-тесты для примеров гарантируют, что коды в README и `examples/` остаются рабочими.
+- GitHub Actions workflow `.github/workflows/ci.yml` (Ubuntu + Windows) гоняет форматирование, `dotnet format analyzers`, покрытие (>70 % линий, целимся в 85 %) и `dotnet pack`, загружая артефакты для ревью.
+- Smoke-тесты для примеров используют `LoopbackSampleRuntime` и проходят весь `SampleRegistry`, повторяя подход Telegram.Bot и VkNet к офлайн-интеграциям, чтобы код примеров и документация не расходились.
+- Фикстуры API (`tests/Max.Bot.Tests/Integration/Fixtures`) помогают детерминированно воспроизводить ответы `/subscriptions` и `/updates` без реального HTTP.
+
+## 🚀 Release Flow
+
+1. Обновите `CHANGELOG.md`, при необходимости скорректируйте версию в `src/Max.Bot/Max.Bot.csproj`.
+2. Выполните локальный прогон `dotnet format --verify-no-changes`, `dotnet format analyzers --verify-no-changes --no-restore` и `dotnet test -c Release /p:CollectCoverage=true`.
+3. Создайте тег `vX.Y.Z` (SemVer) и запушьте его.
+4. Workflow `.github/workflows/release.yml` повторно выполнит сборку/тесты, упакует с `/p:ContinuousIntegrationBuild=true` и отправит `.nupkg`/`.snupkg` на NuGet через секрет `NUGET_API_KEY`.
+5. После зелёного workflow проверьте запись на NuGet.org и оформите GitHub Release. Подробный чеклист в `RELEASING.md`.
 
 ## 📚 Документация
 

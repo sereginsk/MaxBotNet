@@ -13,7 +13,6 @@
     <PackageProjectUrl>https://github.com/YOUR_REPO/MaxBotNet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/YOUR_REPO/MaxBotNet</RepositoryUrl>
     <PackageTags>max;messenger;bot;api;csharp;dotnet;net9</PackageTags>
-    <PackageIconUrl>https://dev.max.ru/favicon.ico</PackageIconUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>See CHANGELOG.md for details.</PackageReleaseNotes>
   </PropertyGroup>

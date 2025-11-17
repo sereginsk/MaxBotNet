@@ -1,0 +1,102 @@
+# 📁 ci.yml - CI workflow for Max.Bot
+# 🎯 Core function: Build, lint, and test on push and pull requests
+# 🔗 Key dependencies: dotnet 9 SDK, coverlet.msbuild, ReportGenerator action
+# 💡 Usage: Enforces quality gates before merges and releases
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  # TODO: Raise coverage threshold after phase 9 quality tests exceed 85%.
+  COVERAGE_THRESHOLD: 70
+
+jobs:
+  build-test:
+    name: Build, Test, and Coverage (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore Max.Bot.sln
+
+      - name: Verify formatting
+        run: dotnet format Max.Bot.sln --verify-no-changes
+
+      - name: Run analyzers
+        run: dotnet format analyzers Max.Bot.sln --verify-no-changes --no-restore
+
+      - name: Build
+        run: dotnet build Max.Bot.sln --configuration Release --no-restore -warnaserror
+
+      - name: Test with coverage
+        run: >
+          dotnet test Max.Bot.sln
+          --configuration Release
+          --no-build
+          /p:CollectCoverage=true
+          /p:CoverletOutput=TestResults/Coverage/
+          /p:CoverletOutputFormat="cobertura%2copencover"
+          /p:Threshold=${{ env.COVERAGE_THRESHOLD }}
+          /p:ThresholdType=line
+          /p:ThresholdStat=total
+          /p:DeterministicReport=true
+          /p:ExcludeByAttribute="GeneratedCodeAttribute"
+
+      - name: Generate coverage report
+        if: always()
+        uses: danielpalme/ReportGenerator-GitHub-Action@v5
+        with:
+          reports: "tests/**/TestResults/Coverage/coverage.cobertura.xml"
+          targetdir: "artifacts/coverage"
+          reporttypes: "Html;Cobertura;TextSummary"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: |
+            tests/**/TestResults/*
+            artifacts/coverage
+
+      - name: Pack Max.Bot NuGet
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet pack src/Max.Bot/Max.Bot.csproj --configuration Release --no-build /p:ContinuousIntegrationBuild=true
+
+      - name: Upload NuGet artifacts
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            src/Max.Bot/bin/Release/**/*.nupkg
+            src/Max.Bot/bin/Release/**/*.snupkg
+

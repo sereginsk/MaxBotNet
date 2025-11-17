@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_No changes yet._
+### Added
+- GitHub Actions workflow `ci.yml` с форматированием, анализаторами, покрытием и упаковкой артефактов.
+- Workflow `release.yml`, автоматически публикующий NuGet-пакеты по тегам `v*`.
+- `LoopbackSampleRuntime` и рефакторинг `SampleBotsTests`, которые прогоняют все сценарии `SampleRegistry` офлайн.
+- Фикстуры API для `/subscriptions` и `/updates`, используемые в интеграционных тестах.
+
+### Changed
+- README и новый `RELEASING.md`, описывающие CI/CD и инструкции по релизу.
 
 ## [0.2.0-alpha] - 2025-11-17
 
@@ -28,7 +35,7 @@ _No changes yet._
 - Basic infrastructure and folder structure
 - Build configuration for .NET 9
 
-[Unreleased]: https://github.com/YOUR_REPO/MaxBotNet/compare/v0.2.0-alpha...HEAD
-[0.2.0-alpha]: https://github.com/YOUR_REPO/MaxBotNet/compare/v0.1.0-alpha...v0.2.0-alpha
-[0.1.0-alpha]: https://github.com/YOUR_REPO/MaxBotNet/releases/tag/v0.1.0-alpha
+[Unreleased]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.2.0-alpha...HEAD
+[0.2.0-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.1.0-alpha...v0.2.0-alpha
+[0.1.0-alpha]: https://github.com/MaxBotNet/MaxBotNet/releases/tag/v0.1.0-alpha
 

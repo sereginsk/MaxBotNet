@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "result": {
+    "updates": [
+      {
+        "updateId": 128,
+        "type": "message",
+        "message": {
+          "id": 9876,
+          "chat": {
+            "id": 4242,
+            "type": "group",
+            "title": "QA Squad"
+          },
+          "text": "Fixtures keep bots honest",
+          "date": 1710000000
+        }
+      }
+    ],
+    "marker": 9002
+  }
+}
+

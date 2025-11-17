@@ -4,6 +4,7 @@
 // 💡 Usage: Guards against regressions in documentation samples
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -27,157 +28,130 @@ namespace Max.Bot.Tests.Examples;
 /// </summary>
 public class SampleBotsTests
 {
+    public static IEnumerable<object[]> SampleScenarioData()
+    {
+        yield return new object[]
+        {
+            "echo",
+            Scenario(async harness =>
+            {
+                var handler = await harness.StartAsync();
+                var update = CreateMessageUpdate("Hello world");
+                await handler.HandleMessageAsync(CreateUpdateContext(harness.Api, update), CancellationToken.None);
+
+                harness.MessagesMock.Verify(m => m.SendMessageAsync(update.Message!.Chat!.Id, "Echo: Hello world", It.IsAny<CancellationToken>()), Times.Once);
+            })
+        };
+
+        yield return new object[]
+        {
+            "commands",
+            Scenario(async harness =>
+            {
+                harness.ChatsMock.Setup(c => c.GetChatAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new Chat { Id = 42, Title = "QA" });
+
+                var handler = await harness.StartAsync();
+                await handler.HandleMessageAsync(CreateUpdateContext(harness.Api, CreateMessageUpdate("/start")), CancellationToken.None);
+                await handler.HandleMessageAsync(CreateUpdateContext(harness.Api, CreateMessageUpdate("/stats")), CancellationToken.None);
+
+                harness.MessagesMock.Verify(m => m.SendMessageAsync(It.IsAny<long>(), It.Is<string>(text => text.Contains("Welcome")), It.IsAny<CancellationToken>()), Times.Once);
+                harness.MessagesMock.Verify(m => m.SendMessageAsync(It.IsAny<long>(), It.Is<string>(text => text.Contains("QA")), It.IsAny<CancellationToken>()), Times.Once);
+            })
+        };
+
+        yield return new object[]
+        {
+            "keyboard",
+            Scenario(async harness =>
+            {
+                harness.MessagesMock.Setup(m => m.SendMessageAsync(
+                        It.IsAny<SendMessageRequest>(),
+                        It.IsAny<long?>(),
+                        It.IsAny<long?>(),
+                        It.IsAny<bool?>(),
+                        It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new Message());
+
+                harness.MessagesMock.Setup(m => m.AnswerCallbackQueryAsync(It.IsAny<string>(), It.IsAny<AnswerCallbackQueryRequest>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new Response());
+
+                var handler = await harness.StartAsync();
+                await handler.HandleMessageAsync(CreateUpdateContext(harness.Api, CreateMessageUpdate("/buttons")), CancellationToken.None);
+
+                harness.MessagesMock.Verify(m => m.SendMessageAsync(
+                    It.Is<SendMessageRequest>(request => request.Attachments != null && request.Attachments.Length > 0),
+                    1337,
+                    null,
+                    null,
+                    It.IsAny<CancellationToken>()), Times.Once);
+
+                var callbackUpdate = new Update
+                {
+                    UpdateId = 2,
+                    Type = UpdateType.CallbackQuery,
+                    CallbackQuery = new CallbackQuery
+                    {
+                        Id = "cb-1",
+                        Data = "vote:approve"
+                    }
+                };
+
+                await handler.HandleCallbackQueryAsync(CreateUpdateContext(harness.Api, callbackUpdate), CancellationToken.None);
+                harness.MessagesMock.Verify(m => m.AnswerCallbackQueryAsync("cb-1", It.IsAny<AnswerCallbackQueryRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+            })
+        };
+
+        yield return new object[]
+        {
+            "files",
+            Scenario(async harness =>
+            {
+                using var tempFile = new TempFile();
+                await File.WriteAllTextAsync(tempFile.Path, "payload");
+
+                harness.FilesMock.Setup(f => f.UploadFileAsync(UploadType.File, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new UploadResponse { Url = "https://upload" });
+                harness.FilesMock.Setup(f => f.UploadFileDataAsync("https://upload", It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new { token = "file-token" });
+
+                harness.MessagesMock.Setup(m => m.SendMessageWithAttachmentAsync(It.IsAny<AttachmentRequest>(), It.IsAny<long?>(), It.IsAny<long?>(), It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<bool?>(), It.IsAny<TextFormat?>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new Message());
+
+                harness.WithUploadFile(tempFile.Path);
+
+                var handler = await harness.StartAsync();
+                await handler.HandleMessageAsync(CreateUpdateContext(harness.Api, CreateMessageUpdate("/file")), CancellationToken.None);
+
+                harness.FilesMock.Verify(f => f.UploadFileAsync(UploadType.File, It.IsAny<CancellationToken>()), Times.Once);
+                harness.FilesMock.Verify(f => f.UploadFileDataAsync("https://upload", It.IsAny<Stream>(), Path.GetFileName(tempFile.Path), It.IsAny<CancellationToken>()), Times.Once);
+                harness.MessagesMock.Verify(m => m.SendMessageWithAttachmentAsync(It.IsAny<AttachmentRequest>(), 1337, null, It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<bool?>(), It.IsAny<TextFormat?>(), It.IsAny<CancellationToken>()), Times.Once);
+            })
+        };
+    }
+
     [Fact]
     public void SampleRegistry_ShouldExposeAllSamples()
     {
         SampleRegistry.AvailableSamples.Should().BeEquivalentTo(new[] { "echo", "commands", "keyboard", "files" });
     }
 
-    [Fact]
-    public async Task EchoBotSample_ShouldEchoMessages()
+    [Theory]
+    [MemberData(nameof(SampleScenarioData))]
+    public async Task Samples_ShouldHandlePrimaryScenario(string sampleName, Func<IBotSample, Task> scenario)
     {
-        var (runtime, context, apiMock, messagesMock) = CreateRuntime();
-        var sample = new EchoBotSample();
+        SampleRegistry.TryGet(sampleName, out var sample).Should().BeTrue();
 
-        using var cts = new CancellationTokenSource();
-        var runTask = sample.RunAsync(context, cts.Token);
-        var handler = await runtime.WaitForHandlerAsync();
-
-        var update = CreateMessageUpdate("Hello world");
-        await handler.HandleMessageAsync(CreateUpdateContext(apiMock.Object, update), CancellationToken.None);
-
-        messagesMock.Verify(m => m.SendMessageAsync(update.Message!.Chat!.Id, "Echo: Hello world", It.IsAny<CancellationToken>()), Times.Once);
-
-        cts.Cancel();
-        await runTask.WaitAsync(TimeSpan.FromSeconds(2));
+        await scenario(sample!);
     }
 
-    [Fact]
-    public async Task CommandBotSample_ShouldHandleCommands()
+    private static Func<IBotSample, Task> Scenario(Func<SampleScenarioHarness, Task> runner)
     {
-        var (runtime, context, apiMock, messagesMock) = CreateRuntime();
-        var chatsMock = new Mock<IChatsApi>();
-        chatsMock.Setup(c => c.GetChatAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Chat { Id = 42, Title = "QA" });
-        apiMock.SetupGet(x => x.Chats).Returns(chatsMock.Object);
-
-        var sample = new CommandBotSample();
-
-        using var cts = new CancellationTokenSource();
-        var runTask = sample.RunAsync(context, cts.Token);
-        var handler = await runtime.WaitForHandlerAsync();
-
-        await handler.HandleMessageAsync(CreateUpdateContext(apiMock.Object, CreateMessageUpdate("/start")), CancellationToken.None);
-        await handler.HandleMessageAsync(CreateUpdateContext(apiMock.Object, CreateMessageUpdate("/stats")), CancellationToken.None);
-
-        messagesMock.Verify(m => m.SendMessageAsync(It.IsAny<long>(), It.Is<string>(text => text.Contains("Welcome")), It.IsAny<CancellationToken>()), Times.Once);
-        messagesMock.Verify(m => m.SendMessageAsync(It.IsAny<long>(), It.Is<string>(text => text.Contains("QA")), It.IsAny<CancellationToken>()), Times.Once);
-
-        cts.Cancel();
-        await runTask.WaitAsync(TimeSpan.FromSeconds(2));
-    }
-
-    [Fact]
-    public async Task KeyboardBotSample_ShouldSendKeyboardAndAnswerCallbacks()
-    {
-        var (runtime, context, apiMock, messagesMock) = CreateRuntime();
-        var answersMock = new Mock<IMessagesApi>();
-
-        messagesMock.Setup(m => m.SendMessageAsync(
-                It.IsAny<SendMessageRequest>(),
-                It.IsAny<long?>(),
-                It.IsAny<long?>(),
-                It.IsAny<bool?>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message());
-        apiMock.Setup(x => x.Messages).Returns(messagesMock.Object);
-
-        var sample = new KeyboardBotSample();
-
-        using var cts = new CancellationTokenSource();
-        var runTask = sample.RunAsync(context, cts.Token);
-        var handler = await runtime.WaitForHandlerAsync();
-
-        await handler.HandleMessageAsync(CreateUpdateContext(apiMock.Object, CreateMessageUpdate("/buttons")), CancellationToken.None);
-        messagesMock.Verify(m => m.SendMessageAsync(
-            It.Is<SendMessageRequest>(request => request.Attachments != null && request.Attachments.Length > 0),
-            1337,
-            null,
-            null,
-            It.IsAny<CancellationToken>()), Times.Once);
-
-        var callbackUpdate = new Update
+        return async sample =>
         {
-            UpdateId = 2,
-            Type = UpdateType.CallbackQuery,
-            CallbackQuery = new CallbackQuery
-            {
-                Id = "cb-1",
-                Data = "vote:approve"
-            }
+            await using var harness = SampleScenarioHarness.Create(sample);
+            await runner(harness);
         };
-
-        messagesMock.Setup(m => m.AnswerCallbackQueryAsync(It.IsAny<string>(), It.IsAny<AnswerCallbackQueryRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Response());
-
-        await handler.HandleCallbackQueryAsync(CreateUpdateContext(apiMock.Object, callbackUpdate), CancellationToken.None);
-        messagesMock.Verify(m => m.AnswerCallbackQueryAsync("cb-1", It.IsAny<AnswerCallbackQueryRequest>(), It.IsAny<CancellationToken>()), Times.Once);
-
-        cts.Cancel();
-        await runTask.WaitAsync(TimeSpan.FromSeconds(2));
-    }
-
-    [Fact]
-    public async Task FileBotSample_ShouldUploadAttachments()
-    {
-        using var tempFile = new TempFile();
-        await File.WriteAllTextAsync(tempFile.Path, "payload");
-
-        var (runtime, context, apiMock, _) = CreateRuntime(uploadFilePath: tempFile.Path);
-        var filesMock = new Mock<IFilesApi>();
-        filesMock.Setup(f => f.UploadFileAsync(UploadType.File, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UploadResponse { Url = "https://upload" });
-        filesMock.Setup(f => f.UploadFileDataAsync("https://upload", It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new { token = "file-token" });
-        apiMock.SetupGet(x => x.Files).Returns(filesMock.Object);
-
-        var messagesMock = new Mock<IMessagesApi>();
-        messagesMock.Setup(m => m.SendMessageWithAttachmentAsync(It.IsAny<AttachmentRequest>(), It.IsAny<long?>(), It.IsAny<long?>(), It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<bool?>(), It.IsAny<TextFormat?>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message());
-        apiMock.SetupGet(x => x.Messages).Returns(messagesMock.Object);
-
-        var sample = new FileBotSample();
-
-        using var cts = new CancellationTokenSource();
-        var runTask = sample.RunAsync(context, cts.Token);
-        var handler = await runtime.WaitForHandlerAsync();
-
-        await handler.HandleMessageAsync(CreateUpdateContext(apiMock.Object, CreateMessageUpdate("/file")), CancellationToken.None);
-
-        filesMock.Verify(f => f.UploadFileAsync(UploadType.File, It.IsAny<CancellationToken>()), Times.Once);
-        filesMock.Verify(f => f.UploadFileDataAsync("https://upload", It.IsAny<Stream>(), Path.GetFileName(tempFile.Path), It.IsAny<CancellationToken>()), Times.Once);
-        messagesMock.Verify(m => m.SendMessageWithAttachmentAsync(It.IsAny<AttachmentRequest>(), 1337, null, It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<bool?>(), It.IsAny<TextFormat?>(), It.IsAny<CancellationToken>()), Times.Once);
-
-        cts.Cancel();
-        await runTask.WaitAsync(TimeSpan.FromSeconds(2));
-    }
-
-    private static (TestSampleRuntime runtime, SampleExecutionContext context, Mock<IMaxBotApi> apiMock, Mock<IMessagesApi> messagesMock) CreateRuntime(string? uploadFilePath = null)
-    {
-        var apiMock = new Mock<IMaxBotApi>();
-        var messagesMock = new Mock<IMessagesApi>();
-        apiMock.SetupGet(x => x.Messages).Returns(messagesMock.Object);
-        apiMock.SetupGet(x => x.Bot).Returns(Mock.Of<IBotApi>());
-        apiMock.SetupGet(x => x.Chats).Returns(Mock.Of<IChatsApi>());
-        apiMock.SetupGet(x => x.Users).Returns(Mock.Of<IUsersApi>());
-        apiMock.SetupGet(x => x.Files).Returns(Mock.Of<IFilesApi>());
-        apiMock.SetupGet(x => x.Subscriptions).Returns(Mock.Of<ISubscriptionsApi>());
-
-        var runtime = new TestSampleRuntime(apiMock.Object);
-        var settings = new SampleSettings("TEST_TOKEN", 1337, uploadFilePath);
-        var context = new SampleExecutionContext(runtime, settings, TextWriter.Null, TextWriter.Null);
-
-        return (runtime, context, apiMock, messagesMock);
     }
 
     private static Update CreateMessageUpdate(string text)
@@ -200,28 +174,98 @@ public class SampleBotsTests
         return new UpdateContext(update, api, new MaxBotOptions { Token = "TEST_TOKEN" });
     }
 
-    private sealed class TestSampleRuntime : ISampleRuntime
+    private sealed class SampleScenarioHarness : IAsyncDisposable
     {
-        private readonly TaskCompletionSource<IUpdateHandler> _handlerSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly IBotSample _sample;
+        private readonly CancellationTokenSource _cts = new();
+        private Task? _runTask;
+        private SampleSettings _settings;
 
-        public TestSampleRuntime(IMaxBotApi api)
+        private SampleScenarioHarness(
+            IBotSample sample,
+            LoopbackSampleRuntime runtime,
+            SampleExecutionContext context,
+            Mock<IMaxBotApi> apiMock,
+            Mock<IMessagesApi> messagesMock,
+            Mock<IChatsApi> chatsMock,
+            Mock<IFilesApi> filesMock,
+            Mock<ISubscriptionsApi> subscriptionsMock)
         {
-            Api = api;
+            _sample = sample;
+            Runtime = runtime;
+            Context = context;
+            ApiMock = apiMock;
+            MessagesMock = messagesMock;
+            ChatsMock = chatsMock;
+            FilesMock = filesMock;
+            SubscriptionsMock = subscriptionsMock;
+            _settings = context.Settings;
         }
 
-        public IMaxBotApi Api { get; }
-
-        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-
-        public Task StartPollingAsync(IUpdateHandler handler, CancellationToken cancellationToken)
+        public static SampleScenarioHarness Create(IBotSample sample)
         {
-            _handlerSource.TrySetResult(handler);
-            return Task.CompletedTask;
+            var apiMock = new Mock<IMaxBotApi>();
+            var messagesMock = new Mock<IMessagesApi>();
+            var chatsMock = new Mock<IChatsApi>();
+            var filesMock = new Mock<IFilesApi>();
+            var subscriptionsMock = new Mock<ISubscriptionsApi>();
+
+            apiMock.SetupGet(x => x.Messages).Returns(messagesMock.Object);
+            apiMock.SetupGet(x => x.Bot).Returns(Mock.Of<IBotApi>());
+            apiMock.SetupGet(x => x.Chats).Returns(chatsMock.Object);
+            apiMock.SetupGet(x => x.Users).Returns(Mock.Of<IUsersApi>());
+            apiMock.SetupGet(x => x.Files).Returns(filesMock.Object);
+            apiMock.SetupGet(x => x.Subscriptions).Returns(subscriptionsMock.Object);
+
+            var runtime = new LoopbackSampleRuntime(apiMock.Object);
+            var settings = new SampleSettings("TEST_TOKEN", 1337, null);
+            var context = new SampleExecutionContext(runtime, settings, TextWriter.Null, TextWriter.Null);
+
+            return new SampleScenarioHarness(sample, runtime, context, apiMock, messagesMock, chatsMock, filesMock, subscriptionsMock);
         }
 
-        public Task StopPollingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+        public LoopbackSampleRuntime Runtime { get; }
 
-        public Task<IUpdateHandler> WaitForHandlerAsync() => _handlerSource.Task;
+        public SampleExecutionContext Context { get; private set; }
+
+        public IMaxBotApi Api => ApiMock.Object;
+
+        public Mock<IMaxBotApi> ApiMock { get; }
+
+        public Mock<IMessagesApi> MessagesMock { get; }
+
+        public Mock<IChatsApi> ChatsMock { get; }
+
+        public Mock<IFilesApi> FilesMock { get; }
+
+        public Mock<ISubscriptionsApi> SubscriptionsMock { get; }
+
+        public void WithUploadFile(string path)
+        {
+            _settings = new SampleSettings(_settings.Token, _settings.DefaultChatId, path);
+            Context = new SampleExecutionContext(Runtime, _settings, Context.Output, Context.Error);
+        }
+
+        public async Task<IUpdateHandler> StartAsync()
+        {
+            _runTask = _sample.RunAsync(Context, _cts.Token);
+            return await Runtime.WaitForHandlerAsync();
+        }
+
+        public async Task StopAsync()
+        {
+            _cts.Cancel();
+            if (_runTask != null)
+            {
+                await _runTask.WaitAsync(TimeSpan.FromSeconds(2));
+            }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await StopAsync();
+            _cts.Dispose();
+        }
     }
 
     private sealed class TempFile : IDisposable

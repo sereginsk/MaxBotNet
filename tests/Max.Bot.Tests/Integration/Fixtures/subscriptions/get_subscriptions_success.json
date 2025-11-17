@@ -1,0 +1,8 @@
+{
+  "subscriptions": [
+    {
+      "url": "https://bot.example/webhook"
+    }
+  ]
+}
+
