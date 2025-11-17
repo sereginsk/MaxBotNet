@@ -41,3 +41,4 @@ public class GetUpdatesRequest
     public List<string>? Types { get; set; }
 }
 
+

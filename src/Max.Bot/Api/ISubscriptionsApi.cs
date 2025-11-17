@@ -66,3 +66,4 @@ public interface ISubscriptionsApi
     Task<GetUpdatesResponse> GetUpdatesAsync(GetUpdatesRequest request, CancellationToken cancellationToken = default);
 }
 
+
