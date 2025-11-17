@@ -13,7 +13,7 @@ public class InlineKeyboard
     /// Each inner array represents a row of buttons.
     /// </summary>
     /// <value>An array of button rows, where each row is an array of buttons.</value>
-    [JsonPropertyName("inlineKeyboard")]
+    [JsonPropertyName("inline_keyboard")]
     public InlineKeyboardButton[][] Buttons { get; set; } = Array.Empty<InlineKeyboardButton[]>();
 
     /// <summary>

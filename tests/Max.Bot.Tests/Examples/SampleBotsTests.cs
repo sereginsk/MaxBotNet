@@ -89,7 +89,7 @@ public class SampleBotsTests
                 var callbackUpdate = new Update
                 {
                     UpdateId = 2,
-                    Type = UpdateType.CallbackQuery,
+                    UpdateTypeRaw = "message_callback",
                     CallbackQuery = new CallbackQuery
                     {
                         Id = "cb-1",
@@ -159,7 +159,7 @@ public class SampleBotsTests
         return new Update
         {
             UpdateId = 1,
-            Type = UpdateType.Message,
+            UpdateTypeRaw = "message_created",
             Message = new Message
             {
                 Chat = new Chat { Id = 1337, Title = "SampleChat" },

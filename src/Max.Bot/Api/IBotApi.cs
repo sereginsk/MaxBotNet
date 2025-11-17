@@ -25,6 +25,11 @@ public interface IBotApi
     /// <exception cref="Max.Bot.Exceptions.MaxApiException">Thrown when the API returns an error response.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxNetworkException">Thrown when a network error occurs.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
+    /// <remarks>
+    /// <para>WARNING: This endpoint (/bot/info) is not documented in the official MAX API specification and may not be supported by the API.</para>
+    /// <para>It is recommended to use <see cref="GetMeAsync"/> instead to get bot information.</para>
+    /// </remarks>
+    [Obsolete("This endpoint (/bot/info) is not documented in the MAX API specification and may not be supported. Use GetMeAsync() instead to get bot information.")]
     Task<User> GetBotInfoAsync(CancellationToken cancellationToken = default);
 }
 

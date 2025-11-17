@@ -177,7 +177,13 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
     /// <summary>
     /// Configures the webhook endpoint by calling <c>POST /subscriptions</c>.
     /// </summary>
-    public async Task<Response> ConfigureWebhookAsync(string url, bool dropPendingUpdates = false, CancellationToken cancellationToken = default)
+    /// <param name="url">The webhook URL where updates will be sent.</param>
+    /// <param name="updateTypes">Optional list of update types to receive. If null, all update types will be received.</param>
+    /// <param name="secret">Optional secret that will be sent in the X-Max-Bot-Api-Secret header.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the response with success status.</returns>
+    /// <exception cref="ArgumentException">Thrown when url is null, empty, or invalid.</exception>
+    public async Task<Response> ConfigureWebhookAsync(string url, List<string>? updateTypes = null, string? secret = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(url))
         {
@@ -200,7 +206,8 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
         var request = new SetWebhookRequest
         {
             Url = url,
-            DropPendingUpdates = dropPendingUpdates
+            UpdateTypes = updateTypes,
+            Secret = secret
         };
 
         _options.Webhook.Endpoint = url;
@@ -210,10 +217,15 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
     /// <summary>
     /// Deletes the webhook subscription by calling <c>DELETE /subscriptions</c>.
     /// </summary>
-    public Task<Response> DeleteWebhookAsync(bool dropPendingUpdates = false, CancellationToken cancellationToken = default)
+    /// <param name="url">The webhook URL to remove from subscriptions.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the response with success status.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when url is null or empty.</exception>
+    public Task<Response> DeleteWebhookAsync(string url, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(url);
         return Subscriptions.DeleteWebhookAsync(
-            new DeleteWebhookRequest { DropPendingUpdates = dropPendingUpdates },
+            new DeleteWebhookRequest { Url = url },
             cancellationToken);
     }
 }

@@ -149,7 +149,7 @@ public class MessageStat
     /// Gets or sets the number of times the message was read.
     /// </summary>
     [Range(0, int.MaxValue, ErrorMessage = "ReadCount cannot be negative.")]
-    [JsonPropertyName("readCount")]
+    [JsonPropertyName("read_count")]
     public int? ReadCount { get; set; }
 }
 

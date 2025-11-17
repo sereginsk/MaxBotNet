@@ -60,7 +60,7 @@ public class Chat
     /// </summary>
     /// <value>The first name of the chat, or null if not available.</value>
     [StringLength(64, ErrorMessage = "First name must not exceed 64 characters.")]
-    [JsonPropertyName("firstName")]
+    [JsonPropertyName("first_name")]
     public string? FirstName { get; set; }
 
     /// <summary>
@@ -68,7 +68,7 @@ public class Chat
     /// </summary>
     /// <value>The last name of the chat, or null if not available.</value>
     [StringLength(64, ErrorMessage = "Last name must not exceed 64 characters.")]
-    [JsonPropertyName("lastName")]
+    [JsonPropertyName("last_name")]
     public string? LastName { get; set; }
 
     /// <summary>

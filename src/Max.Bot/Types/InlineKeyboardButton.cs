@@ -22,7 +22,7 @@ public class InlineKeyboardButton
     /// </summary>
     /// <value>The callback data, or null if not available.</value>
     [StringLength(64, ErrorMessage = "Callback data must not exceed 64 characters.")]
-    [JsonPropertyName("callbackData")]
+    [JsonPropertyName("callback_data")]
     public string? CallbackData { get; set; }
 
     /// <summary>

@@ -22,6 +22,7 @@ internal class UsersApi : BaseApi, IUsersApi
     }
 
     /// <inheritdoc />
+    [Obsolete("This endpoint (/users/{userId}) is not documented in the MAX API specification and may not be supported.")]
     public async Task<User> GetUserAsync(long userId, CancellationToken cancellationToken = default)
     {
         ValidateUserId(userId);

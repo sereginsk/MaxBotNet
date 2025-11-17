@@ -456,8 +456,8 @@ public class MaxHttpClient : IMaxHttpClient
             }
         }
 
-        // Add body if present
-        if (request.Body != null && (request.Method == HttpMethod.Post || request.Method == HttpMethod.Put || request.Method == HttpMethod.Patch))
+        // Add body if present (POST, PUT, PATCH, DELETE can have JSON body)
+        if (request.Body != null && (request.Method == HttpMethod.Post || request.Method == HttpMethod.Put || request.Method == HttpMethod.Patch || request.Method == HttpMethod.Delete))
         {
             var json = MaxJsonSerializer.Serialize(request.Body);
             httpRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");

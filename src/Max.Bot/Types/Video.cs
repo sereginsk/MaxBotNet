@@ -22,7 +22,7 @@ public class Video
     /// <value>The file identifier of the video.</value>
     [Required(ErrorMessage = "File ID is required.")]
     [StringLength(256, MinimumLength = 1, ErrorMessage = "File ID must be between 1 and 256 characters.")]
-    [JsonPropertyName("fileId")]
+    [JsonPropertyName("file_id")]
     public string FileId { get; set; } = string.Empty;
 
     /// <summary>
@@ -54,7 +54,7 @@ public class Video
     /// </summary>
     /// <value>The size of the video file in bytes, or null if not available.</value>
     [Range(1, long.MaxValue, ErrorMessage = "File size must be greater than zero if provided.")]
-    [JsonPropertyName("fileSize")]
+    [JsonPropertyName("file_size")]
     public long? FileSize { get; set; }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class Video
     /// </summary>
     /// <value>The MIME type of the video (e.g., "video/mp4"), or null if not available.</value>
     [StringLength(64, ErrorMessage = "MIME type must not exceed 64 characters.")]
-    [JsonPropertyName("mimeType")]
+    [JsonPropertyName("mime_type")]
     public string? MimeType { get; set; }
 
     /// <summary>

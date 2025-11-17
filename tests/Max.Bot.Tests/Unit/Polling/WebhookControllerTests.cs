@@ -95,7 +95,7 @@ public class WebhookControllerTests
         return new Update
         {
             UpdateId = 1,
-            Type = UpdateType.Message,
+            UpdateTypeRaw = "message_created",
             Message = new Message { From = new User { Username = "tester" } }
         };
     }

@@ -14,7 +14,7 @@ public class File
     /// <value>The unique identifier of the file.</value>
     [Required(ErrorMessage = "File ID is required.")]
     [StringLength(256, MinimumLength = 1, ErrorMessage = "File ID must be between 1 and 256 characters.")]
-    [JsonPropertyName("fileId")]
+    [JsonPropertyName("file_id")]
     public string FileId { get; set; } = string.Empty;
 
     /// <summary>
@@ -22,7 +22,7 @@ public class File
     /// </summary>
     /// <value>The size of the file in bytes, or null if not available.</value>
     [Range(1, long.MaxValue, ErrorMessage = "File size must be greater than zero if provided.")]
-    [JsonPropertyName("fileSize")]
+    [JsonPropertyName("file_size")]
     public long? FileSize { get; set; }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class File
     /// </summary>
     /// <value>The file path or URL, or null if not available.</value>
     [StringLength(2048, ErrorMessage = "File path must not exceed 2048 characters.")]
-    [JsonPropertyName("filePath")]
+    [JsonPropertyName("file_path")]
     public string? FilePath { get; set; }
 }
 

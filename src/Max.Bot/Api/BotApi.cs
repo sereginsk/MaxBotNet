@@ -28,6 +28,7 @@ internal class BotApi : BaseApi, IBotApi
     }
 
     /// <inheritdoc />
+    [Obsolete("This endpoint (/bot/info) is not documented in the MAX API specification and may not be supported. Use GetMeAsync() instead to get bot information.")]
     public async Task<User> GetBotInfoAsync(CancellationToken cancellationToken = default)
     {
         var request = CreateRequest(HttpMethod.Get, "/bot/info");

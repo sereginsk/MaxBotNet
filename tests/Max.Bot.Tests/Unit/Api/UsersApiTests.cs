@@ -14,6 +14,7 @@ using Xunit;
 
 namespace Max.Bot.Tests.Unit.Api;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class UsersApiTests
 {
     private readonly Mock<IMaxHttpClient> _mockHttpClient;

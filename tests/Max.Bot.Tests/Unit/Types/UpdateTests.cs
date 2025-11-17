@@ -57,7 +57,7 @@ public class UpdateTests
         var update = new Update
         {
             UpdateId = 1,
-            Type = UpdateType.Message,
+            UpdateTypeRaw = "message_created",
             Message = new Message
             {
                 Id = 123,
@@ -84,7 +84,7 @@ public class UpdateTests
         var update = new Update
         {
             UpdateId = 2,
-            Type = UpdateType.CallbackQuery,
+            UpdateTypeRaw = "message_callback",
             CallbackQuery = new CallbackQuery
             {
                 Id = "callback123",
@@ -111,7 +111,7 @@ public class UpdateTests
         var update = new Update
         {
             UpdateId = 2,
-            Type = UpdateType.CallbackQuery,
+            UpdateTypeRaw = "message_callback",
             Message = null,
             CallbackQuery = null
         };

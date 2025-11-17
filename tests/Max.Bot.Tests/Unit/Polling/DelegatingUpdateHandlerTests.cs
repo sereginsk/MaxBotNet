@@ -55,7 +55,7 @@ public class DelegatingUpdateHandlerTests
         var update = new Update
         {
             UpdateId = 1,
-            Type = type,
+            UpdateTypeRaw = type == UpdateType.Message ? "message_created" : "message_callback",
             Message = type == UpdateType.Message ? new Message() : null,
             CallbackQuery = type == UpdateType.CallbackQuery ? new CallbackQuery { Id = "cb", From = new User { Id = 1 } } : null
         };

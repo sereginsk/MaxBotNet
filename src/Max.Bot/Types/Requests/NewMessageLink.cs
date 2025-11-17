@@ -21,7 +21,7 @@ public class NewMessageLink
     /// </summary>
     /// <value>The unique identifier of the chat, or null if not specified.</value>
     [Range(1, long.MaxValue, ErrorMessage = "Chat ID must be greater than zero.")]
-    [JsonPropertyName("chatId")]
+    [JsonPropertyName("chat_id")]
     public long? ChatId { get; set; }
 }
 

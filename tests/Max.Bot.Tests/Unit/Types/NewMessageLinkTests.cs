@@ -82,7 +82,7 @@ public class NewMessageLinkTests
 
         // Assert
         json.Should().Contain("\"id\":12345");
-        json.Should().Contain("\"chatId\":67890");
+        json.Should().Contain("\"chat_id\":67890");
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class NewMessageLinkTests
 
         // Assert
         json.Should().Contain("\"id\":12345");
-        json.Should().Contain("\"chatId\":null");
+        json.Should().Contain("\"chat_id\":null");
     }
 
     private static List<ValidationResult> ValidateModel(object model)

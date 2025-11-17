@@ -21,7 +21,7 @@ public class UpdateFilterUtilitiesTests
         var options = CreateOptions();
         var typeFilter = UpdateFilterUtilities.BuildTypeFilter(options);
         var userFilter = UpdateFilterUtilities.BuildAllowedUsernames(options);
-        var update = new Update { Type = UpdateType.Message, Message = new Message { From = new User { Username = "tester" } } };
+        var update = new Update { UpdateTypeRaw = "message_created", Message = new Message { From = new User { Username = "tester" } } };
 
         // Act
         var result = UpdateFilterUtilities.ShouldDispatch(update, typeFilter, userFilter);
@@ -37,7 +37,7 @@ public class UpdateFilterUtilitiesTests
         var options = CreateOptions();
         options.Handling.AllowedUpdateTypes.Add(UpdateType.CallbackQuery);
         var typeFilter = UpdateFilterUtilities.BuildTypeFilter(options);
-        var update = new Update { Type = UpdateType.Message, Message = new Message { From = new User { Username = "tester" } } };
+        var update = new Update { UpdateTypeRaw = "message_created", Message = new Message { From = new User { Username = "tester" } } };
 
         // Act
         var result = UpdateFilterUtilities.ShouldDispatch(update, typeFilter, null);
@@ -53,7 +53,7 @@ public class UpdateFilterUtilitiesTests
         var options = CreateOptions();
         options.Handling.AllowedUsernames.Add("allowedUser");
         var userFilter = UpdateFilterUtilities.BuildAllowedUsernames(options);
-        var update = new Update { Type = UpdateType.Message, Message = new Message { From = new User { Username = "otherUser" } } };
+        var update = new Update { UpdateTypeRaw = "message_created", Message = new Message { From = new User { Username = "otherUser" } } };
 
         // Act
         var result = UpdateFilterUtilities.ShouldDispatch(update, null, userFilter);

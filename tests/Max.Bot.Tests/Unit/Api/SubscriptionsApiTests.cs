@@ -89,7 +89,8 @@ public class SubscriptionsApiTests
         var request = new SetWebhookRequest
         {
             Url = "https://example.com/webhook",
-            DropPendingUpdates = true
+            UpdateTypes = new List<string> { "message_created" },
+            Secret = "my-secret-123"
         };
 
         var response = new Response
@@ -103,11 +104,8 @@ public class SubscriptionsApiTests
                 It.Is<MaxApiRequest>(req =>
                     req.Method == HttpMethod.Post &&
                     req.Endpoint == "/test-token-123/subscriptions" &&
-                    req.QueryParameters != null &&
-                    req.QueryParameters.ContainsKey("url") &&
-                    req.QueryParameters["url"] == request.Url &&
-                    req.QueryParameters.ContainsKey("drop_pending_updates") &&
-                    req.QueryParameters["drop_pending_updates"] == "true"),
+                    req.Body != null &&
+                    req.Body.GetType() == typeof(SetWebhookRequest)),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
@@ -137,13 +135,14 @@ public class SubscriptionsApiTests
     }
 
     [Fact]
-    public async Task SetWebhookAsync_ShouldNotIncludeDropPendingUpdates_WhenNotSpecified()
+    public async Task SetWebhookAsync_ShouldSendJsonBody_WithOptionalFields()
     {
         // Arrange
         var request = new SetWebhookRequest
         {
             Url = "https://example.com/webhook",
-            DropPendingUpdates = null
+            UpdateTypes = null,
+            Secret = null
         };
 
         var response = new Response { Success = true };
@@ -151,9 +150,9 @@ public class SubscriptionsApiTests
         _mockHttpClient
             .Setup(x => x.SendAsync<Response>(
                 It.Is<MaxApiRequest>(req =>
-                    req.QueryParameters != null &&
-                    req.QueryParameters.ContainsKey("url") &&
-                    !req.QueryParameters.ContainsKey("drop_pending_updates")),
+                    req.Method == HttpMethod.Post &&
+                    req.Body != null &&
+                    req.Body.GetType() == typeof(SetWebhookRequest)),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
@@ -172,6 +171,11 @@ public class SubscriptionsApiTests
     public async Task DeleteWebhookAsync_ShouldReturnResponse_WhenRequestSucceeds()
     {
         // Arrange
+        var request = new DeleteWebhookRequest
+        {
+            Url = "https://example.com/webhook"
+        };
+
         var response = new Response
         {
             Success = true,
@@ -182,14 +186,16 @@ public class SubscriptionsApiTests
             .Setup(x => x.SendAsync<Response>(
                 It.Is<MaxApiRequest>(req =>
                     req.Method == HttpMethod.Delete &&
-                    req.Endpoint == "/test-token-123/subscriptions"),
+                    req.Endpoint == "/subscriptions" &&
+                    req.Body != null &&
+                    req.Body.GetType() == typeof(DeleteWebhookRequest)),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         var subscriptionsApi = new SubscriptionsApi(_mockHttpClient.Object, _options);
 
         // Act
-        var result = await subscriptionsApi.DeleteWebhookAsync();
+        var result = await subscriptionsApi.DeleteWebhookAsync(request);
 
         // Assert
         result.Should().NotBeNull();
@@ -198,12 +204,12 @@ public class SubscriptionsApiTests
     }
 
     [Fact]
-    public async Task DeleteWebhookAsync_ShouldIncludeDropPendingUpdates_WhenSpecified()
+    public async Task DeleteWebhookAsync_ShouldSendUrlInBody_WhenRequestProvided()
     {
         // Arrange
         var request = new DeleteWebhookRequest
         {
-            DropPendingUpdates = true
+            Url = "https://example.com/webhook"
         };
 
         var response = new Response { Success = true };
@@ -211,9 +217,9 @@ public class SubscriptionsApiTests
         _mockHttpClient
             .Setup(x => x.SendAsync<Response>(
                 It.Is<MaxApiRequest>(req =>
-                    req.QueryParameters != null &&
-                    req.QueryParameters.ContainsKey("drop_pending_updates") &&
-                    req.QueryParameters["drop_pending_updates"] == "true"),
+                    req.Method == HttpMethod.Delete &&
+                    req.Body != null &&
+                    req.Body.GetType() == typeof(DeleteWebhookRequest)),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
@@ -224,43 +230,11 @@ public class SubscriptionsApiTests
 
         // Assert
         _mockHttpClient.Verify(x => x.SendAsync<Response>(
-            It.IsAny<MaxApiRequest>(),
+            It.Is<MaxApiRequest>(req =>
+                req.Method == HttpMethod.Delete &&
+                req.Body != null &&
+                req.Body.GetType() == typeof(DeleteWebhookRequest)),
             It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetWebhookInfoAsync_ShouldReturnWebhookInfo_WhenRequestSucceeds()
-    {
-        // Arrange
-        var expectedInfo = new WebhookInfo
-        {
-            Url = "https://example.com/webhook",
-            PendingUpdateCount = 5
-        };
-
-        var wrappedResponse = new Response<WebhookInfo>
-        {
-            Ok = true,
-            Result = expectedInfo
-        };
-
-        _mockHttpClient
-            .Setup(x => x.SendAsync<Response<WebhookInfo>>(
-                It.Is<MaxApiRequest>(req =>
-                    req.Method == HttpMethod.Get &&
-                    req.Endpoint == "/test-token-123/subscriptions"),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(wrappedResponse);
-
-        var subscriptionsApi = new SubscriptionsApi(_mockHttpClient.Object, _options);
-
-        // Act
-        var result = await subscriptionsApi.GetWebhookInfoAsync();
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Url.Should().Be(expectedInfo.Url);
-        result.PendingUpdateCount.Should().Be(expectedInfo.PendingUpdateCount);
     }
 
     [Fact]
@@ -280,7 +254,7 @@ public class SubscriptionsApiTests
             new Update
             {
                 UpdateId = 1,
-                Type = UpdateType.Message,
+                UpdateTypeRaw = "message_created",
                 Message = new Message { Id = 100, Text = "Test" }
             }
         };
