@@ -3,6 +3,7 @@
 // рџ”— Key dependencies: Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Networking, Max.Bot.Types, Moq, FluentAssertions, xUnit
 // рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ ChatsApi
 
+using System.Net.Http;
 using FluentAssertions;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
@@ -12,7 +13,6 @@ using Max.Bot.Types;
 using Max.Bot.Types.Enums;
 using Max.Bot.Types.Requests;
 using Moq;
-using System.Net.Http;
 using Xunit;
 
 namespace Max.Bot.Tests.Unit.Api;

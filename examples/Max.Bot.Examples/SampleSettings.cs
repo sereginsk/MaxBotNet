@@ -1,7 +1,7 @@
-// СЂСџвЂњРѓ [SampleSettings] - Configuration loader for sample bots
-// СЂСџР‹Р‡ Core function: Reads environment variables for examples
-// СЂСџвЂќвЂ” Key dependencies: System
-// СЂСџвЂ™РЋ Usage: Provides tokens/chat ids for running sample bots
+// РЎР‚РЎСџРІР‚СљР С“ [SampleSettings] - Configuration loader for sample bots
+// РЎР‚РЎСџР вЂ№Р вЂЎ Core function: Reads environment variables for examples
+// РЎР‚РЎСџРІР‚СњРІР‚вЂќ Key dependencies: System
+// РЎР‚РЎСџРІР‚в„ўР Р‹ Usage: Provides tokens/chat ids for running sample bots
 
 using System;
 using System.IO;

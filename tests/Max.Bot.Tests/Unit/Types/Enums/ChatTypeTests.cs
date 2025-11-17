@@ -3,10 +3,10 @@
 // рџ”— Key dependencies: Max.Bot.Types.Enums, FluentAssertions, xUnit
 // рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ ChatType enum
 
-using FluentAssertions;
-using Max.Bot.Types.Enums;
-using Max.Bot.Networking;
 using System.Text.Json;
+using FluentAssertions;
+using Max.Bot.Networking;
+using Max.Bot.Types.Enums;
 using Xunit;
 
 namespace Max.Bot.Tests.Unit.Types.Enums;

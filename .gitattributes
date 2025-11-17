@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Normalize C# files to CRLF in repository
+*.cs text eol=crlf

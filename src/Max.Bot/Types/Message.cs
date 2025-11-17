@@ -5,8 +5,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Max.Bot.Types.Enums;
 using Max.Bot.Types.Converters;
+using Max.Bot.Types.Enums;
 
 namespace Max.Bot.Types;
 

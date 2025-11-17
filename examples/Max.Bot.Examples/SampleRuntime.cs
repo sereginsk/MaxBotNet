@@ -1,4 +1,4 @@
-﻿// СЂСџвЂњРѓ [SampleRuntime] - Hosting helpers for sample bots
+// СЂСџвЂњРѓ [SampleRuntime] - Hosting helpers for sample bots
 // СЂСџР‹Р‡ Core function: Provides runtime abstractions for running samples
 // СЂСџвЂќвЂ” Key dependencies: Max.Bot, Max.Bot.Polling
 // СЂСџвЂ™РЋ Usage: Used by Program and tests to orchestrate sample handlers

@@ -3,10 +3,10 @@
 // рџ”— Key dependencies: Max.Bot.Types.Converters, FluentAssertions, xUnit
 // рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ UnixTimestampJsonConverter
 
+using System.Text.Json;
 using FluentAssertions;
 using Max.Bot.Networking;
 using Max.Bot.Types.Converters;
-using System.Text.Json;
 using Xunit;
 
 namespace Max.Bot.Tests.Unit.Types.Converters;

@@ -1,4 +1,4 @@
-﻿// рџ“Ѓ [FileBotSample] - File upload & attachment demo
+// рџ“Ѓ [FileBotSample] - File upload & attachment demo
 // рџЋЇ Core function: Uploads a local file and sends it as attachment
 // рџ”— Key dependencies: Max.Bot.Polling, Max.Bot.Types.Enums, Max.Bot.Types.Requests
 // рџ’Ў Usage: Shows Uploads API workflow with SendMessageWithAttachmentAsync

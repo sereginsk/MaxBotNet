@@ -1,4 +1,4 @@
-﻿// рџ“Ѓ [Program] - Entry point for sample bots
+// рџ“Ѓ [Program] - Entry point for sample bots
 // рџЋЇ Core function: Selects and runs one of the demo bots
 // рџ”— Key dependencies: System, Max.Bot.Examples infrastructure
 // рџ’Ў Usage: dotnet run --project examples/Max.Bot.Examples -- [sample]

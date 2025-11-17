@@ -5,8 +5,8 @@
 
 using FluentAssertions;
 using Max.Bot.Networking;
-using MaxBotFile = Max.Bot.Types.File;
 using Xunit;
+using MaxBotFile = Max.Bot.Types.File;
 
 namespace Max.Bot.Tests.Unit.Types;
 

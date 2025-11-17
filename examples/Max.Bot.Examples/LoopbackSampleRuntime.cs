@@ -1,4 +1,4 @@
-﻿// СЂСџвЂњРѓ [LoopbackSampleRuntime] - In-memory runtime for offline samples
+// СЂСџвЂњРѓ [LoopbackSampleRuntime] - In-memory runtime for offline samples
 // СЂСџР‹Р‡ Core function: Captures update handlers without hitting real HTTP
 // СЂСџвЂќвЂ” Key dependencies: Max.Bot.Api, Max.Bot.Polling
 // СЂСџвЂ™РЋ Usage: Shared between examples and tests for deterministic scenarios

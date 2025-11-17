@@ -4,8 +4,8 @@
 // рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ UpdateType enum
 
 using FluentAssertions;
-using Max.Bot.Types.Enums;
 using Max.Bot.Networking;
+using Max.Bot.Types.Enums;
 using Xunit;
 
 namespace Max.Bot.Tests.Unit.Types.Enums;

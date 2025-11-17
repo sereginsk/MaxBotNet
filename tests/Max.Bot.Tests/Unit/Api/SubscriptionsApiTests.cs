@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http;
 using FluentAssertions;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
@@ -7,8 +9,6 @@ using Max.Bot.Types;
 using Max.Bot.Types.Enums;
 using Max.Bot.Types.Requests;
 using Moq;
-using System.Net;
-using System.Net.Http;
 using Xunit;
 
 namespace Max.Bot.Tests.Unit.Api;
