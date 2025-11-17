@@ -1,0 +1,73 @@
+// 📁 [UpdateFilterUtilities] - Утилиты фильтрации обновлений
+// 🎯 Core function: Сопоставляет фильтры типов/юзернеймов и проверяет доставку
+// 🔗 Key dependencies: System.Collections.Generic, Max.Bot.Configuration, Max.Bot.Types, Max.Bot.Types.Enums
+// 💡 Usage: Обеспечивает повторное использование фильтрации между poller и webhook
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Max.Bot.Configuration;
+using Max.Bot.Types;
+using Max.Bot.Types.Enums;
+
+namespace Max.Bot.Polling;
+
+internal static class UpdateFilterUtilities
+{
+    public static HashSet<UpdateType>? BuildTypeFilter(MaxBotOptions options)
+    {
+        var candidates = options.Handling.AllowedUpdateTypes;
+        if (candidates is { Count: > 0 })
+        {
+            return new HashSet<UpdateType>(candidates);
+        }
+
+        candidates = options.Polling.AllowedUpdateTypes;
+        if (candidates is { Count: > 0 })
+        {
+            return new HashSet<UpdateType>(candidates);
+        }
+
+        return null;
+    }
+
+    public static HashSet<string>? BuildAllowedUsernames(MaxBotOptions options)
+    {
+        if (options.Handling.AllowedUsernames is { Count: > 0 })
+        {
+            return new HashSet<string>(
+                options.Handling.AllowedUsernames.Where(static name => !string.IsNullOrWhiteSpace(name)),
+                StringComparer.OrdinalIgnoreCase);
+        }
+
+        return null;
+    }
+
+    public static bool ShouldDispatch(Update update, HashSet<UpdateType>? typeFilter, HashSet<string>? allowedUsernames)
+    {
+        if (typeFilter != null && !typeFilter.Contains(update.Type))
+        {
+            return false;
+        }
+
+        if (allowedUsernames != null && allowedUsernames.Count > 0)
+        {
+            var username = ExtractUsername(update);
+            if (string.IsNullOrWhiteSpace(username) || !allowedUsernames.Contains(username))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static string? ExtractUsername(Update update)
+    {
+        return update.Message?.From?.Username ??
+               update.Message?.Sender?.Username ??
+               update.CallbackQuery?.From?.Username;
+    }
+}
+
+

@@ -1,24 +1,36 @@
 // 📁 [MaxClient] - Главный клиент библиотеки Max Messenger Bot API
 // 🎯 Core function: Точка входа для взаимодействия с Max Messenger Bot API
-// 🔗 Key dependencies: Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Networking, Max.Bot.Exceptions
+// 🔗 Key dependencies: Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Networking, Max.Bot.Polling
 // 💡 Usage: Основной класс для работы с Max Messenger Bot API
 
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
-using Max.Bot.Exceptions;
 using Max.Bot.Networking;
+using Max.Bot.Polling;
+using Max.Bot.Types;
+using Max.Bot.Types.Enums;
+using Max.Bot.Types.Requests;
 
 namespace Max.Bot;
 
 /// <summary>
 /// Main client for interacting with the Max Messenger Bot API.
 /// </summary>
-public class MaxClient : IMaxBotApi
+public class MaxClient : IMaxBotApi, IUpdatePipeline
 {
     private readonly IMaxHttpClient _httpClient;
     private readonly MaxBotOptions _options;
+    private readonly ILogger<MaxClient>? _logger;
+    private readonly ILoggerFactory? _loggerFactory;
+    private readonly HashSet<UpdateType>? _dispatchTypeFilter;
+    private readonly HashSet<string>? _allowedUsernames;
+    private readonly object _pollerLock = new();
+    private UpdatePoller? _updatePoller;
 
     /// <inheritdoc />
     public IBotApi Bot { get; }
@@ -55,7 +67,7 @@ public class MaxClient : IMaxBotApi
     /// <exception cref="ArgumentNullException">Thrown when options is null.</exception>
     /// <exception cref="ArgumentException">Thrown when options are invalid.</exception>
     public MaxClient(MaxBotOptions options)
-        : this(options, null, null)
+        : this(options, null, null, null)
     {
     }
 
@@ -65,12 +77,17 @@ public class MaxClient : IMaxBotApi
     /// <param name="options">The bot options containing token and base URL.</param>
     /// <param name="httpClient">Optional HTTP client. If null, a new HttpClient will be created.</param>
     /// <param name="logger">Optional logger for logging events.</param>
+    /// <param name="loggerFactory">Optional logger factory used to create component-specific loggers.</param>
     /// <exception cref="ArgumentNullException">Thrown when options is null.</exception>
     /// <exception cref="ArgumentException">Thrown when options are invalid.</exception>
-    public MaxClient(MaxBotOptions options, HttpClient? httpClient, ILogger<MaxClient>? logger = null)
+    public MaxClient(MaxBotOptions options, HttpClient? httpClient, ILogger<MaxClient>? logger = null, ILoggerFactory? loggerFactory = null)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _options.Validate();
+        _logger = logger;
+        _loggerFactory = loggerFactory;
+        _dispatchTypeFilter = UpdateFilterUtilities.BuildTypeFilter(_options);
+        _allowedUsernames = UpdateFilterUtilities.BuildAllowedUsernames(_options);
 
         // Create or use provided HttpClient
         var client = httpClient ?? new HttpClient();
@@ -88,7 +105,7 @@ public class MaxClient : IMaxBotApi
         // Note: ILogger<MaxHttpClient> requires ILoggerFactory to create
         // If logging is needed, pass ILoggerFactory to MaxClient constructor or use DI
         // For now, we pass null - MaxHttpClient will work without logging
-        _httpClient = new MaxHttpClient(client, clientOptions, logger: null);
+        _httpClient = new MaxHttpClient(client, clientOptions, loggerFactory?.CreateLogger<MaxHttpClient>());
 
         // Initialize API groups
         Bot = new BotApi(_httpClient, _options);
@@ -97,6 +114,109 @@ public class MaxClient : IMaxBotApi
         Users = new UsersApi(_httpClient, _options);
         Files = new FilesApi(_httpClient, _options);
         Subscriptions = new SubscriptionsApi(_httpClient, _options);
+    }
+
+    /// <summary>
+    /// Starts the long polling loop with the provided <see cref="IUpdateHandler"/>.
+    /// </summary>
+    public async Task StartPollingAsync(IUpdateHandler handler, IServiceProvider? services = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+
+        lock (_pollerLock)
+        {
+            if (_updatePoller != null)
+            {
+                throw new InvalidOperationException("Polling is already running. Call StopPollingAsync before starting again.");
+            }
+
+            _updatePoller = new UpdatePoller(
+                this,
+                Subscriptions,
+                _options,
+                _loggerFactory?.CreateLogger<UpdatePoller>(),
+                services);
+        }
+
+        await _updatePoller.StartAsync(handler, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Stops the long polling loop if it is running.
+    /// </summary>
+    public async Task StopPollingAsync(CancellationToken cancellationToken = default)
+    {
+        UpdatePoller? poller;
+        lock (_pollerLock)
+        {
+            poller = _updatePoller;
+            _updatePoller = null;
+        }
+
+        if (poller != null)
+        {
+            await poller.StopAsync(cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Processes a webhook update payload using the provided handler.
+    /// </summary>
+    public async Task ProcessWebhookAsync(Update update, IUpdateHandler handler, IServiceProvider? services = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(update);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        if (!UpdateFilterUtilities.ShouldDispatch(update, _dispatchTypeFilter, _allowedUsernames))
+        {
+            _logger?.LogDebug("Webhook update {UpdateId} skipped by filters.", update.UpdateId);
+            return;
+        }
+
+        await UpdateHandlerExecutor.ExecuteAsync(update, handler, _options, this, _logger, services, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Configures the webhook endpoint by calling <c>POST /subscriptions</c>.
+    /// </summary>
+    public async Task<Response> ConfigureWebhookAsync(string url, bool dropPendingUpdates = false, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            throw new ArgumentException("Webhook URL must be provided.", nameof(url));
+        }
+
+        if (_options.Webhook.EnforceHttps)
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var parsed))
+            {
+                throw new ArgumentException("Webhook URL must be an absolute URI.", nameof(url));
+            }
+
+            if (!Uri.UriSchemeHttps.Equals(parsed.Scheme, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Webhook URL must use HTTPS when EnforceHttps is enabled.", nameof(url));
+            }
+        }
+
+        var request = new SetWebhookRequest
+        {
+            Url = url,
+            DropPendingUpdates = dropPendingUpdates
+        };
+
+        _options.Webhook.Endpoint = url;
+        return await Subscriptions.SetWebhookAsync(request, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Deletes the webhook subscription by calling <c>DELETE /subscriptions</c>.
+    /// </summary>
+    public Task<Response> DeleteWebhookAsync(bool dropPendingUpdates = false, CancellationToken cancellationToken = default)
+    {
+        return Subscriptions.DeleteWebhookAsync(
+            new DeleteWebhookRequest { DropPendingUpdates = dropPendingUpdates },
+            cancellationToken);
     }
 }
 

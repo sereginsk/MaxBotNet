@@ -3,6 +3,8 @@
 // 🔗 Key dependencies: System
 // 💡 Usage: Настройка MaxClient через MaxBotOptions для работы с Max Messenger Bot API
 
+using System;
+
 namespace Max.Bot.Configuration;
 
 /// <summary>
@@ -21,6 +23,21 @@ public class MaxBotOptions
     /// </summary>
     /// <value>The base URL of the API. Default is "https://api.max.ru/bot".</value>
     public string BaseUrl { get; set; } = "https://api.max.ru/bot";
+
+    /// <summary>
+    /// Gets or sets polling-specific settings that map to <c>GET /updates</c> parameters described in the MAX docs.
+    /// </summary>
+    public MaxPollingOptions Polling { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets webhook settings aligned with <c>POST/DELETE /subscriptions</c>.
+    /// </summary>
+    public MaxWebhookOptions Webhook { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets dispatcher-level options inspired by Telegram.Bot handler design.
+    /// </summary>
+    public UpdateHandlingOptions Handling { get; set; } = new();
 
     /// <summary>
     /// Validates the options.
@@ -49,6 +66,15 @@ public class MaxBotOptions
         {
             throw new ArgumentException("BaseUrl must use HTTP or HTTPS scheme.", nameof(BaseUrl));
         }
+
+        Polling ??= new MaxPollingOptions();
+        Polling.Validate();
+
+        Webhook ??= new MaxWebhookOptions();
+        Webhook.Validate();
+
+        Handling ??= new UpdateHandlingOptions();
+        Handling.Validate();
     }
 }
 
