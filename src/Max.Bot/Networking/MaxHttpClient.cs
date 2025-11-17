@@ -1,7 +1,7 @@
-// рџ“Ѓ [MaxHttpClient] - Р РµР°Р»РёР·Р°С†РёСЏ HTTP РєР»РёРµРЅС‚Р° РґР»СЏ Max Bot API
-// рџЋЇ Core function: РћС‚РїСЂР°РІРєР° HTTP Р·Р°РїСЂРѕСЃРѕРІ Рє Max Bot API СЃ СЃРµСЂРёР°Р»РёР·Р°С†РёРµР№/РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРµР№ JSON
-// рџ”— Key dependencies: System.Net.Http, Max.Bot.Configuration, Max.Bot.Exceptions, Max.Bot.Networking
-// рџ’Ў Usage: РћСЃРЅРѕРІРЅРѕР№ HTTP РєР»РёРµРЅС‚ РґР»СЏ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ Max Bot API
+// СЂСџвЂњРѓ [MaxHttpClient] - Р В Р ВµР В°Р В»Р С‘Р В·Р В°РЎвЂ Р С‘РЎРЏ HTTP Р С”Р В»Р С‘Р ВµР Р…РЎвЂљР В° Р Т‘Р В»РЎРЏ Max Bot API
+// СЂСџР‹Р‡ Core function: Р С›РЎвЂљР С—РЎР‚Р В°Р Р†Р С”Р В° HTTP Р В·Р В°Р С—РЎР‚Р С•РЎРѓР С•Р Р† Р С” Max Bot API РЎРѓ РЎРѓР ВµРЎР‚Р С‘Р В°Р В»Р С‘Р В·Р В°РЎвЂ Р С‘Р ВµР в„–/Р Т‘Р ВµРЎРѓР ВµРЎР‚Р С‘Р В°Р В»Р С‘Р В·Р В°РЎвЂ Р С‘Р ВµР в„– JSON
+// СЂСџвЂќвЂ” Key dependencies: System.Net.Http, Max.Bot.Configuration, Max.Bot.Exceptions, Max.Bot.Networking
+// СЂСџвЂ™РЋ Usage: Р С›РЎРѓР Р…Р С•Р Р†Р Р…Р С•Р в„– HTTP Р С”Р В»Р С‘Р ВµР Р…РЎвЂљ Р Т‘Р В»РЎРЏ Р Р†Р В·Р В°Р С‘Р СР С•Р Т‘Р ВµР в„–РЎРѓРЎвЂљР Р†Р С‘РЎРЏ РЎРѓ Max Bot API
 
 using System.Diagnostics;
 using System.Net;

@@ -1,7 +1,7 @@
-// рџ“Ѓ [CallbackQuery] - РњРѕРґРµР»СЊ callback query РІ Max Messenger
-// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ callback query РѕС‚ inline РєРЅРѕРїРєРё
-// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ Update РґР»СЏ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ callback query
+// СЂСџвЂњРѓ [CallbackQuery] - Р СљР С•Р Т‘Р ВµР В»РЎРЉ callback query Р Р† Max Messenger
+// СЂСџР‹Р‡ Core function: Р СџРЎР‚Р ВµР Т‘РЎРѓРЎвЂљР В°Р Р†Р В»РЎРЏР ВµРЎвЂљ callback query Р С•РЎвЂљ inline Р С”Р Р…Р С•Р С—Р С”Р С‘
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† Update Р Т‘Р В»РЎРЏ Р С—РЎР‚Р ВµР Т‘РЎРѓРЎвЂљР В°Р Р†Р В»Р ВµР Р…Р С‘РЎРЏ callback query
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;

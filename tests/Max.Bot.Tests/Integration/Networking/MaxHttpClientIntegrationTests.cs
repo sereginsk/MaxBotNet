@@ -1,7 +1,7 @@
-// рџ“Ѓ [MaxHttpClientIntegrationTests] - РРЅС‚РµРіСЂР°С†РёРѕРЅРЅС‹Рµ С‚РµСЃС‚С‹ РґР»СЏ HTTP РєР»РёРµРЅС‚Р°
-// рџЋЇ Core function: РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїРѕР»РЅРѕРіРѕ С†РёРєР»Р° СЂР°Р±РѕС‚С‹ MaxHttpClient
-// рџ”— Key dependencies: Max.Bot.Networking, Max.Bot.Configuration, Max.Bot.Exceptions, FluentAssertions, xUnit
-// рџ’Ў Usage: РРЅС‚РµРіСЂР°С†РёРѕРЅРЅС‹Рµ С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РїРѕР»РЅРѕРіРѕ С†РёРєР»Р° СЂР°Р±РѕС‚С‹ HTTP РєР»РёРµРЅС‚Р°
+// РЎР‚РЎСџРІР‚СљР С“ [MaxHttpClientIntegrationTests] - Р В Р’ВР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РЎвЂ“Р РЋР вЂљР В Р’В°Р РЋРІР‚В Р В РЎвЂР В РЎвЂўР В Р вЂ¦Р В Р вЂ¦Р РЋРІР‚в„–Р В Р’Вµ Р РЋРІР‚С™Р В Р’ВµР РЋР С“Р РЋРІР‚С™Р РЋРІР‚в„– Р В РўвЂР В Р’В»Р РЋР РЏ HTTP Р В РЎвЂќР В Р’В»Р В РЎвЂР В Р’ВµР В Р вЂ¦Р РЋРІР‚С™Р В Р’В°
+// РЎР‚РЎСџР вЂ№Р вЂЎ Core function: Р В РЎС›Р В Р’ВµР РЋР С“Р РЋРІР‚С™Р В РЎвЂР РЋР вЂљР В РЎвЂўР В Р вЂ Р В Р’В°Р В Р вЂ¦Р В РЎвЂР В Р’Вµ Р В РЎвЂ”Р В РЎвЂўР В Р’В»Р В Р вЂ¦Р В РЎвЂўР В РЎвЂ“Р В РЎвЂў Р РЋРІР‚В Р В РЎвЂР В РЎвЂќР В Р’В»Р В Р’В° Р РЋР вЂљР В Р’В°Р В Р’В±Р В РЎвЂўР РЋРІР‚С™Р РЋРІР‚в„– MaxHttpClient
+// РЎР‚РЎСџРІР‚СњРІР‚вЂќ Key dependencies: Max.Bot.Networking, Max.Bot.Configuration, Max.Bot.Exceptions, FluentAssertions, xUnit
+// РЎР‚РЎСџРІР‚в„ўР Р‹ Usage: Р В Р’ВР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РЎвЂ“Р РЋР вЂљР В Р’В°Р РЋРІР‚В Р В РЎвЂР В РЎвЂўР В Р вЂ¦Р В Р вЂ¦Р РЋРІР‚в„–Р В Р’Вµ Р РЋРІР‚С™Р В Р’ВµР РЋР С“Р РЋРІР‚С™Р РЋРІР‚в„– Р В РўвЂР В Р’В»Р РЋР РЏ Р В РЎвЂ”Р РЋР вЂљР В РЎвЂўР В Р вЂ Р В Р’ВµР РЋР вЂљР В РЎвЂќР В РЎвЂ Р В РЎвЂ”Р В РЎвЂўР В Р’В»Р В Р вЂ¦Р В РЎвЂўР В РЎвЂ“Р В РЎвЂў Р РЋРІР‚В Р В РЎвЂР В РЎвЂќР В Р’В»Р В Р’В° Р РЋР вЂљР В Р’В°Р В Р’В±Р В РЎвЂўР РЋРІР‚С™Р РЋРІР‚в„– HTTP Р В РЎвЂќР В Р’В»Р В РЎвЂР В Р’ВµР В Р вЂ¦Р РЋРІР‚С™Р В Р’В°
 
 using System.Net;
 using System.Net.Http;
@@ -287,7 +287,7 @@ public class MaxHttpClientIntegrationTests
     private class TestHttpMessageHandler : HttpMessageHandler
     {
         private string? _savedRequestBody;
-        
+
         public HttpResponseMessage? Response { get; set; }
         public Func<HttpRequestMessage, HttpResponseMessage>? ResponseFactory { get; set; }
         public List<HttpRequestMessage> Requests { get; } = new();
@@ -298,7 +298,7 @@ public class MaxHttpClientIntegrationTests
             CancellationToken cancellationToken)
         {
             Requests.Add(request);
-            
+
             // Save request body content before it might be disposed
             if (request.Content != null)
             {
@@ -311,11 +311,11 @@ public class MaxHttpClientIntegrationTests
                     // If already disposed, ignore
                 }
             }
-            
+
             OnRequest?.Invoke(request);
 
             HttpResponseMessage? responseToUse = null;
-            
+
             if (ResponseFactory != null)
             {
                 responseToUse = ResponseFactory(request);
@@ -330,11 +330,11 @@ public class MaxHttpClientIntegrationTests
                 // Default: simulate network error
                 throw new HttpRequestException("Network error");
             }
-            
+
             // Read content from current responseToUse (not cached) to support dynamic Response changes
             string? content = null;
             string? contentType = null;
-            
+
             if (responseToUse.Content != null)
             {
                 try
@@ -349,25 +349,25 @@ public class MaxHttpClientIntegrationTests
                     contentType = "application/json";
                 }
             }
-            
+
             // Create a new HttpResponseMessage for each request to avoid ObjectDisposedException
             // when content is read multiple times (e.g., during retries)
             var response = new HttpResponseMessage(responseToUse.StatusCode)
             {
-                Content = content != null 
+                Content = content != null
                     ? new StringContent(content, Encoding.UTF8, contentType ?? "application/json")
                     : null
             };
-            
+
             // Copy headers
             foreach (var header in responseToUse.Headers)
             {
                 response.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
-            
+
             return Task.FromResult(response);
         }
-        
+
         /// <summary>
         /// Gets the saved request body content (for testing purposes).
         /// </summary>

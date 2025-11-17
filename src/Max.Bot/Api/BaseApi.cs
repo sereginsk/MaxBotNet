@@ -1,7 +1,7 @@
-// рџ“Ѓ [BaseApi] - Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ РґР»СЏ API РєР»Р°СЃСЃРѕРІ
-// рџЋЇ Core function: РћР±С‰Р°СЏ Р»РѕРіРёРєР° РґР»СЏ РІСЃРµС… API РєР»Р°СЃСЃРѕРІ (РїРѕСЃС‚СЂРѕРµРЅРёРµ URL, Р·Р°РіРѕР»РѕРІРєРё, РѕР±СЂР°Р±РѕС‚РєР° Response<T>)
-// рџ”— Key dependencies: Max.Bot.Networking, Max.Bot.Configuration, Max.Bot.Types, Max.Bot.Exceptions
-// рџ’Ў Usage: Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ РґР»СЏ BotApi, MessagesApi, ChatsApi, UsersApi
+// СЂСџвЂњРѓ [BaseApi] - Р вЂР В°Р В·Р С•Р Р†РЎвЂ№Р в„– Р С”Р В»Р В°РЎРѓРЎРѓ Р Т‘Р В»РЎРЏ API Р С”Р В»Р В°РЎРѓРЎРѓР С•Р Р†
+// СЂСџР‹Р‡ Core function: Р С›Р В±РЎвЂ°Р В°РЎРЏ Р В»Р С•Р С–Р С‘Р С”Р В° Р Т‘Р В»РЎРЏ Р Р†РЎРѓР ВµРЎвЂ¦ API Р С”Р В»Р В°РЎРѓРЎРѓР С•Р Р† (Р С—Р С•РЎРѓРЎвЂљРЎР‚Р С•Р ВµР Р…Р С‘Р Вµ URL, Р В·Р В°Р С–Р С•Р В»Р С•Р Р†Р С”Р С‘, Р С•Р В±РЎР‚Р В°Р В±Р С•РЎвЂљР С”Р В° Response<T>)
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Networking, Max.Bot.Configuration, Max.Bot.Types, Max.Bot.Exceptions
+// СЂСџвЂ™РЋ Usage: Р вЂР В°Р В·Р С•Р Р†РЎвЂ№Р в„– Р С”Р В»Р В°РЎРѓРЎРѓ Р Т‘Р В»РЎРЏ BotApi, MessagesApi, ChatsApi, UsersApi
 
 using System.Net;
 using System.Net.Http;

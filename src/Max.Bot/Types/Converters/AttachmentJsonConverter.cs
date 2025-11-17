@@ -1,7 +1,7 @@
-// рџ“Ѓ [AttachmentJsonConverter] - JSON РєРѕРЅРІРµСЂС‚РµСЂ РґР»СЏ РїРѕР»РёРјРѕСЂС„РЅС‹С… РІР»РѕР¶РµРЅРёР№
-// рџЋЇ Core function: Р”РµСЃРµСЂРёР°Р»РёР·СѓРµС‚ Attachment РїРѕ С‚РёРїСѓ РёР· РїРѕР»СЏ "type"
-// рџ”— Key dependencies: System.Text.Json, Max.Bot.Types, Max.Bot.Types.Enums
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ MaxJsonSerializer РґР»СЏ РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРё РїРѕР»РёРјРѕСЂС„РЅС‹С… РІР»РѕР¶РµРЅРёР№
+// СЂСџвЂњРѓ [AttachmentJsonConverter] - JSON Р С”Р С•Р Р…Р Р†Р ВµРЎР‚РЎвЂљР ВµРЎР‚ Р Т‘Р В»РЎРЏ Р С—Р С•Р В»Р С‘Р СР С•РЎР‚РЎвЂћР Р…РЎвЂ№РЎвЂ¦ Р Р†Р В»Р С•Р В¶Р ВµР Р…Р С‘Р в„–
+// СЂСџР‹Р‡ Core function: Р вЂќР ВµРЎРѓР ВµРЎР‚Р С‘Р В°Р В»Р С‘Р В·РЎС“Р ВµРЎвЂљ Attachment Р С—Р С• РЎвЂљР С‘Р С—РЎС“ Р С‘Р В· Р С—Р С•Р В»РЎРЏ "type"
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json, Max.Bot.Types, Max.Bot.Types.Enums
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ MaxJsonSerializer Р Т‘Р В»РЎРЏ Р Т‘Р ВµРЎРѓР ВµРЎР‚Р С‘Р В°Р В»Р С‘Р В·Р В°РЎвЂ Р С‘Р С‘ Р С—Р С•Р В»Р С‘Р СР С•РЎР‚РЎвЂћР Р…РЎвЂ№РЎвЂ¦ Р Р†Р В»Р С•Р В¶Р ВµР Р…Р С‘Р в„–
 
 using System.Text.Json;
 using System.Text.Json.Serialization;

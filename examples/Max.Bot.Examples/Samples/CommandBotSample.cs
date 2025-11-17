@@ -1,7 +1,7 @@
-// рџ“Ѓ [CommandBotSample] - Command router demo
-// рџЋЇ Core function: Shows simple command parsing and API fan-out
-// рџ”— Key dependencies: Max.Bot.Polling, Max.Bot.Types
-// рџ’Ў Usage: Demonstrates how to build Telegram.Bot-like command handlers
+// СЂСџвЂњРѓ [CommandBotSample] - Command router demo
+// СЂСџР‹Р‡ Core function: Shows simple command parsing and API fan-out
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Polling, Max.Bot.Types
+// СЂСџвЂ™РЋ Usage: Demonstrates how to build Telegram.Bot-like command handlers
 
 using System;
 using System.Collections.Generic;
@@ -83,7 +83,7 @@ public sealed class CommandBotSample : IBotSample
 
         await context.Api.Messages.SendMessageAsync(
             chatId.Value,
-            "рџ‘‹ Welcome! Use /help to discover available commands.",
+            "СЂСџвЂвЂ№ Welcome! Use /help to discover available commands.",
             cancellationToken).ConfigureAwait(false);
     }
 

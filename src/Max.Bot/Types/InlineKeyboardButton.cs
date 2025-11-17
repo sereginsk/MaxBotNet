@@ -1,7 +1,7 @@
-// рџ“Ѓ [InlineKeyboardButton] - РњРѕРґРµР»СЊ РєРЅРѕРїРєРё inline РєР»Р°РІРёР°С‚СѓСЂС‹ РІ Max Messenger
-// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ РєРЅРѕРїРєСѓ inline РєР»Р°РІРёР°С‚СѓСЂС‹
-// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ InlineKeyboard РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РєРЅРѕРїРѕРє
+// СЂСџвЂњРѓ [InlineKeyboardButton] - Р СљР С•Р Т‘Р ВµР В»РЎРЉ Р С”Р Р…Р С•Р С—Р С”Р С‘ inline Р С”Р В»Р В°Р Р†Р С‘Р В°РЎвЂљРЎС“РЎР‚РЎвЂ№ Р Р† Max Messenger
+// СЂСџР‹Р‡ Core function: Р СџРЎР‚Р ВµР Т‘РЎРѓРЎвЂљР В°Р Р†Р В»РЎРЏР ВµРЎвЂљ Р С”Р Р…Р С•Р С—Р С”РЎС“ inline Р С”Р В»Р В°Р Р†Р С‘Р В°РЎвЂљРЎС“РЎР‚РЎвЂ№
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† InlineKeyboard Р Т‘Р В»РЎРЏ РЎРѓР С•Р В·Р Т‘Р В°Р Р…Р С‘РЎРЏ Р С”Р Р…Р С•Р С—Р С•Р С”
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;

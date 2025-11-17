@@ -1,7 +1,7 @@
-// рџ“Ѓ [AnswerCallbackQueryRequest] - Р—Р°РїСЂРѕСЃ РЅР° РѕС‚РІРµС‚ РЅР° callback query
-// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ РґР»СЏ РѕС‚РІРµС‚Р° РЅР° callback query
-// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations, Max.Bot.Types, Max.Bot.Types.Enums
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ MessagesApi.AnswerCallbackQueryAsync РґР»СЏ РѕС‚РІРµС‚Р° РЅР° callback query
+// СЂСџвЂњРѓ [AnswerCallbackQueryRequest] - Р вЂ”Р В°Р С—РЎР‚Р С•РЎРѓ Р Р…Р В° Р С•РЎвЂљР Р†Р ВµРЎвЂљ Р Р…Р В° callback query
+// СЂСџР‹Р‡ Core function: Р СџРЎР‚Р ВµР Т‘РЎРѓРЎвЂљР В°Р Р†Р В»РЎРЏР ВµРЎвЂљ Р В·Р В°Р С—РЎР‚Р С•РЎРѓ Р Т‘Р В»РЎРЏ Р С•РЎвЂљР Р†Р ВµРЎвЂљР В° Р Р…Р В° callback query
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations, Max.Bot.Types, Max.Bot.Types.Enums
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† MessagesApi.AnswerCallbackQueryAsync Р Т‘Р В»РЎРЏ Р С•РЎвЂљР Р†Р ВµРЎвЂљР В° Р Р…Р В° callback query
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;

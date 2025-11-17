@@ -1,7 +1,7 @@
-// рџ“Ѓ [MaxBotClientOptionsTests] - РўРµСЃС‚С‹ РґР»СЏ РєРѕРЅС„РёРіСѓСЂР°С†РёРё HTTP РєР»РёРµРЅС‚Р°
-// рџЋЇ Core function: РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РІР°Р»РёРґР°С†РёРё Рё СЃРѕР·РґР°РЅРёСЏ MaxBotClientOptions
-// рџ”— Key dependencies: Max.Bot.Configuration, FluentAssertions, xUnit
-// рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ MaxBotClientOptions
+// СЂСџвЂњРѓ [MaxBotClientOptionsTests] - Р СћР ВµРЎРѓРЎвЂљРЎвЂ№ Р Т‘Р В»РЎРЏ Р С”Р С•Р Р…РЎвЂћР С‘Р С–РЎС“РЎР‚Р В°РЎвЂ Р С‘Р С‘ HTTP Р С”Р В»Р С‘Р ВµР Р…РЎвЂљР В°
+// СЂСџР‹Р‡ Core function: Р СћР ВµРЎРѓРЎвЂљР С‘РЎР‚Р С•Р Р†Р В°Р Р…Р С‘Р Вµ Р Р†Р В°Р В»Р С‘Р Т‘Р В°РЎвЂ Р С‘Р С‘ Р С‘ РЎРѓР С•Р В·Р Т‘Р В°Р Р…Р С‘РЎРЏ MaxBotClientOptions
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Configuration, FluentAssertions, xUnit
+// СЂСџвЂ™РЋ Usage: Unit РЎвЂљР ВµРЎРѓРЎвЂљРЎвЂ№ Р Т‘Р В»РЎРЏ Р С—РЎР‚Р С•Р Р†Р ВµРЎР‚Р С”Р С‘ Р С”Р С•РЎР‚РЎР‚Р ВµР С”РЎвЂљР Р…Р С•РЎРѓРЎвЂљР С‘ РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ MaxBotClientOptions
 
 using FluentAssertions;
 using Max.Bot.Configuration;

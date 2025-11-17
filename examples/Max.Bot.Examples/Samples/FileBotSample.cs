@@ -1,7 +1,7 @@
-// рџ“Ѓ [FileBotSample] - File upload & attachment demo
-// рџЋЇ Core function: Uploads a local file and sends it as attachment
-// рџ”— Key dependencies: Max.Bot.Polling, Max.Bot.Types.Enums, Max.Bot.Types.Requests
-// рџ’Ў Usage: Shows Uploads API workflow with SendMessageWithAttachmentAsync
+// СЂСџвЂњРѓ [FileBotSample] - File upload & attachment demo
+// СЂСџР‹Р‡ Core function: Uploads a local file and sends it as attachment
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Polling, Max.Bot.Types.Enums, Max.Bot.Types.Requests
+// СЂСџвЂ™РЋ Usage: Shows Uploads API workflow with SendMessageWithAttachmentAsync
 
 using System;
 using System.IO;
@@ -59,7 +59,7 @@ public sealed class FileBotSample : IBotSample
         await context.Api.Messages.SendMessageWithAttachmentAsync(
             attachment,
             chatId: chatId.Value,
-            text: "Here is your file upload рџ“Ћ",
+            text: "Here is your file upload СЂСџвЂњР‹",
             cancellationToken: cancellationToken).ConfigureAwait(false);
         sampleContext.Output.WriteLine($"File '{sampleContext.Settings.UploadFilePath}' uploaded for chat {chatId.Value}.");
     }

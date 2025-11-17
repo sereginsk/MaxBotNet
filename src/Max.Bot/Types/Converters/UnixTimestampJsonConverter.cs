@@ -1,7 +1,7 @@
-// рџ“Ѓ [UnixTimestampJsonConverter] - JSON РєРѕРЅРІРµСЂС‚РµСЂ РґР»СЏ Unix timestamp
-// рџЋЇ Core function: РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ Unix timestamp (С‡РёСЃР»Рѕ) РІ DateTime Рё РѕР±СЂР°С‚РЅРѕ
-// рџ”— Key dependencies: System.Text.Json.Serialization
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ MaxJsonSerializer.Options РґР»СЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРіРѕ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ Unix timestamp РІ DateTime
+// СЂСџвЂњРѓ [UnixTimestampJsonConverter] - JSON Р С”Р С•Р Р…Р Р†Р ВµРЎР‚РЎвЂљР ВµРЎР‚ Р Т‘Р В»РЎРЏ Unix timestamp
+// СЂСџР‹Р‡ Core function: Р СџРЎР‚Р ВµР С•Р В±РЎР‚Р В°Р В·Р С•Р Р†Р В°Р Р…Р С‘Р Вµ Unix timestamp (РЎвЂЎР С‘РЎРѓР В»Р С•) Р Р† DateTime Р С‘ Р С•Р В±РЎР‚Р В°РЎвЂљР Р…Р С•
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json.Serialization
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† MaxJsonSerializer.Options Р Т‘Р В»РЎРЏ Р В°Р Р†РЎвЂљР С•Р СР В°РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С•Р С–Р С• Р С—РЎР‚Р ВµР С•Р В±РЎР‚Р В°Р В·Р С•Р Р†Р В°Р Р…Р С‘РЎРЏ Unix timestamp Р Р† DateTime
 
 using System.Text.Json;
 using System.Text.Json.Serialization;

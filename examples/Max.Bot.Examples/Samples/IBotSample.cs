@@ -1,7 +1,7 @@
-// рџ“Ѓ [IBotSample] - Contract for demo bots
-// рџЋЇ Core function: Defines a simple interface for running samples
-// рџ”— Key dependencies: System.Threading
-// рџ’Ў Usage: Implemented by Echo/Command/Keyboard/File samples
+// СЂСџвЂњРѓ [IBotSample] - Contract for demo bots
+// СЂСџР‹Р‡ Core function: Defines a simple interface for running samples
+// СЂСџвЂќвЂ” Key dependencies: System.Threading
+// СЂСџвЂ™РЋ Usage: Implemented by Echo/Command/Keyboard/File samples
 
 using System.Threading;
 using System.Threading.Tasks;

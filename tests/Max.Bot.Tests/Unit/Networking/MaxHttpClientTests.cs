@@ -1,7 +1,7 @@
-// рџ“Ѓ [MaxHttpClientTests] - РўРµСЃС‚С‹ РґР»СЏ HTTP РєР»РёРµРЅС‚Р°
-// рџЋЇ Core function: РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РѕС‚РїСЂР°РІРєРё Р·Р°РїСЂРѕСЃРѕРІ, РѕР±СЂР°Р±РѕС‚РєРё РѕС‚РІРµС‚РѕРІ Рё РѕС€РёР±РѕРє РІ MaxHttpClient
-// рџ”— Key dependencies: Max.Bot.Networking, Max.Bot.Configuration, Max.Bot.Exceptions, FluentAssertions, xUnit
-// рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ MaxHttpClient
+// РЎР‚РЎСџРІР‚СљР С“ [MaxHttpClientTests] - Р В РЎС›Р В Р’ВµР РЋР С“Р РЋРІР‚С™Р РЋРІР‚в„– Р В РўвЂР В Р’В»Р РЋР РЏ HTTP Р В РЎвЂќР В Р’В»Р В РЎвЂР В Р’ВµР В Р вЂ¦Р РЋРІР‚С™Р В Р’В°
+// РЎР‚РЎСџР вЂ№Р вЂЎ Core function: Р В РЎС›Р В Р’ВµР РЋР С“Р РЋРІР‚С™Р В РЎвЂР РЋР вЂљР В РЎвЂўР В Р вЂ Р В Р’В°Р В Р вЂ¦Р В РЎвЂР В Р’Вµ Р В РЎвЂўР РЋРІР‚С™Р В РЎвЂ”Р РЋР вЂљР В Р’В°Р В Р вЂ Р В РЎвЂќР В РЎвЂ Р В Р’В·Р В Р’В°Р В РЎвЂ”Р РЋР вЂљР В РЎвЂўР РЋР С“Р В РЎвЂўР В Р вЂ , Р В РЎвЂўР В Р’В±Р РЋР вЂљР В Р’В°Р В Р’В±Р В РЎвЂўР РЋРІР‚С™Р В РЎвЂќР В РЎвЂ Р В РЎвЂўР РЋРІР‚С™Р В Р вЂ Р В Р’ВµР РЋРІР‚С™Р В РЎвЂўР В Р вЂ  Р В РЎвЂ Р В РЎвЂўР РЋРІвЂљВ¬Р В РЎвЂР В Р’В±Р В РЎвЂўР В РЎвЂќ Р В Р вЂ  MaxHttpClient
+// РЎР‚РЎСџРІР‚СњРІР‚вЂќ Key dependencies: Max.Bot.Networking, Max.Bot.Configuration, Max.Bot.Exceptions, FluentAssertions, xUnit
+// РЎР‚РЎСџРІР‚в„ўР Р‹ Usage: Unit Р РЋРІР‚С™Р В Р’ВµР РЋР С“Р РЋРІР‚С™Р РЋРІР‚в„– Р В РўвЂР В Р’В»Р РЋР РЏ Р В РЎвЂ”Р РЋР вЂљР В РЎвЂўР В Р вЂ Р В Р’ВµР РЋР вЂљР В РЎвЂќР В РЎвЂ Р В РЎвЂќР В РЎвЂўР РЋР вЂљР РЋР вЂљР В Р’ВµР В РЎвЂќР РЋРІР‚С™Р В Р вЂ¦Р В РЎвЂўР РЋР С“Р РЋРІР‚С™Р В РЎвЂ Р РЋР вЂљР В Р’В°Р В Р’В±Р В РЎвЂўР РЋРІР‚С™Р РЋРІР‚в„– MaxHttpClient
 
 using System.Net;
 using System.Net.Http;
@@ -566,11 +566,11 @@ public class MaxHttpClientTests
         {
             Requests.Add(request);
             OnRequest?.Invoke(request);
-            
+
             // Read content from current Response (not cached) to support dynamic Response changes
             string? content = null;
             string? contentType = null;
-            
+
             if (Response.Content != null)
             {
                 try
@@ -585,22 +585,22 @@ public class MaxHttpClientTests
                     contentType = "application/json";
                 }
             }
-            
+
             // Create a new HttpResponseMessage for each request to avoid ObjectDisposedException
             // when content is read multiple times (e.g., during retries)
             var response = new HttpResponseMessage(Response.StatusCode)
             {
-                Content = content != null 
+                Content = content != null
                     ? new StringContent(content, Encoding.UTF8, contentType ?? "application/json")
                     : null
             };
-            
+
             // Copy headers
             foreach (var header in Response.Headers)
             {
                 response.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
-            
+
             return Task.FromResult(response);
         }
     }

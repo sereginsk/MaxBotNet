@@ -1,7 +1,7 @@
-// СЂСџвЂњРѓ [SampleRuntime] - Hosting helpers for sample bots
-// СЂСџР‹Р‡ Core function: Provides runtime abstractions for running samples
-// СЂСџвЂќвЂ” Key dependencies: Max.Bot, Max.Bot.Polling
-// СЂСџвЂ™РЋ Usage: Used by Program and tests to orchestrate sample handlers
+// РЎР‚РЎСџРІР‚СљР С“ [SampleRuntime] - Hosting helpers for sample bots
+// РЎР‚РЎСџР вЂ№Р вЂЎ Core function: Provides runtime abstractions for running samples
+// РЎР‚РЎСџРІР‚СњРІР‚вЂќ Key dependencies: Max.Bot, Max.Bot.Polling
+// РЎР‚РЎСџРІР‚в„ўР Р‹ Usage: Used by Program and tests to orchestrate sample handlers
 
 using System;
 using System.Collections.Generic;

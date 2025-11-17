@@ -1,7 +1,7 @@
-// рџ“Ѓ [BotApi] - Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґРѕРІ СЂР°Р±РѕС‚С‹ СЃ Р±РѕС‚РѕРј
-// рџЋЇ Core function: Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґРѕРІ IBotApi (GetMeAsync, GetBotInfoAsync)
-// рџ”— Key dependencies: Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Networking, Max.Bot.Types
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ MaxClient РґР»СЏ РїСЂРµРґРѕСЃС‚Р°РІР»РµРЅРёСЏ РјРµС‚РѕРґРѕРІ СЂР°Р±РѕС‚С‹ СЃ Р±РѕС‚РѕРј
+// СЂСџвЂњРѓ [BotApi] - Р В Р ВµР В°Р В»Р С‘Р В·Р В°РЎвЂ Р С‘РЎРЏ Р СР ВµРЎвЂљР С•Р Т‘Р С•Р Р† РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ РЎРѓ Р В±Р С•РЎвЂљР С•Р С
+// СЂСџР‹Р‡ Core function: Р В Р ВµР В°Р В»Р С‘Р В·Р В°РЎвЂ Р С‘РЎРЏ Р СР ВµРЎвЂљР С•Р Т‘Р С•Р Р† IBotApi (GetMeAsync, GetBotInfoAsync)
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Api, Max.Bot.Configuration, Max.Bot.Networking, Max.Bot.Types
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† MaxClient Р Т‘Р В»РЎРЏ Р С—РЎР‚Р ВµР Т‘Р С•РЎРѓРЎвЂљР В°Р Р†Р В»Р ВµР Р…Р С‘РЎРЏ Р СР ВµРЎвЂљР С•Р Т‘Р С•Р Р† РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ РЎРѓ Р В±Р С•РЎвЂљР С•Р С
 
 using Max.Bot.Configuration;
 using Max.Bot.Networking;

@@ -1,7 +1,7 @@
-// рџ“Ѓ [UnixTimestampJsonConverterTests] - РўРµСЃС‚С‹ РґР»СЏ UnixTimestampJsonConverter
-// рџЋЇ Core function: РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ Unix timestamp РІ DateTime Рё РѕР±СЂР°С‚РЅРѕ
-// рџ”— Key dependencies: Max.Bot.Types.Converters, FluentAssertions, xUnit
-// рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ UnixTimestampJsonConverter
+// СЂСџвЂњРѓ [UnixTimestampJsonConverterTests] - Р СћР ВµРЎРѓРЎвЂљРЎвЂ№ Р Т‘Р В»РЎРЏ UnixTimestampJsonConverter
+// СЂСџР‹Р‡ Core function: Р СћР ВµРЎРѓРЎвЂљР С‘РЎР‚Р С•Р Р†Р В°Р Р…Р С‘Р Вµ Р С—РЎР‚Р ВµР С•Р В±РЎР‚Р В°Р В·Р С•Р Р†Р В°Р Р…Р С‘РЎРЏ Unix timestamp Р Р† DateTime Р С‘ Р С•Р В±РЎР‚Р В°РЎвЂљР Р…Р С•
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Types.Converters, FluentAssertions, xUnit
+// СЂСџвЂ™РЋ Usage: Unit РЎвЂљР ВµРЎРѓРЎвЂљРЎвЂ№ Р Т‘Р В»РЎРЏ Р С—РЎР‚Р С•Р Р†Р ВµРЎР‚Р С”Р С‘ Р С”Р С•РЎР‚РЎР‚Р ВµР С”РЎвЂљР Р…Р С•РЎРѓРЎвЂљР С‘ РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ UnixTimestampJsonConverter
 
 using System.Text.Json;
 using FluentAssertions;

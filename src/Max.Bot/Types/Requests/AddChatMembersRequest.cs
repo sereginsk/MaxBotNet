@@ -1,7 +1,7 @@
-// рџ“Ѓ [AddChatMembersRequest] - Р—Р°РїСЂРѕСЃ РЅР° РґРѕР±Р°РІР»РµРЅРёРµ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІ С‡Р°С‚
-// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІ С‡Р°С‚
-// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ ChatsApi.AddChatMembersAsync РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ СѓС‡Р°СЃС‚РЅРёРєРѕРІ
+// СЂСџвЂњРѓ [AddChatMembersRequest] - Р вЂ”Р В°Р С—РЎР‚Р С•РЎРѓ Р Р…Р В° Р Т‘Р С•Р В±Р В°Р Р†Р В»Р ВµР Р…Р С‘Р Вµ РЎС“РЎвЂЎР В°РЎРѓРЎвЂљР Р…Р С‘Р С”Р С•Р Р† Р Р† РЎвЂЎР В°РЎвЂљ
+// СЂСџР‹Р‡ Core function: Р СџРЎР‚Р ВµР Т‘РЎРѓРЎвЂљР В°Р Р†Р В»РЎРЏР ВµРЎвЂљ Р В·Р В°Р С—РЎР‚Р С•РЎРѓ Р Т‘Р В»РЎРЏ Р Т‘Р С•Р В±Р В°Р Р†Р В»Р ВµР Р…Р С‘РЎРЏ РЎС“РЎвЂЎР В°РЎРѓРЎвЂљР Р…Р С‘Р С”Р С•Р Р† Р Р† РЎвЂЎР В°РЎвЂљ
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† ChatsApi.AddChatMembersAsync Р Т‘Р В»РЎРЏ Р Т‘Р С•Р В±Р В°Р Р†Р В»Р ВµР Р…Р С‘РЎРЏ РЎС“РЎвЂЎР В°РЎРѓРЎвЂљР Р…Р С‘Р С”Р С•Р Р†
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;

@@ -1,7 +1,7 @@
-// рџ“Ѓ [MaxClientTests] - РўРµСЃС‚С‹ РґР»СЏ MaxClient
-// рџЋЇ Core function: РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ СЃРѕР·РґР°РЅРёСЏ MaxClient Рё РµРіРѕ API СЃРІРѕР№СЃС‚РІ
-// рџ”— Key dependencies: Max.Bot, Max.Bot.Configuration, FluentAssertions, xUnit
-// рџ’Ў Usage: Unit С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё СЂР°Р±РѕС‚С‹ MaxClient
+// СЂСџвЂњРѓ [MaxClientTests] - Р СћР ВµРЎРѓРЎвЂљРЎвЂ№ Р Т‘Р В»РЎРЏ MaxClient
+// СЂСџР‹Р‡ Core function: Р СћР ВµРЎРѓРЎвЂљР С‘РЎР‚Р С•Р Р†Р В°Р Р…Р С‘Р Вµ РЎРѓР С•Р В·Р Т‘Р В°Р Р…Р С‘РЎРЏ MaxClient Р С‘ Р ВµР С–Р С• API РЎРѓР Р†Р С•Р в„–РЎРѓРЎвЂљР Р†
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot, Max.Bot.Configuration, FluentAssertions, xUnit
+// СЂСџвЂ™РЋ Usage: Unit РЎвЂљР ВµРЎРѓРЎвЂљРЎвЂ№ Р Т‘Р В»РЎРЏ Р С—РЎР‚Р С•Р Р†Р ВµРЎР‚Р С”Р С‘ Р С”Р С•РЎР‚РЎР‚Р ВµР С”РЎвЂљР Р…Р С•РЎРѓРЎвЂљР С‘ РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ MaxClient
 
 using FluentAssertions;
 using Max.Bot;

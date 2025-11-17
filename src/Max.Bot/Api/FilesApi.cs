@@ -89,7 +89,7 @@ internal class FilesApi : BaseApi, IFilesApi, IDisposable
 
         using var content = new MultipartFormDataContent();
         var streamContent = new StreamContent(fileStream);
-        
+
         // Set content type if not already set
         if (string.IsNullOrEmpty(streamContent.Headers.ContentType?.MediaType))
         {
@@ -158,7 +158,7 @@ internal class FilesApi : BaseApi, IFilesApi, IDisposable
         while (totalBytesRead < fileLength)
         {
             var bytesRead = await fileStream.ReadAsync(buffer, 0, (int)Math.Min(chunkSize, fileLength - totalBytesRead), cancellationToken).ConfigureAwait(false);
-            
+
             if (bytesRead == 0)
             {
                 break;
@@ -167,7 +167,7 @@ internal class FilesApi : BaseApi, IFilesApi, IDisposable
             using var chunkStream = new MemoryStream(buffer, 0, bytesRead);
             using var content = new MultipartFormDataContent();
             var streamContent = new StreamContent(chunkStream);
-            
+
             streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
             content.Add(streamContent, "data", fileName ?? "file");
 

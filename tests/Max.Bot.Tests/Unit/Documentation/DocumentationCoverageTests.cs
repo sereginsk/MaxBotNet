@@ -1,7 +1,7 @@
-// рџ“Ѓ [DocumentationCoverageTests] - Validates XML docs for public API
-// рџЋЇ Core function: Ensures critical public members include XML documentation
-// рџ”— Key dependencies: System.Xml.Linq, Max.Bot
-// рџ’Ў Usage: Guards against regressions when TreatWarningsAsErrors excludes tests
+// СЂСџвЂњРѓ [DocumentationCoverageTests] - Validates XML docs for public API
+// СЂСџР‹Р‡ Core function: Ensures critical public members include XML documentation
+// СЂСџвЂќвЂ” Key dependencies: System.Xml.Linq, Max.Bot
+// СЂСџвЂ™РЋ Usage: Guards against regressions when TreatWarningsAsErrors excludes tests
 
 using System;
 using System.IO;

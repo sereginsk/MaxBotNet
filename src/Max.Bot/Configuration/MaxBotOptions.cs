@@ -1,7 +1,7 @@
-// рџ“Ѓ [MaxBotOptions] - Р‘Р°Р·РѕРІС‹Рµ РѕРїС†РёРё Р±РѕС‚Р° Max Messenger
-// рџЋЇ Core function: РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ Р±РѕС‚Р° (С‚РѕРєРµРЅ, Р±Р°Р·РѕРІС‹Р№ URL API)
-// рџ”— Key dependencies: System
-// рџ’Ў Usage: РќР°СЃС‚СЂРѕР№РєР° MaxClient С‡РµСЂРµР· MaxBotOptions РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Max Messenger Bot API
+// СЂСџвЂњРѓ [MaxBotOptions] - Р вЂР В°Р В·Р С•Р Р†РЎвЂ№Р Вµ Р С•Р С—РЎвЂ Р С‘Р С‘ Р В±Р С•РЎвЂљР В° Max Messenger
+// СЂСџР‹Р‡ Core function: Р С™Р С•Р Р…РЎвЂћР С‘Р С–РЎС“РЎР‚Р В°РЎвЂ Р С‘РЎРЏ Р В±Р С•РЎвЂљР В° (РЎвЂљР С•Р С”Р ВµР Р…, Р В±Р В°Р В·Р С•Р Р†РЎвЂ№Р в„– URL API)
+// СЂСџвЂќвЂ” Key dependencies: System
+// СЂСџвЂ™РЋ Usage: Р СњР В°РЎРѓРЎвЂљРЎР‚Р С•Р в„–Р С”Р В° MaxClient РЎвЂЎР ВµРЎР‚Р ВµР В· MaxBotOptions Р Т‘Р В»РЎРЏ РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ РЎРѓ Max Messenger Bot API
 
 using System;
 

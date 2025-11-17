@@ -1,7 +1,7 @@
-// рџ“Ѓ [File] - РњРѕРґРµР»СЊ С„Р°Р№Р»Р° РІ Max Messenger
-// рџЋЇ Core function: РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С„Р°Р№Р»Рµ
-// рџ”— Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С„Р°Р№Р»Р°РјРё РІ Max Messenger API
+// СЂСџвЂњРѓ [File] - Р СљР С•Р Т‘Р ВµР В»РЎРЉ РЎвЂћР В°Р в„–Р В»Р В° Р Р† Max Messenger
+// СЂСџР‹Р‡ Core function: Р СџРЎР‚Р ВµР Т‘РЎРѓРЎвЂљР В°Р Р†Р В»РЎРЏР ВµРЎвЂљ Р С‘Р Р…РЎвЂћР С•РЎР‚Р СР В°РЎвЂ Р С‘РЎР‹ Р С• РЎвЂћР В°Р в„–Р В»Р Вµ
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json.Serialization, System.ComponentModel.DataAnnotations
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Т‘Р В»РЎРЏ РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ РЎРѓ РЎвЂћР В°Р в„–Р В»Р В°Р СР С‘ Р Р† Max Messenger API
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;

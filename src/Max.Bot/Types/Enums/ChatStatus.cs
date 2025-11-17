@@ -1,7 +1,7 @@
-// рџ“Ѓ [ChatStatus] - РЎС‚Р°С‚СѓСЃ С‡Р°С‚Р° РІ Max Messenger
-// рџЋЇ Core function: РџРµСЂРµС‡РёСЃР»РµРЅРёРµ СЃС‚Р°С‚СѓСЃРѕРІ С‡Р°С‚Р° (active, removed, left, closed)
-// рџ”— Key dependencies: System.Text.Json.Serialization
-// рџ’Ў Usage: РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ РјРѕРґРµР»Рё Chat РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ СЃС‚Р°С‚СѓСЃР° С‡Р°С‚Р°
+// СЂСџвЂњРѓ [ChatStatus] - Р РЋРЎвЂљР В°РЎвЂљРЎС“РЎРѓ РЎвЂЎР В°РЎвЂљР В° Р Р† Max Messenger
+// СЂСџР‹Р‡ Core function: Р СџР ВµРЎР‚Р ВµРЎвЂЎР С‘РЎРѓР В»Р ВµР Р…Р С‘Р Вµ РЎРѓРЎвЂљР В°РЎвЂљРЎС“РЎРѓР С•Р Р† РЎвЂЎР В°РЎвЂљР В° (active, removed, left, closed)
+// СЂСџвЂќвЂ” Key dependencies: System.Text.Json.Serialization
+// СЂСџвЂ™РЋ Usage: Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† Р СР С•Р Т‘Р ВµР В»Р С‘ Chat Р Т‘Р В»РЎРЏ Р С•Р С—РЎР‚Р ВµР Т‘Р ВµР В»Р ВµР Р…Р С‘РЎРЏ РЎРѓРЎвЂљР В°РЎвЂљРЎС“РЎРѓР В° РЎвЂЎР В°РЎвЂљР В°
 
 using System.Text.Json.Serialization;
 

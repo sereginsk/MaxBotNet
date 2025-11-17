@@ -1,7 +1,7 @@
-// рџ“Ѓ [EchoBotSample] - Minimal echo bot sample
-// рџЋЇ Core function: Echoes incoming text messages
-// рџ”— Key dependencies: Max.Bot.Polling, Max.Bot.Types
-// рџ’Ў Usage: Demonstrates DelegatingUpdateHandler wiring
+// СЂСџвЂњРѓ [EchoBotSample] - Minimal echo bot sample
+// СЂСџР‹Р‡ Core function: Echoes incoming text messages
+// СЂСџвЂќвЂ” Key dependencies: Max.Bot.Polling, Max.Bot.Types
+// СЂСџвЂ™РЋ Usage: Demonstrates DelegatingUpdateHandler wiring
 
 using System;
 using System.Threading;

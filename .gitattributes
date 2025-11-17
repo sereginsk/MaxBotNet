@@ -1,5 +1,13 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Normalize C# files to CRLF in repository
-*.cs text eol=crlf
+# Normalize C# and project files to CRLF in repository
+*.cs     text eol=crlf
+*.sln    text eol=crlf
+*.csproj text eol=crlf
+*.props  text eol=crlf
+*.targets text eol=crlf
+
+# Keep other text files normalized to LF
+*.md     text eol=lf
+*.yml    text eol=lf

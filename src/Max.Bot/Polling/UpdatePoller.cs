@@ -1,7 +1,7 @@
-// рџ“Ѓ [UpdatePoller] - Long polling РїРµС‚Р»СЏ Max API
-// рџЋЇ Core function: РџРѕР»СѓС‡Р°РµС‚ РѕР±РЅРѕРІР»РµРЅРёСЏ С‡РµСЂРµР· GET /updates Рё РґРёСЃРїРµС‚С‡РµСЂРёР·СѓРµС‚ РёС…
-// рџ”— Key dependencies: System.Threading.Tasks, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration
-// рџ’Ў Usage: Р’СЃС‚СЂР°РёРІР°РµС‚СЃСЏ РІ MaxClient.StartPollingAsync РґР»СЏ С„РѕРЅРѕРІРѕР№ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёР№
+// СЂСџвЂњРѓ [UpdatePoller] - Long polling Р С—Р ВµРЎвЂљР В»РЎРЏ Max API
+// СЂСџР‹Р‡ Core function: Р СџР С•Р В»РЎС“РЎвЂЎР В°Р ВµРЎвЂљ Р С•Р В±Р Р…Р С•Р Р†Р В»Р ВµР Р…Р С‘РЎРЏ РЎвЂЎР ВµРЎР‚Р ВµР В· GET /updates Р С‘ Р Т‘Р С‘РЎРѓР С—Р ВµРЎвЂљРЎвЂЎР ВµРЎР‚Р С‘Р В·РЎС“Р ВµРЎвЂљ Р С‘РЎвЂ¦
+// СЂСџвЂќвЂ” Key dependencies: System.Threading.Tasks, Microsoft.Extensions.Logging, Max.Bot.Api, Max.Bot.Configuration
+// СЂСџвЂ™РЋ Usage: Р вЂ™РЎРѓРЎвЂљРЎР‚Р В°Р С‘Р Р†Р В°Р ВµРЎвЂљРЎРѓРЎРЏ Р Р† MaxClient.StartPollingAsync Р Т‘Р В»РЎРЏ РЎвЂћР С•Р Р…Р С•Р Р†Р С•Р в„– Р С•Р В±РЎР‚Р В°Р В±Р С•РЎвЂљР С”Р С‘ РЎРѓР С•Р В±РЎвЂ№РЎвЂљР С‘Р в„–
 
 using System;
 using System.Collections.Generic;
