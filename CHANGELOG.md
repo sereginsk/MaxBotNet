@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.2.6-alpha] - 2025-11-24
+
+### Fixed
+- Исправлена критическая ошибка сериализации inline-клавиатуры: изменено JSON-поле с `inline_keyboard` на `buttons` для соответствия API Max Messenger. Теперь сервер корректно получает структуру `payload.buttons` вместо `payload.inline_keyboard`, что устраняет `NullPointerException` на стороне сервера при вызове `getButtons()`.
+- Добавлена нормализация кнопок клавиатуры в `CreateInlineKeyboardAttachment` для предотвращения null-значений в массивах кнопок. Свойство `Buttons` в `InlineKeyboard` теперь гарантированно не содержит null-элементов.
+
 ## [0.2.5-alpha] - 2025-11-24
 
 ### Added
@@ -59,7 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic infrastructure and folder structure
 - Build configuration for .NET 9
 
-[Unreleased]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.2.5-alpha...HEAD
+[Unreleased]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.2.6-alpha...HEAD
+[0.2.6-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.2.5-alpha...v0.2.6-alpha
 [0.2.5-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.2.4-alpha...v0.2.5-alpha
 [0.2.4-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.2.0-alpha...v0.2.4-alpha
 [0.2.0-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.1.0-alpha...v0.2.0-alpha
