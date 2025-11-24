@@ -103,6 +103,34 @@ internal class MessagesApi : BaseApi, IMessagesApi
         return messageResponse.Message;
     }
 
+    /// <inheritdoc />
+    public async Task<Message> SendMessageToUserAsync(long userId, string text, InlineKeyboard? keyboard = null, bool? disableLinkPreview = null, bool? notify = null, TextFormat? format = null, CancellationToken cancellationToken = default)
+    {
+        ValidateUserId(userId);
+        ValidateNotEmpty(text, nameof(text));
+
+        var sendRequest = new SendMessageRequest
+        {
+            Text = text,
+            Notify = notify,
+            Format = format
+        };
+
+        if (keyboard != null)
+        {
+            sendRequest.Attachments = new[]
+            {
+                new AttachmentRequest
+                {
+                    Type = "inline_keyboard",
+                    Payload = keyboard
+                }
+            };
+        }
+
+        return await SendMessageAsync(sendRequest, chatId: null, userId: userId, disableLinkPreview, cancellationToken).ConfigureAwait(false);
+    }
+
 
     /// <inheritdoc />
     public async Task<Message> SendMessageAsync(SendMessageRequest request, long? chatId = null, long? userId = null, bool? disableLinkPreview = null, CancellationToken cancellationToken = default)

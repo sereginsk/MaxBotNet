@@ -43,8 +43,57 @@ public class Update
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
 
+
     /// <summary>
-    /// Gets or sets the type of the update as enum.
+    /// Gets the typed message update wrapper.
+    /// </summary>
+    /// <value>The message update wrapper, or null if this update is not a message update.</value>
+    [JsonIgnore]
+    public MessageUpdate? MessageUpdate
+    {
+        get
+        {
+            if (Message == null)
+            {
+                return null;
+            }
+
+            return new MessageUpdate
+            {
+                UpdateId = UpdateId,
+                Timestamp = Timestamp,
+                UserLocale = UserLocale,
+                Message = Message
+            };
+        }
+    }
+
+    /// <summary>
+    /// Gets the typed callback query update wrapper.
+    /// </summary>
+    /// <value>The callback query update wrapper, or null if this update is not a callback query update.</value>
+    [JsonIgnore]
+    public CallbackQueryUpdate? CallbackQueryUpdate
+    {
+        get
+        {
+            if (CallbackQuery == null)
+            {
+                return null;
+            }
+
+            return new CallbackQueryUpdate
+            {
+                UpdateId = UpdateId,
+                Timestamp = Timestamp,
+                UserLocale = UserLocale,
+                CallbackQuery = CallbackQuery
+            };
+        }
+    }
+
+    /// <summary>
+    /// Gets the type of the update as enum.
     /// </summary>
     /// <value>The type of the update (message or callback_query).</value>
     [JsonIgnore]
@@ -82,6 +131,7 @@ public class Update
 
     /// <summary>
     /// Gets or sets the message in this update (if type is Message).
+    /// This property is used for JSON deserialization and maintains backward compatibility.
     /// </summary>
     /// <value>The message in this update, or null if not available.</value>
     [JsonPropertyName("message")]
@@ -89,6 +139,7 @@ public class Update
 
     /// <summary>
     /// Gets or sets the callback query in this update (if type is CallbackQuery).
+    /// This property is used for JSON deserialization and maintains backward compatibility.
     /// </summary>
     /// <value>The callback query in this update, or null if not available.</value>
     [JsonPropertyName("callback_query")]

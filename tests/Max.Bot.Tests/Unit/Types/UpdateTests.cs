@@ -24,6 +24,13 @@ public class UpdateTests
         result.Message.Should().NotBeNull();
         result.Message!.Id.Should().Be(123);
         result.Message.Text.Should().Be("Hello");
+        
+        // Test typed wrapper
+        result.MessageUpdate.Should().NotBeNull();
+        result.MessageUpdate!.UpdateId.Should().Be(1);
+        result.MessageUpdate.Message.Should().NotBeNull();
+        result.MessageUpdate.Message.Id.Should().Be(123);
+        result.MessageUpdate.Message.Text.Should().Be("Hello");
     }
 
     [Fact]
@@ -43,6 +50,14 @@ public class UpdateTests
         result.CallbackQuery!.Id.Should().Be("callback123");
         result.CallbackQuery.From.Id.Should().Be(123);
         result.CallbackQuery.Data.Should().Be("callbackData123");
+        
+        // Test typed wrapper
+        result.CallbackQueryUpdate.Should().NotBeNull();
+        result.CallbackQueryUpdate!.UpdateId.Should().Be(2);
+        result.CallbackQueryUpdate.CallbackQuery.Should().NotBeNull();
+        result.CallbackQueryUpdate.CallbackQuery.Id.Should().Be("callback123");
+        result.CallbackQueryUpdate.CallbackQuery.From.Id.Should().Be(123);
+        result.CallbackQueryUpdate.CallbackQuery.Data.Should().Be("callbackData123");
     }
 
     [Fact]
@@ -144,6 +159,90 @@ public class UpdateTests
         result.Message.Sender!.Id.Should().Be(18503461);
         result.Message.Recipient.Should().NotBeNull();
         result.Message.Recipient!.ChatId.Should().Be(79313411);
+        
+        // Test typed wrapper
+        result.MessageUpdate.Should().NotBeNull();
+        result.MessageUpdate!.Timestamp.Should().Be(1763928007254);
+        result.MessageUpdate.UserLocale.Should().Be("ru");
+        result.MessageUpdate.Message.Should().NotBeNull();
+        result.MessageUpdate.Message.Body.Should().NotBeNull();
+        result.MessageUpdate.Message.Body!.Mid.Should().Be("mid.0000000004ba3a03019ab24d62566a52");
+    }
+
+    [Fact]
+    public void MessageUpdate_ShouldContainAllUpdateFields()
+    {
+        // Arrange
+        var json = """{"update_id":100,"update_type":"message_created","timestamp":1609459200000,"user_locale":"en","message":{"id":123,"text":"Test","date":1609459200}}""";
+
+        // Act
+        var result = MaxJsonSerializer.Deserialize<Update>(json);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.MessageUpdate.Should().NotBeNull();
+        result.MessageUpdate!.UpdateId.Should().Be(100);
+        result.MessageUpdate.Timestamp.Should().Be(1609459200000);
+        result.MessageUpdate.UserLocale.Should().Be("en");
+        result.MessageUpdate.Message.Should().NotBeNull();
+        result.MessageUpdate.Message.Id.Should().Be(123);
+    }
+
+    [Fact]
+    public void CallbackQueryUpdate_ShouldContainAllUpdateFields()
+    {
+        // Arrange
+        var json = """{"update_id":200,"update_type":"message_callback","timestamp":1609459200000,"user_locale":"ru","callback_query":{"id":"cb123","from":{"user_id":456,"username":"test","is_bot":false},"data":"data123"}}""";
+
+        // Act
+        var result = MaxJsonSerializer.Deserialize<Update>(json);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.CallbackQueryUpdate.Should().NotBeNull();
+        result.CallbackQueryUpdate!.UpdateId.Should().Be(200);
+        result.CallbackQueryUpdate.Timestamp.Should().Be(1609459200000);
+        result.CallbackQueryUpdate.UserLocale.Should().Be("ru");
+        result.CallbackQueryUpdate.CallbackQuery.Should().NotBeNull();
+        result.CallbackQueryUpdate.CallbackQuery.Id.Should().Be("cb123");
+    }
+
+    [Fact]
+    public void BackwardCompatibility_MessagePropertyShouldWork()
+    {
+        // Arrange
+        var json = """{"update_id":1,"update_type":"message_created","message":{"id":123,"text":"Hello","date":1609459200}}""";
+
+        // Act
+        var result = MaxJsonSerializer.Deserialize<Update>(json);
+
+        // Assert - old property should still work
+        result.Should().NotBeNull();
+        result!.Message.Should().NotBeNull();
+        result.Message!.Id.Should().Be(123);
+        result.Message.Text.Should().Be("Hello");
+        
+        // Both old and new should reference the same object
+        result.Message.Should().BeSameAs(result.MessageUpdate!.Message);
+    }
+
+    [Fact]
+    public void BackwardCompatibility_CallbackQueryPropertyShouldWork()
+    {
+        // Arrange
+        var json = """{"update_id":2,"update_type":"message_callback","callback_query":{"id":"cb123","from":{"user_id":123,"username":"test","is_bot":false},"data":"data123"}}""";
+
+        // Act
+        var result = MaxJsonSerializer.Deserialize<Update>(json);
+
+        // Assert - old property should still work
+        result.Should().NotBeNull();
+        result!.CallbackQuery.Should().NotBeNull();
+        result.CallbackQuery!.Id.Should().Be("cb123");
+        result.CallbackQuery.Data.Should().Be("data123");
+        
+        // Both old and new should reference the same object
+        result.CallbackQuery.Should().BeSameAs(result.CallbackQueryUpdate!.CallbackQuery);
     }
 }
 
