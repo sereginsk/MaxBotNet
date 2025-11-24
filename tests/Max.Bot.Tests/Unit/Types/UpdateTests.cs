@@ -24,7 +24,7 @@ public class UpdateTests
         result.Message.Should().NotBeNull();
         result.Message!.Id.Should().Be(123);
         result.Message.Text.Should().Be("Hello");
-        
+
         // Test typed wrapper
         result.MessageUpdate.Should().NotBeNull();
         result.MessageUpdate!.UpdateId.Should().Be(1);
@@ -50,7 +50,7 @@ public class UpdateTests
         result.CallbackQuery!.Id.Should().Be("callback123");
         result.CallbackQuery.From.Id.Should().Be(123);
         result.CallbackQuery.Data.Should().Be("callbackData123");
-        
+
         // Test typed wrapper
         result.CallbackQueryUpdate.Should().NotBeNull();
         result.CallbackQueryUpdate!.UpdateId.Should().Be(2);
@@ -159,7 +159,7 @@ public class UpdateTests
         result.Message.Sender!.Id.Should().Be(18503461);
         result.Message.Recipient.Should().NotBeNull();
         result.Message.Recipient!.ChatId.Should().Be(79313411);
-        
+
         // Test typed wrapper
         result.MessageUpdate.Should().NotBeNull();
         result.MessageUpdate!.Timestamp.Should().Be(1763928007254);
@@ -221,7 +221,7 @@ public class UpdateTests
         result!.Message.Should().NotBeNull();
         result.Message!.Id.Should().Be(123);
         result.Message.Text.Should().Be("Hello");
-        
+
         // Both old and new should reference the same object
         result.Message.Should().BeSameAs(result.MessageUpdate!.Message);
     }
@@ -240,7 +240,7 @@ public class UpdateTests
         result!.CallbackQuery.Should().NotBeNull();
         result.CallbackQuery!.Id.Should().Be("cb123");
         result.CallbackQuery.Data.Should().Be("data123");
-        
+
         // Both old and new should reference the same object
         result.CallbackQuery.Should().BeSameAs(result.CallbackQueryUpdate!.CallbackQuery);
     }
