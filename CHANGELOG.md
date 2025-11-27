@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.3-alpha] - 2025-11-27
+
+### Added
+- Поддержка `intent` для inline-кнопок: новый enum `ButtonIntent`, свойство `InlineKeyboardButton.Intent` и обновлённый конвертер обеспечивают соответствие API и позволяют задавать позитивные/негативные стили.
+- Модель `BotCommand`, запрос `UpdateBotInfoRequest` и публичный метод `SetCommandsAsync` в `BotApi`, позволяющие задавать меню команд через официальный PATCH `/me`.
+- Unit-тесты для новых типов и поведения (`InlineKeyboardButton`, `BotCommand`, `BotApi.SetCommandsAsync`), чтобы предотвратить регрессии.
+
+### Changed
+- GitHub Actions требования локально подтверждены: `dotnet format` и полный прогон `dotnet test` с покрытием соответствуют текущему CI.
+
 ## [0.3.2-alpha] - 2025-11-25
 
 ### Fixed

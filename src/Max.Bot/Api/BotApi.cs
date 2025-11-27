@@ -34,5 +34,19 @@ internal class BotApi : BaseApi, IBotApi
         var request = CreateRequest(HttpMethod.Get, "/bot/info");
         return await ExecuteRequestAsync<User>(request, cancellationToken).ConfigureAwait(false);
     }
+
+    /// <inheritdoc />
+    public async Task<User> SetCommandsAsync(IEnumerable<BotCommand> commands, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(commands);
+
+        var updateRequest = new Types.Requests.UpdateBotInfoRequest
+        {
+            Commands = commands.ToArray()
+        };
+
+        var request = CreateRequest(HttpMethod.Patch, "/me", updateRequest);
+        return await ExecuteRequestAsync<User>(request, cancellationToken).ConfigureAwait(false);
+    }
 }
 

@@ -133,5 +133,152 @@ public class InlineKeyboardButtonTests
         // Assert
         button.Type.Should().Be(ButtonType.Link);
     }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldDeserialize_FromJson_WithIntent()
+    {
+        // Arrange
+        var json = """{"type":"callback","text":"Confirm","payload":"confirm","intent":"positive"}""";
+
+        // Act
+        var button = MaxJsonSerializer.Deserialize<InlineKeyboardButton>(json);
+
+        // Assert
+        button.Should().NotBeNull();
+        button.Type.Should().Be(ButtonType.Callback);
+        button.Text.Should().Be("Confirm");
+        button.Payload.Should().Be("confirm");
+        button.Intent.Should().Be(ButtonIntent.Positive);
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldDeserialize_FromJson_WithNegativeIntent()
+    {
+        // Arrange
+        var json = """{"type":"callback","text":"Cancel","payload":"cancel","intent":"negative"}""";
+
+        // Act
+        var button = MaxJsonSerializer.Deserialize<InlineKeyboardButton>(json);
+
+        // Assert
+        button.Should().NotBeNull();
+        button.Intent.Should().Be(ButtonIntent.Negative);
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldDeserialize_FromJson_WithDefaultIntent()
+    {
+        // Arrange
+        var json = """{"type":"callback","text":"Action","payload":"action","intent":"default"}""";
+
+        // Act
+        var button = MaxJsonSerializer.Deserialize<InlineKeyboardButton>(json);
+
+        // Assert
+        button.Should().NotBeNull();
+        button.Intent.Should().Be(ButtonIntent.Default);
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldDeserialize_FromJson_WithoutIntent()
+    {
+        // Arrange
+        var json = """{"type":"callback","text":"Button","payload":"data"}""";
+
+        // Act
+        var button = MaxJsonSerializer.Deserialize<InlineKeyboardButton>(json);
+
+        // Assert
+        button.Should().NotBeNull();
+        button.Intent.Should().BeNull();
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldSerialize_ToJson_WithIntent()
+    {
+        // Arrange
+        var button = new InlineKeyboardButton
+        {
+            Type = ButtonType.Callback,
+            Text = "Confirm",
+            Payload = "confirm",
+            Intent = ButtonIntent.Positive
+        };
+
+        // Act
+        var json = MaxJsonSerializer.Serialize(button);
+
+        // Assert
+        json.Should().Contain("\"type\":\"callback\"");
+        json.Should().Contain("\"text\":\"Confirm\"");
+        json.Should().Contain("\"payload\":\"confirm\"");
+        json.Should().Contain("\"intent\":\"positive\"");
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldSerialize_ToJson_WithNegativeIntent()
+    {
+        // Arrange
+        var button = new InlineKeyboardButton
+        {
+            Type = ButtonType.Callback,
+            Text = "Cancel",
+            Payload = "cancel",
+            Intent = ButtonIntent.Negative
+        };
+
+        // Act
+        var json = MaxJsonSerializer.Serialize(button);
+
+        // Assert
+        json.Should().Contain("\"intent\":\"negative\"");
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldSerialize_ToJson_WithoutIntent_WhenNull()
+    {
+        // Arrange
+        var button = new InlineKeyboardButton
+        {
+            Type = ButtonType.Callback,
+            Text = "Button",
+            Payload = "data",
+            Intent = null
+        };
+
+        // Act
+        var json = MaxJsonSerializer.Serialize(button);
+
+        // Assert
+        json.Should().NotContain("\"intent\"");
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldIgnoreIntent_WhenValueIsNumeric()
+    {
+        // Arrange
+        var json = """{"type":"callback","text":"Action","payload":"action","intent":"1"}""";
+
+        // Act
+        var button = MaxJsonSerializer.Deserialize<InlineKeyboardButton>(json);
+
+        // Assert
+        button.Should().NotBeNull();
+        button.Intent.Should().BeNull();
+    }
+
+    [Fact]
+    public void InlineKeyboardButton_ShouldNotTreatNumericTypeAsEnumValue()
+    {
+        // Arrange
+        var json = """{"type":"1","text":"NumericType"}""";
+
+        // Act
+        var button = MaxJsonSerializer.Deserialize<InlineKeyboardButton>(json);
+
+        // Assert
+        button.Should().NotBeNull();
+        button.Type.Should().Be(ButtonType.Callback);
+    }
 }
 

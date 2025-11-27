@@ -59,6 +59,14 @@ public class InlineKeyboardButton
     private string? _url;
 
     /// <summary>
+    /// Gets or sets the intent/style of the button.
+    /// Only applicable for callback buttons. Affects how the button is displayed by the client.
+    /// </summary>
+    /// <value>The button intent (default, positive, or negative), or null to use default.</value>
+    [JsonPropertyName("intent")]
+    public ButtonIntent? Intent { get; set; }
+
+    /// <summary>
     /// Gets or sets the callback data sent when the button is pressed.
     /// This property is for backward compatibility and automatically sets Type to Callback and Payload.
     /// </summary>

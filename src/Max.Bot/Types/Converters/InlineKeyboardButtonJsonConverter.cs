@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Max.Bot.Types;
@@ -38,7 +39,7 @@ public class InlineKeyboardButtonJsonConverter : JsonConverter<InlineKeyboardBut
         if (root.TryGetProperty("type", out var typeElement) && typeElement.ValueKind == JsonValueKind.String)
         {
             var typeString = typeElement.GetString();
-            if (Enum.TryParse<ButtonType>(typeString, ignoreCase: true, out var buttonType))
+            if (TryParseButtonType(typeString, out var buttonType))
             {
                 button.Type = buttonType;
             }
@@ -70,6 +71,16 @@ public class InlineKeyboardButtonJsonConverter : JsonConverter<InlineKeyboardBut
             {
                 button.Type = ButtonType.Callback;
                 button.Payload = callbackData;
+            }
+        }
+
+        // Read intent (for callback buttons)
+        if (root.TryGetProperty("intent", out var intentElement) && intentElement.ValueKind == JsonValueKind.String)
+        {
+            var intentString = intentElement.GetString();
+            if (TryParseButtonIntent(intentString, out var buttonIntent))
+            {
+                button.Intent = buttonIntent;
             }
         }
 
@@ -106,7 +117,62 @@ public class InlineKeyboardButtonJsonConverter : JsonConverter<InlineKeyboardBut
             writer.WriteString("url", value.Url);
         }
 
+        // Write intent (for callback buttons)
+        if (value.Intent.HasValue)
+        {
+            var intentString = value.Intent.Value.ToString().ToLowerInvariant();
+            writer.WriteString("intent", intentString);
+        }
+
         writer.WriteEndObject();
+    }
+
+    private static bool TryParseButtonIntent(string? value, out ButtonIntent intent)
+    {
+        intent = default;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        var normalized = value.Trim().ToLowerInvariant();
+        switch (normalized)
+        {
+            case "default":
+                intent = ButtonIntent.Default;
+                return true;
+            case "positive":
+                intent = ButtonIntent.Positive;
+                return true;
+            case "negative":
+                intent = ButtonIntent.Negative;
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static bool TryParseButtonType(string? value, out ButtonType buttonType)
+    {
+        buttonType = default;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        var normalized = value.Trim().ToLowerInvariant();
+
+        foreach (var candidate in Enum.GetValues<ButtonType>())
+        {
+            var serialized = ConvertToSnakeCase(candidate.ToString());
+            if (serialized.Equals(normalized, StringComparison.Ordinal))
+            {
+                buttonType = candidate;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static string ConvertToSnakeCase(string input)

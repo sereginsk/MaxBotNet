@@ -6,6 +6,7 @@ using Max.Bot.Configuration;
 using Max.Bot.Exceptions;
 using Max.Bot.Networking;
 using Max.Bot.Types;
+using Max.Bot.Types.Requests;
 using Moq;
 using Xunit;
 
@@ -211,6 +212,137 @@ public class BotApiTests
 
         // Assert
         await act.Should().ThrowAsync<MaxUnauthorizedException>();
+    }
+
+    [Fact]
+    public async Task SetCommandsAsync_ShouldReturnUser_WhenRequestSucceeds()
+    {
+        // Arrange
+        var commands = new[]
+        {
+            new BotCommand("start", "Старт"),
+            new BotCommand("help", "Помощь")
+        };
+
+        var expectedUser = new User
+        {
+            Id = 123456,
+            Username = "test_bot",
+            FirstName = "Test",
+            IsBot = true
+        };
+
+        var response = new Response<User>
+        {
+            Ok = true,
+            Result = expectedUser
+        };
+
+        _mockHttpClient
+            .Setup(x => x.SendAsync<Response<User>>(
+                It.Is<MaxApiRequest>(req =>
+                    req.Method == HttpMethod.Patch &&
+                    req.Endpoint == "/me" &&
+                    req.Headers != null &&
+                    req.Headers.ContainsKey("Authorization") &&
+                    req.Headers["Authorization"] == "test-token-123" &&
+                    req.Body != null),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var botApi = new BotApi(_mockHttpClient.Object, _options);
+
+        // Act
+        var result = await botApi.SetCommandsAsync(commands);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(expectedUser.Id);
+        result.Username.Should().Be(expectedUser.Username);
+
+        _mockHttpClient.Verify(
+            x => x.SendAsync<Response<User>>(
+                It.Is<MaxApiRequest>(req =>
+                    req.Method == HttpMethod.Patch &&
+                    req.Endpoint == "/me"),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task SetCommandsAsync_ShouldThrowArgumentNullException_WhenCommandsIsNull()
+    {
+        // Arrange
+        var botApi = new BotApi(_mockHttpClient.Object, _options);
+
+        // Act
+        var act = async () => await botApi.SetCommandsAsync(null!);
+
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [Fact]
+    public async Task SetCommandsAsync_ShouldSendCorrectRequestBody()
+    {
+        // Arrange
+        var commands = new[]
+        {
+            new BotCommand("start", "Старт"),
+            new BotCommand("help", "Помощь")
+        };
+
+        var expectedUser = new User { Id = 123456 };
+        var response = new Response<User> { Ok = true, Result = expectedUser };
+
+        UpdateBotInfoRequest? capturedRequest = null;
+
+        _mockHttpClient
+            .Setup(x => x.SendAsync<Response<User>>(
+                It.IsAny<MaxApiRequest>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<MaxApiRequest, CancellationToken>((req, _) =>
+            {
+                capturedRequest = req.Body as UpdateBotInfoRequest;
+            })
+            .ReturnsAsync(response);
+
+        var botApi = new BotApi(_mockHttpClient.Object, _options);
+
+        // Act
+        await botApi.SetCommandsAsync(commands);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.Commands.Should().HaveCount(2);
+        capturedRequest.Commands![0].Name.Should().Be("start");
+        capturedRequest.Commands[0].Description.Should().Be("Старт");
+        capturedRequest.Commands[1].Name.Should().Be("help");
+        capturedRequest.Commands[1].Description.Should().Be("Помощь");
+    }
+
+    [Fact]
+    public async Task SetCommandsAsync_ShouldWorkWithEmptyCommands()
+    {
+        // Arrange
+        var commands = Array.Empty<BotCommand>();
+
+        var expectedUser = new User { Id = 123456 };
+        var response = new Response<User> { Ok = true, Result = expectedUser };
+
+        _mockHttpClient
+            .Setup(x => x.SendAsync<Response<User>>(
+                It.IsAny<MaxApiRequest>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var botApi = new BotApi(_mockHttpClient.Object, _options);
+
+        // Act
+        var result = await botApi.SetCommandsAsync(commands);
+
+        // Assert
+        result.Should().NotBeNull();
     }
 }
 
