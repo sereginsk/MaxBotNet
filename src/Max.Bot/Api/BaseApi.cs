@@ -220,30 +220,32 @@ internal abstract class BaseApi
     }
 
     /// <summary>
-    /// Validates that a chat ID is greater than zero.
+    /// Validates that a chat ID is not negative.
+    /// Note: chatId = 0 is allowed for direct messages (dialogs) in Max API.
     /// </summary>
     /// <param name="chatId">The chat ID to validate.</param>
     /// <param name="paramName">The name of the parameter (default: "chatId").</param>
-    /// <exception cref="ArgumentException">Thrown when chatId is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentException">Thrown when chatId is negative.</exception>
     protected static void ValidateChatId(long chatId, string paramName = "chatId")
     {
-        if (chatId <= 0)
+        if (chatId < 0)
         {
-            throw new ArgumentException("Chat ID must be greater than zero.", paramName);
+            throw new ArgumentException("Chat ID cannot be negative.", paramName);
         }
     }
 
     /// <summary>
-    /// Validates that a user ID is greater than zero.
+    /// Validates that a user ID is not negative.
+    /// Note: userId = 0 is allowed in some scenarios in Max API.
     /// </summary>
     /// <param name="userId">The user ID to validate.</param>
     /// <param name="paramName">The name of the parameter (default: "userId").</param>
-    /// <exception cref="ArgumentException">Thrown when userId is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentException">Thrown when userId is negative.</exception>
     protected static void ValidateUserId(long userId, string paramName = "userId")
     {
-        if (userId <= 0)
+        if (userId < 0)
         {
-            throw new ArgumentException("User ID must be greater than zero.", paramName);
+            throw new ArgumentException("User ID cannot be negative.", paramName);
         }
     }
 

@@ -67,7 +67,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task GetChatAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -262,7 +261,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task UpdateChatAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -309,7 +307,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task DeleteChatAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -370,7 +367,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task SendChatActionAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -457,7 +453,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task GetPinnedMessageAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -518,7 +513,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task PinMessageAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -564,7 +558,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task UnpinMessageAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -622,7 +615,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task GetChatMembershipAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -668,7 +660,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task LeaveChatAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -726,7 +717,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task GetChatAdminsAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -787,7 +777,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task AddChatAdminAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -834,7 +823,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task RemoveChatAdminAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -850,7 +838,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task RemoveChatAdminAsync_ShouldThrowArgumentException_WhenUserIdIsInvalid(long userId)
     {
@@ -951,7 +938,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task GetChatMembersAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -1012,7 +998,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task AddChatMembersAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -1062,7 +1047,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task RemoveChatMemberAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -1078,7 +1062,6 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task RemoveChatMemberAsync_ShouldThrowArgumentException_WhenUserIdIsInvalid(long userId)
     {

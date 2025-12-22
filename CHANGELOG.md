@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+_Новые изменения появятся здесь._
+
+## [0.3.5-alpha] - 2025-12-22
+
+### Added
+- Unit-тесты `MessageRecipientTests` с 8 сценариями проверки десериализации и сериализации `MessageRecipient.ChatId` и `UserId` со значениями 0, null и положительными числами.
+
+### Changed
+- Обновлены unit-тесты валидации API методов: убраны проверки на `chatId = 0` и `userId = 0`, оставлены только проверки на отрицательные значения.
+
+### Fixed
+- **КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ:** Убрана строгая валидация `[Range(1, long.MaxValue)]` для `MessageRecipient.ChatId` и `MessageRecipient.UserId`, чтобы поддержать личные сообщения (direct messages), где Max API может передавать `ChatId = 0` или `null`. Оба свойства остались nullable (`long?`), но теперь принимают любые значения, включая 0.
+- **КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ:** Исправлена валидация в `BaseApi.ValidateChatId()` и `BaseApi.ValidateUserId()` - изменена проверка с `<= 0` на `< 0`, что разрешает использование значения 0 для личных сообщений (dialogs) в соответствии с поведением Max API. Отрицательные значения по-прежнему запрещены.
+
 ## [0.3.3-alpha] - 2025-11-27
 
 ### Added
@@ -101,25 +117,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Обновлен пример `KeyboardBotSample` для демонстрации использования новой упрощенной перегрузки `SendMessageAsync` с клавиатурой.
 
-## [Unreleased]
-
-### Added
-- GitHub Actions workflow `ci.yml` с форматированием, анализаторами, покрытием и упаковкой артефактов.
-- Workflow `release.yml`, автоматически публикующий NuGet-пакеты по тегам `v*`.
-- `LoopbackSampleRuntime` и рефакторинг `SampleBotsTests`, которые прогоняют все сценарии `SampleRegistry` офлайн.
-- Фикстуры API для `/subscriptions` и `/updates`, используемые в интеграционных тестах.
-
-### Changed
-- README и новый `RELEASING.md`, описывающие CI/CD и инструкции по релизу.
-
-## [0.3.4-alpha] - 2025-12-22
-
-### Added
-- Unit-тесты `MessageRecipientTests` с 8 сценариями проверки десериализации и сериализации `MessageRecipient.ChatId` и `UserId` со значениями 0, null и положительными числами.
-
-### Fixed
-- **КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ:** Убрана строгая валидация `[Range(1, long.MaxValue)]` для `MessageRecipient.ChatId` и `MessageRecipient.UserId`, чтобы поддержать личные сообщения (direct messages), где Max API может передавать `ChatId = 0` или `null`. Оба свойства остались nullable (`long?`), но теперь принимают любые значения, включая 0. Это исправление критично для работы с личными сообщениями в Max Messenger.
-
 ## [0.2.0-alpha] - 2025-11-17
 
 ### Added
@@ -139,7 +136,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic infrastructure and folder structure
 - Build configuration for .NET 9
 
-[Unreleased]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.4-alpha...HEAD
+[Unreleased]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.5-alpha...HEAD
+[0.3.5-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.4-alpha...v0.3.5-alpha
 [0.3.4-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.3-alpha...v0.3.4-alpha
 [0.3.3-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.2-alpha...v0.3.3-alpha
 [0.3.2-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.1-alpha...v0.3.2-alpha

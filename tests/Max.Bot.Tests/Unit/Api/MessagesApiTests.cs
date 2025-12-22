@@ -69,7 +69,6 @@ public class MessagesApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task SendMessageAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
@@ -143,7 +142,6 @@ public class MessagesApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task GetMessagesAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {

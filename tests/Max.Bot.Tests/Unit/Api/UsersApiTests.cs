@@ -69,7 +69,6 @@ public class UsersApiTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     public async Task GetUserAsync_ShouldThrowArgumentException_WhenUserIdIsInvalid(long userId)
     {
