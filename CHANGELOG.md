@@ -12,24 +12,29 @@ _Новые изменения появятся здесь._
 
 ## [0.3.7-alpha] - 2025-12-23
 
+### Added
+- **Enum `MessageLinkType`** с значениями `Forward` и `Reply` для типизации ссылок на сообщения.
+- **Поле `NewMessageLink.Type`** (обязательное) - требуется Max API для правильной обработки forward/reply.
+- 4 новых теста в `NewMessageLinkTests`:
+  - `ChatId_ShouldAcceptPositiveValues_ForPersonalChats` (2 сценария)
+  - `ChatId_ShouldAcceptNegativeValues_ForGroupChats` (2 сценария)
+  - `ShouldSerializeCorrectly_WithNegativeChatId_ForGroupChats`
+
 ### Changed
 - **BREAKING**: Изменен тип `messageId` с `long` на `string` в методах:
   - `IMessagesApi.ForwardMessageAsync()`
   - `IMessagesApi.ReplyToMessageAsync()`
   - `NewMessageLink.Id`
+- **BREAKING**: В `NewMessageLink` добавлено обязательное поле `Type: MessageLinkType`.
+- `ForwardMessageAsync` автоматически устанавливает `Type = MessageLinkType.Forward`.
+- `ReplyToMessageAsync` автоматически устанавливает `Type = MessageLinkType.Reply`.
 - Обновлена валидация: вместо проверки `messageId <= 0` используется `ValidateNotEmpty()`.
-- Обновлены тесты для `ForwardMessageAsync` и `ReplyToMessageAsync` с новыми проверками для `string messageId`.
-- Обновлены тесты `NewMessageLinkTests` для работы с `string Id`.
+- Обновлены тесты для использования `MaxJsonSerializer` вместо стандартного `JsonSerializer`.
 
 ### Fixed
+- **Критическое**: Исправлена ошибка `{"code":"proto.payload","message":"Field 'request.link.type' cannot be null"}` при вызове `ForwardMessageAsync` и `ReplyToMessageAsync`.
 - Убран атрибут `[Range(1, long.MaxValue)]` из `NewMessageLink.ChatId`, который блокировал отрицательные ID для групповых чатов.
 - Добавлена документация для `NewMessageLink.ChatId`: положительные значения для личных чатов, отрицательные для групповых.
-
-### Added
-- 4 новых теста в `NewMessageLinkTests`:
-  - `ChatId_ShouldAcceptPositiveValues_ForPersonalChats` (2 сценария)
-  - `ChatId_ShouldAcceptNegativeValues_ForGroupChats` (2 сценария)
-  - `ShouldSerializeCorrectly_WithNegativeChatId_ForGroupChats`
 
 ## [0.3.6-alpha] - 2025-12-23
 

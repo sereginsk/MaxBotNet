@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 using FluentAssertions;
+using Max.Bot.Networking;
+using Max.Bot.Types.Enums;
 using Max.Bot.Types.Requests;
 
 namespace Max.Bot.Tests.Unit.Types;
@@ -18,6 +19,7 @@ public class NewMessageLinkTests
         // Arrange
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Forward,
             Id = id!,
             ChatId = null
         };
@@ -37,6 +39,7 @@ public class NewMessageLinkTests
         // Arrange
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Forward,
             Id = "1",
             ChatId = chatId
         };
@@ -56,6 +59,7 @@ public class NewMessageLinkTests
         // Arrange
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Reply,
             Id = "1",
             ChatId = chatId
         };
@@ -73,6 +77,7 @@ public class NewMessageLinkTests
         // Arrange
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Forward,
             Id = "1",
             ChatId = null
         };
@@ -85,39 +90,42 @@ public class NewMessageLinkTests
     }
 
     [Fact]
-    public void ShouldSerializeCorrectly()
+    public void ShouldSerializeCorrectly_WithForwardType()
     {
         // Arrange
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Forward,
             Id = "12345",
             ChatId = 67890
         };
 
         // Act
-        var json = JsonSerializer.Serialize(link);
+        var json = MaxJsonSerializer.Serialize(link);
 
         // Assert
+        json.Should().Contain("\"type\":\"forward\"");
         json.Should().Contain("\"id\":\"12345\"");
         json.Should().Contain("\"chat_id\":67890");
     }
 
     [Fact]
-    public void ShouldSerializeCorrectly_WithoutChatId()
+    public void ShouldSerializeCorrectly_WithReplyType()
     {
         // Arrange
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Reply,
             Id = "12345",
             ChatId = null
         };
 
         // Act
-        var json = JsonSerializer.Serialize(link);
+        var json = MaxJsonSerializer.Serialize(link);
 
         // Assert
+        json.Should().Contain("\"type\":\"reply\"");
         json.Should().Contain("\"id\":\"12345\"");
-        json.Should().Contain("\"chat_id\":null");
     }
 
     [Fact]
@@ -126,14 +134,16 @@ public class NewMessageLinkTests
         // Arrange
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Forward,
             Id = "12345",
             ChatId = -67890
         };
 
         // Act
-        var json = JsonSerializer.Serialize(link);
+        var json = MaxJsonSerializer.Serialize(link);
 
         // Assert
+        json.Should().Contain("\"type\":\"forward\"");
         json.Should().Contain("\"id\":\"12345\"");
         json.Should().Contain("\"chat_id\":-67890");
     }

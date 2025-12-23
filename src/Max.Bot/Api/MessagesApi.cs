@@ -371,6 +371,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
 
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Forward,
             Id = messageId,
             ChatId = messageChatId
         };
@@ -419,6 +420,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
 
         var link = new NewMessageLink
         {
+            Type = MessageLinkType.Reply,
             Id = messageId,
             ChatId = messageChatId
         };

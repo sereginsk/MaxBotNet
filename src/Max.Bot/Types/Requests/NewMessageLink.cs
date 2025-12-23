@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Max.Bot.Types.Enums;
 
 namespace Max.Bot.Types.Requests;
 
@@ -8,6 +9,14 @@ namespace Max.Bot.Types.Requests;
 /// </summary>
 public class NewMessageLink
 {
+    /// <summary>
+    /// Gets or sets the type of message link (forward or reply).
+    /// </summary>
+    /// <value>The type of message link.</value>
+    [Required(ErrorMessage = "Message link type is required.")]
+    [JsonPropertyName("type")]
+    public MessageLinkType Type { get; set; }
+
     /// <summary>
     /// Gets or sets the unique identifier of the message to link to.
     /// </summary>
