@@ -26,8 +26,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Chat> GetChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}");
         return await ExecuteRequestAsync<Chat>(request, cancellationToken).ConfigureAwait(false);
     }
@@ -54,7 +52,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Chat> UpdateChatAsync(long chatId, UpdateChatRequest request, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ArgumentNullException.ThrowIfNull(request);
 
         var apiRequest = CreateRequest(HttpMethod.Patch, $"/chats/{chatId}", request);
@@ -64,8 +61,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> DeleteChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var request = CreateRequest(HttpMethod.Delete, $"/chats/{chatId}");
         return await ExecuteRequestAsync<Response>(request, cancellationToken).ConfigureAwait(false);
     }
@@ -73,7 +68,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> SendChatActionAsync(long chatId, SendChatActionRequest request, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ArgumentNullException.ThrowIfNull(request);
 
         var apiRequest = CreateRequest(HttpMethod.Post, $"/chats/{chatId}/actions", request);
@@ -83,8 +77,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Message?> GetPinnedMessageAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/pin");
         var response = await HttpClient.SendAsync<Response<Message>>(request, cancellationToken).ConfigureAwait(false);
 
@@ -106,7 +98,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> PinMessageAsync(long chatId, PinMessageRequest request, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ArgumentNullException.ThrowIfNull(request);
 
         var apiRequest = CreateRequest(HttpMethod.Put, $"/chats/{chatId}/pin", request);
@@ -116,8 +107,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> UnpinMessageAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var request = CreateRequest(HttpMethod.Delete, $"/chats/{chatId}/pin");
         return await ExecuteRequestAsync<Response>(request, cancellationToken).ConfigureAwait(false);
     }
@@ -125,8 +114,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Chat> GetChatMembershipAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members/me");
         return await ExecuteRequestAsync<Chat>(request, cancellationToken).ConfigureAwait(false);
     }
@@ -134,8 +121,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> LeaveChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var request = CreateRequest(HttpMethod.Delete, $"/chats/{chatId}/members/me");
         return await ExecuteRequestAsync<Response>(request, cancellationToken).ConfigureAwait(false);
     }
@@ -143,8 +128,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<User[]> GetChatAdminsAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members/admins");
         return await ExecuteRequestAsync<User[]>(request, cancellationToken).ConfigureAwait(false);
     }
@@ -152,7 +135,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> AddChatAdminAsync(long chatId, AddChatAdminRequest request, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ArgumentNullException.ThrowIfNull(request);
 
         var apiRequest = CreateRequest(HttpMethod.Post, $"/chats/{chatId}/members/admins", request);
@@ -162,7 +144,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> RemoveChatAdminAsync(long chatId, long userId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ValidateUserIdStrict(userId);
 
         var request = CreateRequest(HttpMethod.Delete, $"/chats/{chatId}/members/admins/{userId}");
@@ -172,8 +153,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<User[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var queryParams = new Dictionary<string, string?>();
         if (offset.HasValue)
         {
@@ -191,7 +170,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> AddChatMembersAsync(long chatId, AddChatMembersRequest request, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ArgumentNullException.ThrowIfNull(request);
 
         var apiRequest = CreateRequest(HttpMethod.Post, $"/chats/{chatId}/members", request);
@@ -201,7 +179,6 @@ internal class ChatsApi : BaseApi, IChatsApi
     /// <inheritdoc />
     public async Task<Response> RemoveChatMemberAsync(long chatId, long userId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ValidateUserIdStrict(userId);
 
         var queryParams = new Dictionary<string, string?>

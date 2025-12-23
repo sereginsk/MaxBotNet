@@ -220,21 +220,6 @@ internal abstract class BaseApi
     }
 
     /// <summary>
-    /// Validates that a chat ID is not negative.
-    /// Note: chatId = 0 is allowed for direct messages (dialogs) in Max API.
-    /// </summary>
-    /// <param name="chatId">The chat ID to validate.</param>
-    /// <param name="paramName">The name of the parameter (default: "chatId").</param>
-    /// <exception cref="ArgumentException">Thrown when chatId is negative.</exception>
-    protected static void ValidateChatId(long chatId, string paramName = "chatId")
-    {
-        if (chatId < 0)
-        {
-            throw new ArgumentException("Chat ID cannot be negative.", paramName);
-        }
-    }
-
-    /// <summary>
     /// Validates that a user ID is not negative.
     /// Note: userId = 0 is allowed in some scenarios in Max API.
     /// </summary>

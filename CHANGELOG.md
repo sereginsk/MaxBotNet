@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Новые изменения появятся здесь._
 
+## [0.3.6-alpha] - 2025-12-23
+
+### Removed
+- Удален метод `BaseApi.ValidateChatId()` и все его вызовы (20 мест), так как валидация chatId не требуется. Max API принимает любые значения `long` для chatId:
+  - **Dialog** (личные чаты): 0 или положительные
+  - **Chat** (групповые чаты): положительные  
+  - **Channel** (каналы): отрицательные (как в Telegram Bot API)
+
+### Fixed
+- Убран `[Range(1, long.MaxValue)]` атрибут в `Chat.ChatId`, так как он блокировал отрицательные ID каналов и chatId = 0 для диалогов.
+
 ## [0.3.5-alpha] - 2025-12-22
 
 ### Added
@@ -139,7 +150,8 @@ _Новые изменения появятся здесь._
 - Basic infrastructure and folder structure
 - Build configuration for .NET 9
 
-[Unreleased]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.5-alpha...HEAD
+[Unreleased]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.6-alpha...HEAD
+[0.3.6-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.5-alpha...v0.3.6-alpha
 [0.3.5-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.4-alpha...v0.3.5-alpha
 [0.3.4-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.3-alpha...v0.3.4-alpha
 [0.3.3-alpha]: https://github.com/MaxBotNet/MaxBotNet/compare/v0.3.2-alpha...v0.3.3-alpha

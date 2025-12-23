@@ -27,7 +27,6 @@ internal class MessagesApi : BaseApi, IMessagesApi
     /// <inheritdoc />
     public async Task<Message> SendMessageAsync(long chatId, string text, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ValidateNotEmpty(text, nameof(text));
 
         // * Use SendMessageRequest format with chat_id in query parameters (same as second method)
@@ -59,7 +58,6 @@ internal class MessagesApi : BaseApi, IMessagesApi
     /// <inheritdoc />
     public async Task<Message> SendMessageAsync(long chatId, string text, InlineKeyboard? keyboard, bool? disableLinkPreview = null, bool? notify = null, TextFormat? format = null, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
         ValidateNotEmpty(text, nameof(text));
 
         var sendRequest = new SendMessageRequest
@@ -141,11 +139,6 @@ internal class MessagesApi : BaseApi, IMessagesApi
             throw new ArgumentException("Either chatId or userId must be provided.");
         }
 
-        if (chatId.HasValue)
-        {
-            ValidateChatId(chatId.Value);
-        }
-
         if (userId.HasValue)
         {
             ValidateUserId(userId.Value);
@@ -186,8 +179,6 @@ internal class MessagesApi : BaseApi, IMessagesApi
     /// <inheritdoc />
     public async Task<Message[]> GetMessagesAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        ValidateChatId(chatId);
-
         var queryParams = new Dictionary<string, string?>
         {
             { "chat_id", chatId.ToString() }

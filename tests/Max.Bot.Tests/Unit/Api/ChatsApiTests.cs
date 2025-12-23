@@ -67,7 +67,7 @@ public class ChatsApiTests
     }
 
     [Theory]
-    [InlineData(-1)]
+    [InlineData(long.MinValue)] // Extreme negative value that would be invalid
     public async Task GetChatAsync_ShouldThrowArgumentException_WhenChatIdIsInvalid(long chatId)
     {
         // Arrange

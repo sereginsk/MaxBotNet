@@ -13,8 +13,8 @@ public class Chat
     /// <summary>
     /// Gets or sets the unique identifier of the chat.
     /// Maps to "chat_id" field from API.
+    /// Note: Can be negative for channels, 0 for some dialogs, or positive for groups/chats.
     /// </summary>
-    [Range(1, long.MaxValue, ErrorMessage = "Chat ID must be greater than zero.")]
     [JsonPropertyName("chat_id")]
     public long ChatId { get; set; }
 
