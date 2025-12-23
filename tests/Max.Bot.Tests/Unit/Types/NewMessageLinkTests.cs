@@ -105,7 +105,7 @@ public class NewMessageLinkTests
 
         // Assert
         json.Should().Contain("\"type\":\"forward\"");
-        json.Should().Contain("\"id\":\"12345\"");
+        json.Should().Contain("\"mid\":\"12345\"");
         json.Should().Contain("\"chat_id\":67890");
     }
 
@@ -125,7 +125,7 @@ public class NewMessageLinkTests
 
         // Assert
         json.Should().Contain("\"type\":\"reply\"");
-        json.Should().Contain("\"id\":\"12345\"");
+        json.Should().Contain("\"mid\":\"12345\"");
     }
 
     [Fact]
@@ -144,7 +144,7 @@ public class NewMessageLinkTests
 
         // Assert
         json.Should().Contain("\"type\":\"forward\"");
-        json.Should().Contain("\"id\":\"12345\"");
+        json.Should().Contain("\"mid\":\"12345\"");
         json.Should().Contain("\"chat_id\":-67890");
     }
 

@@ -23,7 +23,7 @@ public class NewMessageLink
     /// <value>The unique identifier of the message.</value>
     [Required(ErrorMessage = "Message ID is required.")]
     [StringLength(256, ErrorMessage = "Message ID must not exceed 256 characters.")]
-    [JsonPropertyName("id")]
+    [JsonPropertyName("mid")]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>

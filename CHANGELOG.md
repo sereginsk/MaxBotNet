@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Новые изменения появятся здесь._
 
+## [0.3.9-alpha] - 2025-12-23
+
+### Fixed
+
+- **`NewMessageLink`**: Исправлено имя JSON-поля для message ID с `id` на `mid` в соответствии с Max API.
+  - Ранее API возвращал ошибку: `"Field 'request.link.mid' cannot be null"`
+  - Теперь при forward/reply сообщений используется корректное поле `mid`
+
 ## [0.3.8-alpha] - 2025-12-23
 
 Технический релиз с теми же изменениями, что и 0.3.7-alpha (для корректной публикации в NuGet).
