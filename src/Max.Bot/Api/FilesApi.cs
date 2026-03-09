@@ -77,10 +77,15 @@ internal class FilesApi : BaseApi, IFilesApi
 
             var currentOffset = totalBytesRead;
             var currentBytesRead = bytesRead;
+            
+            // Клонируем данные чанка, чтобы избежать перезаписи буфера при следующей итерации
+            // (HttpClient отправляет данные асинхронно и может читать буфер, когда мы уже пишем в него следующий чанк)
+            var chunkData = new byte[currentBytesRead];
+            Buffer.BlockCopy(buffer, 0, chunkData, 0, currentBytesRead);
 
             HttpContent CreateChunkContent()
             {
-                var content = new ByteArrayContent(buffer, 0, currentBytesRead);
+                var content = new ByteArrayContent(chunkData);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                 // Always send Content-Range. If length unknown, use '*'
                 content.Headers.ContentRange = fileLength > 0
