@@ -44,21 +44,19 @@ public class AttachmentJsonConverter : JsonConverter<Attachment>
             return JsonSerializer.Deserialize<PhotoAttachment>(root.GetRawText(), options);
         }
 
-        if (root.TryGetProperty("video", out _))
-        {
-            return JsonSerializer.Deserialize<VideoAttachment>(root.GetRawText(), options);
-        }
-
-        if (root.TryGetProperty("audio", out _))
-        {
-            return JsonSerializer.Deserialize<AudioAttachment>(root.GetRawText(), options);
-        }
-
         if (root.TryGetProperty("document", out _))
         {
             return JsonSerializer.Deserialize<DocumentAttachment>(root.GetRawText(), options);
         }
 
+        if (IsType(typeString, AttachmentTypeNames.Video))
+        {
+            return JsonSerializer.Deserialize<VideoAttachment>(root.GetRawText(), options);
+        }
+        if (IsType(typeString, AttachmentTypeNames.Audio))
+        {
+            return JsonSerializer.Deserialize<AudioAttachment>(root.GetRawText(), options);
+        }
         if (IsType(typeString, AttachmentTypeNames.Image))
         {
             return JsonSerializer.Deserialize<ImageAttachment>(root.GetRawText(), options);

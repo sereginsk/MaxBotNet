@@ -63,13 +63,13 @@ public class VideoAttachment : Attachment
     /// Gets or sets the video in this attachment.
     /// </summary>
     /// <value>The video object.</value>
-    [JsonPropertyName("video")]
-    public Video Video { get; set; } = null!;
+    [JsonPropertyName("payload")]
+    public Video Payload { get; set; } = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoAttachment"/> class.
     /// </summary>
-    public VideoAttachment() => Type = AttachmentTypeNames.File;
+    public VideoAttachment() => Type = AttachmentTypeNames.Video;
 }
 
 /// <summary>
@@ -81,13 +81,13 @@ public class AudioAttachment : Attachment
     /// Gets or sets the audio in this attachment.
     /// </summary>
     /// <value>The audio object.</value>
-    [JsonPropertyName("audio")]
-    public Audio Audio { get; set; } = null!;
+    [JsonPropertyName("payload")]
+    public Audio Payload { get; set; } = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AudioAttachment"/> class.
     /// </summary>
-    public AudioAttachment() => Type = AttachmentTypeNames.File;
+    public AudioAttachment() => Type = AttachmentTypeNames.Audio;
 }
 
 /// <summary>
@@ -99,8 +99,8 @@ public class DocumentAttachment : Attachment
     /// Gets or sets the document in this attachment.
     /// </summary>
     /// <value>The document object.</value>
-    [JsonPropertyName("document")]
-    public Document Document { get; set; } = null!;
+    [JsonPropertyName("payload")]
+    public Document Payload { get; set; } = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DocumentAttachment"/> class.
@@ -195,5 +195,7 @@ internal static class AttachmentTypeNames
     public const string InlineKeyboard = "inline_keyboard";
     public const string Location = "location";
     public const string Contact = "contact";
+    public const string Audio = "audio";
+    public const string Video = "video";
 }
 

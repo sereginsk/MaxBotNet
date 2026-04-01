@@ -57,5 +57,12 @@ public class Audio
     [StringLength(2048, ErrorMessage = "URL must not exceed 2048 characters.")]
     [JsonPropertyName("url")]
     public string? Url { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL of the audio file.
+    /// </summary>
+    /// <value>The URL of the audio file, or null if not available.</value>
+    [JsonPropertyName("token")]
+    public string? Token { get; set; }
 }
 
