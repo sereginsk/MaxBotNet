@@ -151,20 +151,20 @@ internal class ChatsApi : BaseApi, IChatsApi
     }
 
     /// <inheritdoc />
-    public async Task<User[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default)
+    public async Task<ChatMembersResponse> GetChatMembersAsync(long chatId, long? marker = null, int? count = null, CancellationToken cancellationToken = default)
     {
         var queryParams = new Dictionary<string, string?>();
-        if (offset.HasValue)
+        if (count.HasValue)
         {
-            queryParams["offset"] = offset.Value.ToString();
+            queryParams["count"] = count.Value.ToString();
         }
-        if (limit.HasValue)
+        if (marker.HasValue)
         {
-            queryParams["limit"] = limit.Value.ToString();
+            queryParams["marker"] = marker.Value.ToString();
         }
 
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members", null, queryParams.Count > 0 ? queryParams : null);
-        return await ExecuteRequestAsync<User[]>(request, cancellationToken).ConfigureAwait(false);
+        return await ExecuteRequestAsync<ChatMembersResponse>(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
