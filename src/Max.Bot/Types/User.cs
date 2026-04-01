@@ -54,5 +54,28 @@ public class User
     [Range(0, long.MaxValue, ErrorMessage = "Last activity time cannot be negative.")]
     [JsonPropertyName("last_activity_time")]
     public long? LastActivityTime { get; set; }
+
+    /// <summary>
+    /// Join channel time (Unix timestamp in milliseconds).
+    /// </summary>
+    /// <value>The timestamp of the user's join time or null if not available.</value>
+    [Range(0, long.MaxValue, ErrorMessage = "Join time cannot be negative.")]
+    [JsonPropertyName("join_time")]
+    public long? JoinTime { get; set; }
+
+    /// <summary>
+    /// Gets or sets the avatar url of the user.
+    /// </summary>
+    /// <value>Avatar url  of the user, or null if not available.</value>
+    [JsonPropertyName("avatar_url")]
+    public string? AvatarUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the full avatar url of the user.
+    /// </summary>
+    /// <value>Full avatar url of the user, or null if not available.</value>
+    [JsonPropertyName("full_avatar_url")]
+    public string? FullAvatarUrl { get; set; }
+
 }
 
