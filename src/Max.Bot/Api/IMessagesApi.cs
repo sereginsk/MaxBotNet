@@ -146,7 +146,7 @@ public interface IMessagesApi
     /// <exception cref="Max.Bot.Exceptions.MaxApiException">Thrown when the API returns an error response.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxNetworkException">Thrown when a network error occurs.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
-    Task<Video> GetVideoAsync(string videoToken, CancellationToken cancellationToken = default);
+    Task<MediaResponse> GetVideoAsync(string videoToken, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Answers a callback query from an inline keyboard button press.

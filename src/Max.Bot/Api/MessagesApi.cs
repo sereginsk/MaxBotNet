@@ -269,7 +269,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
     }
 
     /// <inheritdoc />
-    public async Task<Video> GetVideoAsync(string videoToken, CancellationToken cancellationToken = default)
+    public async Task<MediaResponse> GetVideoAsync(string videoToken, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(videoToken))
         {
@@ -277,7 +277,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
         }
 
         var request = CreateRequest(HttpMethod.Get, $"/videos/{Uri.EscapeDataString(videoToken)}", null);
-        return await ExecuteRequestAsync<Video>(request, cancellationToken).ConfigureAwait(false);
+        return await ExecuteRequestAsync<MediaResponse>(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
