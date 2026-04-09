@@ -13,22 +13,52 @@ public abstract class Attachment
     /// <summary>
     /// Gets or sets the type of the attachment.
     /// </summary>
-    /// <value>The type of the attachment (text, image, file, inline_keyboard, etc.).</value>
+    /// <value>The type of the attachment (image, file, inline_keyboard, location, contact).</value>
     [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;
 }
 
 /// <summary>
 /// Represents a photo attachment.
+/// Data fields are flat at the attachment level to match the actual API response format.
 /// </summary>
 public class PhotoAttachment : Attachment
 {
     /// <summary>
-    /// Gets or sets the photo in this attachment.
+    /// Gets or sets the unique identifier of the photo.
     /// </summary>
-    /// <value>The photo object.</value>
-    [JsonPropertyName("photo")]
-    public Photo Photo { get; set; } = null!;
+    [JsonPropertyName("id")]
+    public long Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the file identifier of the photo.
+    /// </summary>
+    [JsonPropertyName("file_id")]
+    public string FileId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the width of the photo in pixels.
+    /// </summary>
+    [JsonPropertyName("width")]
+    public int Width { get; set; }
+
+    /// <summary>
+    /// Gets or sets the height of the photo in pixels.
+    /// </summary>
+    [JsonPropertyName("height")]
+    public int Height { get; set; }
+
+    /// <summary>
+    /// Gets or sets the size of the photo file in bytes.
+    /// </summary>
+    [JsonPropertyName("file_size")]
+    public long? FileSize { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL of the photo.
+    /// </summary>
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PhotoAttachment"/> class.
@@ -37,34 +67,58 @@ public class PhotoAttachment : Attachment
 }
 
 /// <summary>
-/// Represents an image attachment.
-/// </summary>
-public class ImageAttachment : Attachment
-{
-    /// <summary>
-    /// Gets or sets the image in this attachment.
-    /// </summary>
-    /// <value>The photo object.</value>
-    [JsonPropertyName("payload")]
-    public Image Payload { get; set; } = null!;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ImageAttachment"/> class.
-    /// </summary>
-    public ImageAttachment() => Type = AttachmentTypeNames.Image;
-}
-
-/// <summary>
 /// Represents a video attachment.
+/// Data fields are flat at the attachment level to match the actual API response format.
 /// </summary>
 public class VideoAttachment : Attachment
 {
     /// <summary>
-    /// Gets or sets the video in this attachment.
+    /// Gets or sets the unique identifier of the video.
     /// </summary>
-    /// <value>The video object.</value>
-    [JsonPropertyName("video")]
-    public Video Video { get; set; } = null!;
+    [JsonPropertyName("id")]
+    public long Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the file identifier of the video.
+    /// </summary>
+    [JsonPropertyName("file_id")]
+    public string FileId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the width of the video in pixels.
+    /// </summary>
+    [JsonPropertyName("width")]
+    public int? Width { get; set; }
+
+    /// <summary>
+    /// Gets or sets the height of the video in pixels.
+    /// </summary>
+    [JsonPropertyName("height")]
+    public int? Height { get; set; }
+
+    /// <summary>
+    /// Gets or sets the duration of the video in seconds.
+    /// </summary>
+    [JsonPropertyName("duration")]
+    public int? Duration { get; set; }
+
+    /// <summary>
+    /// Gets or sets the size of the video file in bytes.
+    /// </summary>
+    [JsonPropertyName("file_size")]
+    public long? FileSize { get; set; }
+
+    /// <summary>
+    /// Gets or sets the MIME type of the video.
+    /// </summary>
+    [JsonPropertyName("mime_type")]
+    public string? MimeType { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL of the video.
+    /// </summary>
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoAttachment"/> class.
@@ -74,15 +128,45 @@ public class VideoAttachment : Attachment
 
 /// <summary>
 /// Represents an audio attachment.
+/// Data fields are flat at the attachment level to match the actual API response format.
 /// </summary>
 public class AudioAttachment : Attachment
 {
     /// <summary>
-    /// Gets or sets the audio in this attachment.
+    /// Gets or sets the unique identifier of the audio file.
     /// </summary>
-    /// <value>The audio object.</value>
-    [JsonPropertyName("audio")]
-    public Audio Audio { get; set; } = null!;
+    [JsonPropertyName("id")]
+    public long Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the file identifier of the audio file.
+    /// </summary>
+    [JsonPropertyName("file_id")]
+    public string FileId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the duration of the audio file in seconds.
+    /// </summary>
+    [JsonPropertyName("duration")]
+    public int? Duration { get; set; }
+
+    /// <summary>
+    /// Gets or sets the size of the audio file in bytes.
+    /// </summary>
+    [JsonPropertyName("file_size")]
+    public long? FileSize { get; set; }
+
+    /// <summary>
+    /// Gets or sets the MIME type of the audio file.
+    /// </summary>
+    [JsonPropertyName("mime_type")]
+    public string? MimeType { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL of the audio file.
+    /// </summary>
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AudioAttachment"/> class.
@@ -92,15 +176,45 @@ public class AudioAttachment : Attachment
 
 /// <summary>
 /// Represents a document attachment.
+/// Data fields are flat at the attachment level to match the actual API response format.
 /// </summary>
 public class DocumentAttachment : Attachment
 {
     /// <summary>
-    /// Gets or sets the document in this attachment.
+    /// Gets or sets the unique identifier of the document.
     /// </summary>
-    /// <value>The document object.</value>
-    [JsonPropertyName("document")]
-    public Document Document { get; set; } = null!;
+    [JsonPropertyName("id")]
+    public long Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the file identifier of the document.
+    /// </summary>
+    [JsonPropertyName("file_id")]
+    public string FileId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the name of the document file.
+    /// </summary>
+    [JsonPropertyName("file_name")]
+    public string? FileName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the size of the document file in bytes.
+    /// </summary>
+    [JsonPropertyName("file_size")]
+    public long? FileSize { get; set; }
+
+    /// <summary>
+    /// Gets or sets the MIME type of the document.
+    /// </summary>
+    [JsonPropertyName("mime_type")]
+    public string? MimeType { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL of the document.
+    /// </summary>
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DocumentAttachment"/> class.
@@ -116,14 +230,12 @@ public class LocationAttachment : Attachment
     /// <summary>
     /// Gets or sets the location's latitude.
     /// </summary>
-    /// <value>The latitude value.</value>
     [JsonPropertyName("latitude")]
     public double Latitude { get; set; }
 
     /// <summary>
     /// Gets or sets the location's longitude.
     /// </summary>
-    /// <value>The longitude value.</value>
     [JsonPropertyName("longitude")]
     public double Longitude { get; set; }
 
@@ -139,28 +251,37 @@ public class LocationAttachment : Attachment
 public class ContactAttachment : Attachment
 {
     /// <summary>
-    /// Gets or sets the contact in this attachment.
+    /// Gets or sets contact information in VCF format.
     /// </summary>
-    [JsonPropertyName("payload")]
-    public Contact? Payload { get; set; }
+    [JsonPropertyName("vcf_info")]
+    public string? VcfInfo { get; set; }
+
+    /// <summary>
+    /// Gets or sets contact information.
+    /// </summary>
+    [JsonPropertyName("max_info")]
+    public ContactInfo? MaxInfo { get; set; }
 
     /// <summary>
     /// Gets the phone number from the contact.
     /// Tries MaxInfo.PhoneNumber first, then parses from VcfInfo.
-    /// Returns null if Payload is null or no phone number is available.
+    /// Returns null if no phone number is available.
     /// </summary>
-    /// <value>The phone number, or null if not available.</value>
     [JsonIgnore]
-    public string? PhoneNumber => ContactHelpers.GetPhoneNumber(Payload);
+    public string? PhoneNumber => ContactHelpers.GetPhoneNumber(this);
 
     /// <summary>
     /// Gets the full name from the contact.
     /// Tries MaxInfo.FullName first, then parses from VcfInfo.
-    /// Returns null if Payload is null or no full name is available.
+    /// Returns null if no full name is available.
     /// </summary>
-    /// <value>The full name, or null if not available.</value>
     [JsonIgnore]
-    public string? FullName => ContactHelpers.GetFullName(Payload);
+    public string? FullName => ContactHelpers.GetFullName(this);
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ContactAttachment"/> class.
+    /// </summary>
+    public ContactAttachment() => Type = AttachmentTypeNames.Contact;
 }
 
 /// <summary>
@@ -171,14 +292,12 @@ public class InlineKeyboardAttachment : Attachment
     /// <summary>
     /// Gets or sets the callback ID for this keyboard attachment.
     /// </summary>
-    /// <value>The callback ID, or null if not available.</value>
     [JsonPropertyName("callback_id")]
     public string? CallbackId { get; set; }
 
     /// <summary>
     /// Gets or sets the payload containing the keyboard buttons.
     /// </summary>
-    /// <value>The payload containing buttons, or null if not available.</value>
     [JsonPropertyName("payload")]
     public Dictionary<string, object>? Payload { get; set; }
 
@@ -196,4 +315,3 @@ internal static class AttachmentTypeNames
     public const string Location = "location";
     public const string Contact = "contact";
 }
-

@@ -551,11 +551,11 @@ public class ChatsApiTests
         var chatId = 123456L;
         var expectedAdmins = new[]
         {
-            new User { Id = 100L, FirstName = "Admin1" },
-            new User { Id = 200L, FirstName = "Admin2" }
+            new ChatMember { Id = 100L, FirstName = "Admin1", IsAdmin = true },
+            new ChatMember { Id = 200L, FirstName = "Admin2", IsAdmin = true }
         };
 
-        var response = new Response<User[]>
+        var response = new Response<ChatMember[]>
         {
             Ok = true,
             Result = expectedAdmins
@@ -684,11 +684,11 @@ public class ChatsApiTests
         var chatId = 123456L;
         var expectedMembers = new[]
         {
-            new User { Id = 100L, FirstName = "User1" },
-            new User { Id = 200L, FirstName = "User2" }
+            new ChatMember { Id = 100L, FirstName = "User1", IsAdmin = false },
+            new ChatMember { Id = 200L, FirstName = "User2", IsAdmin = false }
         };
 
-        var response = new Response<User[]>
+        var response = new Response<ChatMember[]>
         {
             Ok = true,
             Result = expectedMembers
@@ -725,10 +725,10 @@ public class ChatsApiTests
         var limit = 20;
         var expectedMembers = new[]
         {
-            new User { Id = 100L, FirstName = "User1" }
+            new ChatMember { Id = 100L, FirstName = "User1", IsAdmin = false }
         };
 
-        var response = new Response<User[]>
+        var response = new Response<ChatMember[]>
         {
             Ok = true,
             Result = expectedMembers

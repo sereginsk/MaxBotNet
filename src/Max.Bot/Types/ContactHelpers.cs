@@ -135,25 +135,20 @@ public static class ContactHelpers
     /// Gets the phone number from a contact attachment.
     /// First tries to get it from MaxInfo.PhoneNumber, then parses from VcfInfo.
     /// </summary>
-    /// <param name="contact">The contact object.</param>
+    /// <param name="attachment">The contact attachment.</param>
     /// <returns>The phone number, or null if not available.</returns>
-    public static string? GetPhoneNumber(Contact? contact)
+    public static string? GetPhoneNumber(ContactAttachment attachment)
     {
-        if (contact == null)
+        if (attachment == null) return null;
+
+        if (!string.IsNullOrEmpty(attachment.MaxInfo?.PhoneNumber))
         {
-            return null;
+            return attachment.MaxInfo.PhoneNumber;
         }
 
-        // Try to get from MaxInfo first
-        if (!string.IsNullOrEmpty(contact.MaxInfo?.PhoneNumber))
+        if (!string.IsNullOrEmpty(attachment.VcfInfo))
         {
-            return contact.MaxInfo.PhoneNumber;
-        }
-
-        // Parse from VcfInfo
-        if (!string.IsNullOrEmpty(contact.VcfInfo))
-        {
-            var parsed = ParseVcf(contact.VcfInfo);
+            var parsed = ParseVcf(attachment.VcfInfo);
             return parsed?.PhoneNumber;
         }
 
@@ -164,25 +159,20 @@ public static class ContactHelpers
     /// Gets the full name from a contact attachment.
     /// First tries to get it from MaxInfo.FullName, then parses from VcfInfo.
     /// </summary>
-    /// <param name="contact">The contact object.</param>
+    /// <param name="attachment">The contact attachment.</param>
     /// <returns>The full name, or null if not available.</returns>
-    public static string? GetFullName(Contact? contact)
+    public static string? GetFullName(ContactAttachment attachment)
     {
-        if (contact == null)
+        if (attachment == null) return null;
+
+        if (!string.IsNullOrEmpty(attachment.MaxInfo?.FullName))
         {
-            return null;
+            return attachment.MaxInfo.FullName;
         }
 
-        // Try to get from MaxInfo first
-        if (!string.IsNullOrEmpty(contact.MaxInfo?.FullName))
+        if (!string.IsNullOrEmpty(attachment.VcfInfo))
         {
-            return contact.MaxInfo.FullName;
-        }
-
-        // Parse from VcfInfo
-        if (!string.IsNullOrEmpty(contact.VcfInfo))
-        {
-            var parsed = ParseVcf(contact.VcfInfo);
+            var parsed = ParseVcf(attachment.VcfInfo);
             return parsed?.FullName;
         }
 

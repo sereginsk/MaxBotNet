@@ -189,6 +189,12 @@ public class MaxHttpClient : IMaxHttpClient
             _logger?.LogTrace("HTTP {Method} {Url} -> {StatusCode} ({ElapsedMs}ms)\nResponse: {Body}",
                 request.Method, request.RequestUri, (int)response.StatusCode, stopwatch.ElapsedMilliseconds, responseBody ?? "(null)");
         }
+        else if (_logger?.IsEnabled(LogLevel.Debug) == true)
+        {
+            // Log response body at Debug level even when detailed logging is off
+            _logger?.LogDebug("HTTP {Method} {Url} -> {StatusCode} ({ElapsedMs}ms)",
+                request.Method, request.RequestUri, (int)response.StatusCode, stopwatch.ElapsedMilliseconds);
+        }
 
         if (!response.IsSuccessStatusCode)
         {

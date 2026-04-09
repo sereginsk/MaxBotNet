@@ -72,12 +72,12 @@ public sealed class ContactBotSample : IBotSample
         var fullName = contactAttachment.FullName;
 
         // Method 2: Access raw data
-        var vcfInfo = contactAttachment.Payload?.VcfInfo;
-        var maxInfo = contactAttachment.Payload?.MaxInfo;
+        var vcfInfo = contactAttachment.VcfInfo;
+        var maxInfo = contactAttachment.MaxInfo;
 
         // Method 3: Use ContactHelpers directly
-        var parsedPhoneNumber = ContactHelpers.GetPhoneNumber(contactAttachment.Payload);
-        var parsedFullName = ContactHelpers.GetFullName(contactAttachment.Payload);
+        var parsedPhoneNumber = ContactHelpers.GetPhoneNumber(contactAttachment);
+        var parsedFullName = ContactHelpers.GetFullName(contactAttachment);
 
         var response = $"""
             РќРѕРІС‹Р№ РєРѕРЅС‚Р°РєС‚ РїРѕР»СѓС‡РµРЅ! РІСќСџС'С‘

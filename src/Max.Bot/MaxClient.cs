@@ -18,7 +18,10 @@ namespace Max.Bot;
 /// </summary>
 public class MaxClient : IMaxBotApi, IUpdatePipeline
 {
-    private readonly IMaxHttpClient _httpClient;
+    private readonly IMaxHttpClient _apiClient;
+    private readonly IMaxHttpClient _pollClient;
+    private readonly bool _ownsApiClient;
+    private readonly bool _ownsPollClient;
     private readonly MaxBotOptions _options;
     private readonly ILogger<MaxClient>? _logger;
     private readonly ILoggerFactory? _loggerFactory;
@@ -70,12 +73,13 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
     /// Initializes a new instance of the <see cref="MaxClient"/> class with bot options and optional dependencies.
     /// </summary>
     /// <param name="options">The bot options containing token and base URL.</param>
-    /// <param name="httpClient">Optional HTTP client. If null, a new HttpClient will be created.</param>
+    /// <param name="httpClient">Optional HTTP client for API requests. If null, a new HttpClient will be created. Its Timeout is respected and never overwritten.</param>
+    /// <param name="pollingHttpClient">Optional HTTP client dedicated to long polling (GET /updates). If null, a new HttpClient will be created with timeout matching <see cref="MaxPollingOptions.LongPollingTimeout"/>.</param>
     /// <param name="logger">Optional logger for logging events.</param>
     /// <param name="loggerFactory">Optional logger factory used to create component-specific loggers.</param>
     /// <exception cref="ArgumentNullException">Thrown when options is null.</exception>
     /// <exception cref="ArgumentException">Thrown when options are invalid.</exception>
-    public MaxClient(MaxBotOptions options, HttpClient? httpClient, ILogger<MaxClient>? logger = null, ILoggerFactory? loggerFactory = null)
+    public MaxClient(MaxBotOptions options, HttpClient? httpClient = null, HttpClient? pollingHttpClient = null, ILogger<MaxClient>? logger = null, ILoggerFactory? loggerFactory = null)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _options.Validate();
@@ -84,34 +88,53 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
         _dispatchTypeFilter = UpdateFilterUtilities.BuildTypeFilter(_options);
         _allowedUsernames = UpdateFilterUtilities.BuildAllowedUsernames(_options);
 
-        // Create or use provided HttpClient
-        var client = httpClient ?? new HttpClient();
+        // --- API client (all methods except long polling) ---
+        _ownsApiClient = httpClient == null;
+        var apiHttpClient = httpClient ?? new HttpClient();
 
-        // Configure MaxBotClientOptions - token is passed via Authorization header, not in URL
-        // * HttpClient.Timeout must be greater than maximum long polling timeout (90s) + buffer for network delays
-        // This prevents HttpClient from timing out before long polling requests complete
-        var clientOptions = new MaxBotClientOptions
+        // Respect the user-provided HttpClient.Timeout. Only set a default if we created the client ourselves.
+        if (httpClient == null)
+        {
+            apiHttpClient.Timeout = TimeSpan.FromSeconds(30);
+        }
+
+        var apiClientOptions = new MaxBotClientOptions
         {
             BaseUrl = _options.BaseUrl,
-            Timeout = TimeSpan.FromSeconds(100), // 90s max polling + 10s buffer
+            Timeout = apiHttpClient.Timeout,
             RetryCount = 3,
-            EnableDetailedLogging = true // * Enable detailed logging for debugging
+            EnableDetailedLogging = true
         };
-        clientOptions.Validate();
+        apiClientOptions.Validate();
+        _apiClient = new MaxHttpClient(apiHttpClient, apiClientOptions, loggerFactory?.CreateLogger<MaxHttpClient>());
 
-        // Create MaxHttpClient
-        // Note: ILogger<MaxHttpClient> requires ILoggerFactory to create
-        // If logging is needed, pass ILoggerFactory to MaxClient constructor or use DI
-        // For now, we pass null - MaxHttpClient will work without logging
-        _httpClient = new MaxHttpClient(client, clientOptions, loggerFactory?.CreateLogger<MaxHttpClient>());
+        // --- Polling client (GET /updates only) ---
+        _ownsPollClient = pollingHttpClient == null;
+        var pollHttpClient = pollingHttpClient ?? new HttpClient();
 
-        // Initialize API groups
-        Bot = new BotApi(_httpClient, _options);
-        Messages = new MessagesApi(_httpClient, _options);
-        Chats = new ChatsApi(_httpClient, _options);
-        Users = new UsersApi(_httpClient, _options);
-        Files = new FilesApi(_httpClient, _options);
-        Subscriptions = new SubscriptionsApi(_httpClient, _options);
+        if (pollingHttpClient == null)
+        {
+            // Long polling timeout + 10s buffer for network delays
+            pollHttpClient.Timeout = _options.Polling.LongPollingTimeout + TimeSpan.FromSeconds(10);
+        }
+
+        var pollClientOptions = new MaxBotClientOptions
+        {
+            BaseUrl = _options.BaseUrl,
+            Timeout = pollHttpClient.Timeout,
+            RetryCount = 3,
+            EnableDetailedLogging = true
+        };
+        pollClientOptions.Validate();
+        _pollClient = new MaxHttpClient(pollHttpClient, pollClientOptions, loggerFactory?.CreateLogger<MaxHttpClient>());
+
+        // Initialize API groups — all use the api client
+        Bot = new BotApi(_apiClient, _options);
+        Messages = new MessagesApi(_apiClient, _options);
+        Chats = new ChatsApi(_apiClient, _options);
+        Users = new UsersApi(_apiClient, _options);
+        Files = new FilesApi(_apiClient, _options);
+        Subscriptions = new SubscriptionsApi(_apiClient, _options);
     }
 
     /// <summary>
@@ -132,6 +155,7 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
                 this,
                 Subscriptions,
                 _options,
+                _pollClient,
                 _loggerFactory?.CreateLogger<UpdatePoller>(),
                 services);
         }
@@ -228,11 +252,15 @@ public class MaxClient : IMaxBotApi, IUpdatePipeline
     }
 
     /// <summary>
-    /// Disposes the resources used by the MaxClient.
+    /// Disposes the HTTP clients that were created internally by MaxClient.
+    /// User-supplied clients are never disposed.
     /// </summary>
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        if (_ownsApiClient)
+            _apiClient?.Dispose();
+        if (_ownsPollClient)
+            _pollClient?.Dispose();
     }
 }
 

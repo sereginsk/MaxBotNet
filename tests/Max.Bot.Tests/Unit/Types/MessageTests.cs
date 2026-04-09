@@ -167,8 +167,8 @@ public class MessageTests
     [Fact]
     public void MessageBody_ShouldDeserialize()
     {
-        // Arrange
-        var json = """{"text":"Hello","attachments":[{"type":"image","photo":{"id":1,"file_id":"photo1","width":100,"height":100}}]}""";
+        // Arrange — flat format matching real API response
+        var json = """{"text":"Hello","attachments":[{"type":"image","id":1,"file_id":"photo1","width":100,"height":100}]}""";
 
         // Act
         var result = MaxJsonSerializer.Deserialize<MessageBody>(json);
@@ -178,6 +178,12 @@ public class MessageTests
         result!.Text.Should().Be("Hello");
         result.Attachments.Should().NotBeNull();
         result.Attachments!.Length.Should().Be(1);
+        result.Attachments[0].Should().BeOfType<PhotoAttachment>();
+        var photo = (PhotoAttachment)result.Attachments[0];
+        photo.Id.Should().Be(1);
+        photo.FileId.Should().Be("photo1");
+        photo.Width.Should().Be(100);
+        photo.Height.Should().Be(100);
     }
 
     [Fact]

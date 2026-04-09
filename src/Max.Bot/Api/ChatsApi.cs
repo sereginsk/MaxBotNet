@@ -126,10 +126,10 @@ internal class ChatsApi : BaseApi, IChatsApi
     }
 
     /// <inheritdoc />
-    public async Task<User[]> GetChatAdminsAsync(long chatId, CancellationToken cancellationToken = default)
+    public async Task<ChatMember[]> GetChatAdminsAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members/admins");
-        return await ExecuteRequestAsync<User[]>(request, cancellationToken).ConfigureAwait(false);
+        return await ExecuteRequestAsync<ChatMember[]>(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -151,7 +151,7 @@ internal class ChatsApi : BaseApi, IChatsApi
     }
 
     /// <inheritdoc />
-    public async Task<User[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default)
+    public async Task<ChatMember[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         var queryParams = new Dictionary<string, string?>();
         if (offset.HasValue)
@@ -164,7 +164,7 @@ internal class ChatsApi : BaseApi, IChatsApi
         }
 
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members", null, queryParams.Count > 0 ? queryParams : null);
-        return await ExecuteRequestAsync<User[]>(request, cancellationToken).ConfigureAwait(false);
+        return await ExecuteRequestAsync<ChatMember[]>(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

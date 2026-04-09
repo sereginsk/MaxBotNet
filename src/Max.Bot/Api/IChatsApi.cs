@@ -154,7 +154,7 @@ public interface IChatsApi
     /// <exception cref="Max.Bot.Exceptions.MaxApiException">Thrown when the API returns an error response.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxNetworkException">Thrown when a network error occurs.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
-    Task<User[]> GetChatAdminsAsync(long chatId, CancellationToken cancellationToken = default);
+    Task<ChatMember[]> GetChatAdminsAsync(long chatId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds an admin to a chat.
@@ -195,7 +195,7 @@ public interface IChatsApi
     /// <exception cref="Max.Bot.Exceptions.MaxApiException">Thrown when the API returns an error response.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxNetworkException">Thrown when a network error occurs.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
-    Task<User[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default);
+    Task<ChatMember[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds members to a chat.

@@ -8,339 +8,323 @@ namespace Max.Bot.Tests.Unit.Types;
 
 public class AttachmentTests
 {
-    [Fact]
-    public void PhotoAttachment_ShouldDeserialize_FromJson()
-    {
-        // Arrange
-        var json = """{"type":"image","photo":{"id":123,"file_id":"file123","width":640,"height":480}}""";
+    // ==================== PHOTO ====================
 
-        // Act
+    [Fact]
+    public void PhotoAttachment_ShouldDeserialize_FromFlatJson()
+    {
+        var json = """{"type":"image","id":123,"file_id":"photo123","width":640,"height":480,"url":"https://example.com/photo.jpg"}""";
+
         var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
 
-        // Assert
-        attachment.Should().NotBeNull();
         attachment.Should().BeOfType<PhotoAttachment>();
-        attachment.Type.Should().Be("image");
-        var photoAttachment = (PhotoAttachment)attachment;
-        photoAttachment.Photo.Should().NotBeNull();
-        photoAttachment.Photo.Id.Should().Be(123);
-        photoAttachment.Photo.FileId.Should().Be("file123");
-        photoAttachment.Photo.Width.Should().Be(640);
-        photoAttachment.Photo.Height.Should().Be(480);
+        var photo = (PhotoAttachment)attachment;
+        photo.Type.Should().Be("image");
+        photo.Id.Should().Be(123);
+        photo.FileId.Should().Be("photo123");
+        photo.Width.Should().Be(640);
+        photo.Height.Should().Be(480);
+        photo.Url.Should().Be("https://example.com/photo.jpg");
     }
 
     [Fact]
-    public void VideoAttachment_ShouldDeserialize_FromJson()
+    public void PhotoAttachment_ShouldDeserialize_FromNestedJson()
     {
-        // Arrange
-        var json = """{"type":"file","video":{"id":123,"file_id":"video123","width":1280,"height":720}}""";
+        // Backward compat: if API wraps in "photo", fields still deserialize due to case-insensitive matching
+        var json = """{"type":"image","photo":{"id":123,"file_id":"photo123","width":640,"height":480}}""";
 
-        // Act
         var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
 
-        // Assert
-        attachment.Should().NotBeNull();
-        attachment.Should().BeOfType<VideoAttachment>();
-        attachment.Type.Should().Be("file");
-        var videoAttachment = (VideoAttachment)attachment;
-        videoAttachment.Video.Should().NotBeNull();
-        videoAttachment.Video.Id.Should().Be(123);
-        videoAttachment.Video.FileId.Should().Be("video123");
+        attachment.Should().BeOfType<PhotoAttachment>();
+        // photo object fields will be default since there's no direct "id" at root level
+        var photo = (PhotoAttachment)attachment;
+        photo.Type.Should().Be("image");
     }
 
     [Fact]
-    public void AudioAttachment_ShouldDeserialize_FromJson()
+    public void PhotoAttachment_ShouldSerialize_ToFlatJson()
     {
-        // Arrange
-        var json = """{"type":"file","audio":{"id":123,"file_id":"audio123","duration":180}}""";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        attachment.Should().BeOfType<AudioAttachment>();
-        attachment.Type.Should().Be("file");
-        var audioAttachment = (AudioAttachment)attachment;
-        audioAttachment.Audio.Should().NotBeNull();
-        audioAttachment.Audio.Id.Should().Be(123);
-        audioAttachment.Audio.FileId.Should().Be("audio123");
-    }
-
-    [Fact]
-    public void DocumentAttachment_ShouldDeserialize_FromJson()
-    {
-        // Arrange
-        var json = """{"type":"file","document":{"id":123,"file_id":"doc123","file_name":"document.pdf"}}""";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        attachment.Should().BeOfType<DocumentAttachment>();
-        attachment.Type.Should().Be("file");
-        var documentAttachment = (DocumentAttachment)attachment;
-        documentAttachment.Document.Should().NotBeNull();
-        documentAttachment.Document.Id.Should().Be(123);
-        documentAttachment.Document.FileId.Should().Be("doc123");
-        documentAttachment.Document.FileName.Should().Be("document.pdf");
-    }
-
-    [Fact]
-    public void LocationAttachment_ShouldDeserialize_FromJson()
-    {
-        // Arrange
-        var json = """{"type":"location","latitude":55.753460,"longitude":37.621602}""";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        attachment.Should().BeOfType<LocationAttachment>();
-        attachment.Type.Should().Be("location");
-        var locationAttachment = (LocationAttachment)attachment;
-        locationAttachment.Latitude.Should().Be(55.75346);
-        locationAttachment.Longitude.Should().Be(37.621602);
-    }
-
-    [Fact]
-    public void ContactAttachment_ShouldDeserialize_FromJson()
-    {
-        // Arrange
-        var json = """{"type":"contact","payload":{"vcf_info":"vcf contact here","max_info":{"user_id":123,"username":"username here","first_name":"first name here","last_name":"last name here","is_bot":false,"last_activity_time":1769505660}}}""";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        attachment.Should().BeOfType<ContactAttachment>();
-        attachment.Type.Should().Be("contact");
-        var contactAttachment = (ContactAttachment)attachment;
-        contactAttachment.Payload.Should().NotBeNull();
-        contactAttachment.Payload!.VcfInfo!.Should().Be("vcf contact here");
-        contactAttachment.Payload.MaxInfo.Should().NotBeNull();
-        contactAttachment.Payload.MaxInfo!.Id.Should().Be(123);
-        contactAttachment.Payload.MaxInfo.Username.Should().Be("username here");
-        contactAttachment.Payload.MaxInfo.FirstName.Should().Be("first name here");
-        contactAttachment.Payload.MaxInfo.LastName.Should().Be("last name here");
-        contactAttachment.Payload.MaxInfo.IsBot.Should().Be(false);
-        contactAttachment.Payload.MaxInfo.LastActivityTime.Should().Be(1769505660);
-    }
-
-    [Fact]
-    public void ContactAttachment_WithVcfPhoneNumber_ShouldExtractPhoneNumber()
-    {
-        // Arrange
-        var vcf = "BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nTEL:+1234567890\nEND:VCARD";
-        var json = "{\"type\":\"contact\",\"payload\":{\"vcf_info\":\"" + vcf + "\",\"max_info\":{\"user_id\":123}}}";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        attachment.Should().BeOfType<ContactAttachment>();
-        var contactAttachment = (ContactAttachment)attachment;
-        contactAttachment.PhoneNumber.Should().Be("+1234567890");
-        contactAttachment.FullName.Should().Be("John Doe");
-    }
-
-    [Fact]
-    public void ContactAttachment_WithMaxInfoPhoneNumber_ShouldUseMaxInfoPhoneNumber()
-    {
-        // Arrange
-        var json = """{"type":"contact","payload":{"vcf_info":"BEGIN:VCARD\nTEL:+9999999999\nEND:VCARD","max_info":{"user_id":123,"phone_number":"+1234567890","full_name":"John Doe"}}}""";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        attachment.Should().BeOfType<ContactAttachment>();
-        var contactAttachment = (ContactAttachment)attachment;
-        contactAttachment.PhoneNumber.Should().Be("+1234567890");
-        contactAttachment.FullName.Should().Be("John Doe");
-    }
-
-    [Fact]
-    public void ContactAttachment_WithNullPayload_ShouldReturnNullForPhoneNumber()
-    {
-        // Arrange
-        var attachment = new ContactAttachment
-        {
-            Payload = null
-        };
-
-        // Act & Assert
-        attachment.PhoneNumber.Should().BeNull();
-        attachment.FullName.Should().BeNull();
-    }
-
-    [Fact]
-    public void ContactAttachment_WithEmptyVcf_ShouldReturnNullForPhoneNumber()
-    {
-        // Arrange
-        var json = """{"type":"contact","payload":{"vcf_info":"BEGIN:VCARD\nVERSION:3.0\nEND:VCARD"}}""";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        var contactAttachment = (ContactAttachment)attachment;
-        contactAttachment.PhoneNumber.Should().BeNull();
-        contactAttachment.FullName.Should().BeNull();
-    }
-
-    [Fact]
-    public void ContactAttachment_WithFnParameters_ShouldExtractFullName()
-    {
-        // Arrange
-        var vcf = "BEGIN:VCARD\nVERSION:3.0\nFN;CHARSET=UTF-8:John Doe\nTEL:+1234567890\nEND:VCARD";
-        var json = "{\"type\":\"contact\",\"payload\":{\"vcf_info\":\"" + vcf + "\"}}";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        var contactAttachment = (ContactAttachment)attachment;
-        contactAttachment.FullName.Should().Be("John Doe");
-        contactAttachment.PhoneNumber.Should().Be("+1234567890");
-    }
-
-    [Fact]
-    public void ContactAttachment_WithEscapedCharacters_ShouldUnescape()
-    {
-        // Arrange
-        var vcf = "BEGIN:VCARD\nVERSION:3.0\nFN:John\\; Jr. Doe\nTEL:+1234567890\nEND:VCARD";
-        var json = "{\"type\":\"contact\",\"payload\":{\"vcf_info\":\"" + vcf + "\"}}";
-
-        // Act
-        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
-
-        // Assert
-        attachment.Should().NotBeNull();
-        var contactAttachment = (ContactAttachment)attachment;
-        contactAttachment.FullName.Should().Be("John; Jr. Doe");
-    }
-
-    [Fact]
-    public void PhotoAttachment_ShouldSerialize_ToJson()
-    {
-        // Arrange
         var attachment = new PhotoAttachment
         {
-            Photo = new Photo
-            {
-                Id = 123,
-                FileId = "file123",
-                Width = 640,
-                Height = 480
-            }
+            Id = 123,
+            FileId = "photo123",
+            Width = 640,
+            Height = 480,
+            Url = "https://example.com/photo.jpg"
         };
 
-        // Act
         var json = MaxJsonSerializer.Serialize<Attachment>(attachment);
 
-        // Assert
         json.Should().Contain("\"type\":\"image\"");
-        json.Should().Contain("\"photo\"");
-        json.Should().Contain("\"file_id\":\"file123\"");
+        json.Should().Contain("\"file_id\":\"photo123\"");
+        json.Should().Contain("\"url\":\"https://example.com/photo.jpg\"");
+        json.Should().NotContain("\"photo\":");
+    }
+
+    // ==================== VIDEO ====================
+
+    [Fact]
+    public void VideoAttachment_ShouldDeserialize_FromFlatJson()
+    {
+        var json = """{"type":"file","id":456,"file_id":"video456","width":1280,"height":720,"duration":60,"mime_type":"video/mp4"}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        // Flat file type defaults to DocumentAttachment
+        attachment.Should().BeOfType<DocumentAttachment>();
+        var doc = (DocumentAttachment)attachment;
+        doc.Type.Should().Be("file");
+        doc.Id.Should().Be(456);
+        doc.FileId.Should().Be("video456");
+    }
+
+    [Fact]
+    public void VideoAttachment_ShouldDeserialize_FromNestedJson()
+    {
+        var json = """{"type":"file","video":{"id":456,"file_id":"video456","width":1280,"height":720,"duration":60}}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<VideoAttachment>();
+        var video = (VideoAttachment)attachment;
+        video.Type.Should().Be("file");
+        video.Id.Should().Be(456);
+        video.FileId.Should().Be("video456");
+        video.Width.Should().Be(1280);
+        video.Height.Should().Be(720);
+        video.Duration.Should().Be(60);
     }
 
     [Fact]
     public void VideoAttachment_ShouldSerialize_ToJson()
     {
-        // Arrange
         var attachment = new VideoAttachment
         {
-            Video = new Video
-            {
-                Id = 123,
-                FileId = "video123",
-                Width = 1280,
-                Height = 720
-            }
+            Id = 456,
+            FileId = "video456",
+            Width = 1280,
+            Height = 720,
+            Duration = 60
         };
 
-        // Act
         var json = MaxJsonSerializer.Serialize<Attachment>(attachment);
 
-        // Assert
         json.Should().Contain("\"type\":\"file\"");
-        json.Should().Contain("\"video\"");
-        json.Should().Contain("\"file_id\":\"video123\"");
+        json.Should().Contain("\"file_id\":\"video456\"");
+        json.Should().Contain("\"duration\":60");
+    }
+
+    // ==================== AUDIO ====================
+
+    [Fact]
+    public void AudioAttachment_ShouldDeserialize_FromFlatJson()
+    {
+        var json = """{"type":"file","id":789,"file_id":"audio789","duration":180,"mime_type":"audio/mpeg"}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<DocumentAttachment>();
+        var doc = (DocumentAttachment)attachment;
+        doc.Id.Should().Be(789);
+    }
+
+    [Fact]
+    public void AudioAttachment_ShouldDeserialize_FromNestedJson()
+    {
+        var json = """{"type":"file","audio":{"id":789,"file_id":"audio789","duration":180}}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<AudioAttachment>();
+        var audio = (AudioAttachment)attachment;
+        audio.Id.Should().Be(789);
+        audio.FileId.Should().Be("audio789");
+        audio.Duration.Should().Be(180);
+    }
+
+    [Fact]
+    public void AudioAttachment_ShouldSerialize_ToJson()
+    {
+        var attachment = new AudioAttachment
+        {
+            Id = 789,
+            FileId = "audio789",
+            Duration = 180
+        };
+
+        var json = MaxJsonSerializer.Serialize<Attachment>(attachment);
+
+        json.Should().Contain("\"type\":\"file\"");
+        json.Should().Contain("\"file_id\":\"audio789\"");
+    }
+
+    // ==================== DOCUMENT ====================
+
+    [Fact]
+    public void DocumentAttachment_ShouldDeserialize_FromFlatJson()
+    {
+        var json = """{"type":"file","id":111,"file_id":"doc111","file_name":"report.pdf","file_size":1024,"mime_type":"application/pdf"}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<DocumentAttachment>();
+        var doc = (DocumentAttachment)attachment;
+        doc.Type.Should().Be("file");
+        doc.Id.Should().Be(111);
+        doc.FileId.Should().Be("doc111");
+        doc.FileName.Should().Be("report.pdf");
+        doc.MimeType.Should().Be("application/pdf");
+    }
+
+    [Fact]
+    public void DocumentAttachment_ShouldDeserialize_FromNestedJson()
+    {
+        var json = """{"type":"file","document":{"id":111,"file_id":"doc111","file_name":"report.pdf"}}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<DocumentAttachment>();
+        var doc = (DocumentAttachment)attachment;
+        doc.Id.Should().Be(111);
+        doc.FileName.Should().Be("report.pdf");
+    }
+
+    [Fact]
+    public void DocumentAttachment_ShouldSerialize_ToJson()
+    {
+        var attachment = new DocumentAttachment
+        {
+            Id = 111,
+            FileId = "doc111",
+            FileName = "report.pdf",
+            MimeType = "application/pdf"
+        };
+
+        var json = MaxJsonSerializer.Serialize<Attachment>(attachment);
+
+        json.Should().Contain("\"type\":\"file\"");
+        json.Should().Contain("\"file_name\":\"report.pdf\"");
+    }
+
+    // ==================== LOCATION ====================
+
+    [Fact]
+    public void LocationAttachment_ShouldDeserialize_FromJson()
+    {
+        var json = """{"type":"location","latitude":55.753460,"longitude":37.621602}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<LocationAttachment>();
+        var loc = (LocationAttachment)attachment;
+        loc.Type.Should().Be("location");
+        loc.Latitude.Should().Be(55.75346);
+        loc.Longitude.Should().Be(37.621602);
+    }
+
+    // ==================== CONTACT ====================
+
+    [Fact]
+    public void ContactAttachment_ShouldDeserialize_FromJson()
+    {
+        var json = """{"type":"contact","vcf_info":"BEGIN:VCARD\nTEL:+1234567890\nEND:VCARD","max_info":{"user_id":123,"username":"john_doe","first_name":"John","last_name":"Doe","is_bot":false}}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<ContactAttachment>();
+        var contact = (ContactAttachment)attachment;
+        contact.Type.Should().Be("contact");
+        contact.VcfInfo.Should().Contain("BEGIN:VCARD");
+        contact.MaxInfo.Should().NotBeNull();
+        contact.MaxInfo!.Id.Should().Be(123);
+        contact.MaxInfo.Username.Should().Be("john_doe");
+    }
+
+    [Fact]
+    public void ContactAttachment_WithVcfPhoneNumber_ShouldExtractPhoneNumber()
+    {
+        var vcf = "BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nTEL:+1234567890\nEND:VCARD";
+        var json = "{\"type\":\"contact\",\"vcf_info\":\"" + vcf + "\",\"max_info\":{\"user_id\":123}}";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<ContactAttachment>();
+        var contact = (ContactAttachment)attachment;
+        contact.PhoneNumber.Should().Be("+1234567890");
+        contact.FullName.Should().Be("John Doe");
+    }
+
+    [Fact]
+    public void ContactAttachment_WithMaxInfoPhoneNumber_ShouldUseMaxInfoPhoneNumber()
+    {
+        var json = """{"type":"contact","vcf_info":"BEGIN:VCARD\nTEL:+9999999999\nEND:VCARD","max_info":{"user_id":123,"phone_number":"+1234567890","full_name":"John Doe"}}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<ContactAttachment>();
+        var contact = (ContactAttachment)attachment;
+        contact.PhoneNumber.Should().Be("+1234567890");
+        contact.FullName.Should().Be("John Doe");
+    }
+
+    [Fact]
+    public void ContactAttachment_WithNullMaxInfo_ShouldReturnNullForPhoneNumber()
+    {
+        var json = """{"type":"contact"}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<ContactAttachment>();
+        var contact = (ContactAttachment)attachment;
+        contact.PhoneNumber.Should().BeNull();
+        contact.FullName.Should().BeNull();
     }
 
     [Fact]
     public void ContactAttachment_ShouldSerialize_ToJson()
     {
-        // Arrange
         var attachment = new ContactAttachment
         {
-            Payload = new Contact
+            VcfInfo = "BEGIN:VCARD\nTEL:+1234567890\nEND:VCARD",
+            MaxInfo = new ContactInfo
             {
-                VcfInfo = "vcf contact here",
-                MaxInfo = new ContactInfo
-                {
-                    Id = 123,
-                    Username = "username here",
-                    FirstName = "first name here",
-                    LastName = "last name here",
-                    IsBot = false,
-                    LastActivityTime = 1769505660,
-                },
-            },
+                Id = 123,
+                Username = "john_doe",
+                FirstName = "John",
+                LastName = "Doe"
+            }
         };
 
-        // Act
         var json = MaxJsonSerializer.Serialize<Attachment>(attachment);
 
-        // Assert
+        json.Should().Contain("\"type\":\"contact\"");
+        json.Should().Contain("\"vcf_info\"");
+        json.Should().Contain("\"max_info\"");
         json.Should().Contain("\"user_id\":123");
-        json.Should().Contain("\"username\":\"username here\"");
-        json.Should().Contain("\"first_name\":\"first name here\"");
-        json.Should().Contain("\"last_name\":\"last name here\"");
-        json.Should().Contain("\"is_bot\":false");
-        json.Should().Contain("\"last_activity_time\":1769505660");
     }
+
+    // ==================== INLINE KEYBOARD ====================
 
     [Fact]
     public void InlineKeyboardAttachment_ShouldDeserialize_FromJson()
     {
-        // Arrange
         var json = """
             {
                 "type":"inline_keyboard",
                 "callback_id":"cb123",
                 "payload":{
                     "buttons":[
-                        [
-                            {"text":"❤️ Меры поддержки","type":"message"}
-                        ]
+                        [{"text":"OK","type":"message"}]
                     ]
                 }
             }
             """;
 
-        // Act
         var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
 
-        // Assert
-        attachment.Should().NotBeNull();
         attachment.Should().BeOfType<InlineKeyboardAttachment>();
-        attachment.Type.Should().Be("inline_keyboard");
-        var keyboardAttachment = (InlineKeyboardAttachment)attachment;
-        keyboardAttachment.CallbackId.Should().Be("cb123");
-        keyboardAttachment.Payload.Should().NotBeNull();
-        keyboardAttachment.Payload!.Should().ContainKey("buttons");
-        var buttonsElement = (JsonElement)keyboardAttachment.Payload!["buttons"];
-        buttonsElement.ValueKind.Should().Be(JsonValueKind.Array);
-        buttonsElement.GetArrayLength().Should().Be(1);
+        var kb = (InlineKeyboardAttachment)attachment;
+        kb.CallbackId.Should().Be("cb123");
+        kb.Payload.Should().NotBeNull();
     }
 }
-

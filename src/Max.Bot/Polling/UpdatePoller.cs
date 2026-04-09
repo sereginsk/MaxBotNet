@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
 using Max.Bot.Exceptions;
+using Max.Bot.Networking;
 using Max.Bot.Types;
 using Max.Bot.Types.Enums;
+using Max.Bot.Types.Helpers;
 using Max.Bot.Types.Requests;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +21,7 @@ namespace Max.Bot.Polling;
 public sealed class UpdatePoller : IAsyncDisposable
 {
     private readonly IMaxBotApi _api;
-    private readonly ISubscriptionsApi _subscriptionsApi;
+    private readonly IMaxHttpClient _pollClient;
     private readonly MaxBotOptions _options;
     private readonly ILogger<UpdatePoller>? _logger;
     private readonly IServiceProvider? _serviceProvider;
@@ -29,6 +30,8 @@ public sealed class UpdatePoller : IAsyncDisposable
     private readonly HashSet<UpdateType>? _handlingTypeFilter;
     private readonly List<UpdateType>? _typeQueryFilter;
     private readonly HashSet<string>? _allowedUsernames;
+    private readonly string _token;
+    private readonly bool _ownsPollClient;
 
     private CancellationTokenSource? _cts;
     private Task? _pollingTask;
@@ -39,18 +42,49 @@ public sealed class UpdatePoller : IAsyncDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="UpdatePoller"/> class.
     /// </summary>
+    /// <param name="api">The bot API surface used for non-polling requests.</param>
+    /// <param name="subscriptionsApi">Reserved for backward compatibility; currently unused as polling uses its own HTTP client.</param>
+    /// <param name="options">Bot options containing token, base URL, and polling settings.</param>
+    /// <param name="pollClient">HTTP client dedicated to long polling. If null, a default client will be created internally.</param>
+    /// <param name="logger">Optional logger.</param>
+    /// <param name="serviceProvider">Optional service provider for handler resolution.</param>
     public UpdatePoller(
         IMaxBotApi api,
         ISubscriptionsApi subscriptionsApi,
         MaxBotOptions options,
+        IMaxHttpClient? pollClient = null,
         ILogger<UpdatePoller>? logger = null,
         IServiceProvider? serviceProvider = null)
     {
         _api = api ?? throw new ArgumentNullException(nameof(api));
-        _subscriptionsApi = subscriptionsApi ?? throw new ArgumentNullException(nameof(subscriptionsApi));
+        _ = subscriptionsApi ?? throw new ArgumentNullException(nameof(subscriptionsApi));
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _token = $"Bearer {options.Token}";
+
+        // Create default polling client if none provided
+        if (pollClient == null)
+        {
+            var defaultClient = new System.Net.Http.HttpClient
+            {
+                Timeout = _options.Polling.LongPollingTimeout + TimeSpan.FromSeconds(10)
+            };
+            var clientOptions = new MaxBotClientOptions
+            {
+                BaseUrl = _options.BaseUrl,
+                Timeout = defaultClient.Timeout,
+                RetryCount = 3,
+                EnableDetailedLogging = false
+            };
+            _pollClient = new MaxHttpClient(defaultClient, clientOptions);
+            _ownsPollClient = true;
+        }
+        else
+        {
+            _pollClient = pollClient;
+            _ownsPollClient = false;
+        }
 
         _marker = _options.Polling.InitialMarker;
         _handlingTypeFilter = UpdateFilterUtilities.BuildTypeFilter(options);
@@ -136,6 +170,12 @@ public sealed class UpdatePoller : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await StopAsync(CancellationToken.None).ConfigureAwait(false);
+
+        // Dispose the polling client only if we created it internally
+        if (_ownsPollClient)
+        {
+            _pollClient?.Dispose();
+        }
     }
 
     private async Task PollAsync(CancellationToken cancellationToken)
@@ -213,15 +253,66 @@ public sealed class UpdatePoller : IAsyncDisposable
 
     private async Task<GetUpdatesResponse> FetchUpdatesAsync(long? marker, CancellationToken cancellationToken)
     {
-        var request = new GetUpdatesRequest
+        // Build query parameters for GET /updates.
+        // This mirrors SubscriptionsApi.GetUpdatesAsync but executes against
+        // the dedicated polling client with its own (larger) timeout.
+        var queryParams = new Dictionary<string, string?>
         {
-            Limit = _options.Polling.BatchSize,
-            Timeout = (int)Math.Round(_options.Polling.LongPollingTimeout.TotalSeconds),
-            Marker = marker,
-            Types = _typeQueryFilter
+            { "limit", _options.Polling.BatchSize.ToString() },
+            { "timeout", ((int)Math.Round(_options.Polling.LongPollingTimeout.TotalSeconds)).ToString() }
         };
 
-        return await _subscriptionsApi.GetUpdatesAsync(request, cancellationToken).ConfigureAwait(false);
+        if (marker.HasValue)
+        {
+            queryParams["marker"] = marker.Value.ToString();
+        }
+
+        if (_typeQueryFilter != null && _typeQueryFilter.Count > 0)
+        {
+            queryParams["types"] = string.Join(",", _typeQueryFilter.Select(UpdateTypeHelper.ToStringValue));
+        }
+
+        var apiRequest = new MaxApiRequest
+        {
+            Method = HttpMethod.Get,
+            Endpoint = "/updates",
+            QueryParameters = queryParams,
+            Headers = new Dictionary<string, string?>
+            {
+                ["Authorization"] = _token
+            }
+        };
+
+        string body;
+        try
+        {
+            body = await _pollClient.SendAsyncRaw(apiRequest, cancellationToken).ConfigureAwait(false);
+        }
+        catch (MaxApiException)
+        {
+            throw; // Let the caller's catch-all handle it
+        }
+        catch (Exception ex)
+        {
+            throw new MaxNetworkException($"Failed to fetch updates: {ex.Message}", ex);
+        }
+
+        if (string.IsNullOrWhiteSpace(body))
+        {
+            throw new MaxApiException(
+                "Polling request returned empty response.",
+                null,
+                System.Net.HttpStatusCode.BadRequest);
+        }
+
+        try
+        {
+            return MaxJsonSerializer.Deserialize<GetUpdatesResponse>(body);
+        }
+        catch (Exception ex)
+        {
+            throw new MaxNetworkException($"Failed to deserialize polling response: {ex.Message}", ex);
+        }
     }
 
     private bool ShouldDispatch(Update update)
@@ -307,35 +398,6 @@ public sealed class UpdatePoller : IAsyncDisposable
         }
 
         return candidates.Distinct().ToList();
-    }
-
-    private static string ToSnakeCase(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return string.Empty;
-        }
-
-        var builder = new StringBuilder(value.Length + 4);
-        for (var index = 0; index < value.Length; index++)
-        {
-            var c = value[index];
-            if (char.IsUpper(c))
-            {
-                if (index > 0)
-                {
-                    builder.Append('_');
-                }
-
-                builder.Append(char.ToLowerInvariant(c));
-            }
-            else
-            {
-                builder.Append(c);
-            }
-        }
-
-        return builder.ToString();
     }
 }
 

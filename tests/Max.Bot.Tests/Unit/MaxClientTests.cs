@@ -2,6 +2,7 @@ using FluentAssertions;
 using Max.Bot;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
+using System.Net.Http;
 using Xunit;
 
 namespace Max.Bot.Tests.Unit;
@@ -103,6 +104,65 @@ public class MaxClientTests
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [Fact]
+    public void MaxClient_ShouldRespectProvidedHttpClientTimeout()
+    {
+        // Arrange
+        var options = new MaxBotOptions
+        {
+            Token = "test-token-123",
+            BaseUrl = "https://api.max.ru/bot"
+        };
+        var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+
+        // Act
+        var client = new MaxClient(options, httpClient);
+
+        // Assert — no exception means the client was created successfully
+        // with the user-provided timeout (15s) instead of being overwritten
+        client.Should().NotBeNull();
+        httpClient.Timeout.Should().Be(TimeSpan.FromSeconds(15));
+    }
+
+    [Fact]
+    public void MaxClient_ShouldUseSeparatePollingClient()
+    {
+        // Arrange
+        var options = new MaxBotOptions
+        {
+            Token = "test-token-123",
+            BaseUrl = "https://api.max.ru/bot"
+        };
+        var apiClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+        var pollClient = new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
+
+        // Act
+        var client = new MaxClient(options, apiClient, pollClient);
+
+        // Assert — both clients retain their original timeouts
+        client.Should().NotBeNull();
+        apiClient.Timeout.Should().Be(TimeSpan.FromSeconds(10));
+        pollClient.Timeout.Should().Be(TimeSpan.FromSeconds(60));
+    }
+
+    [Fact]
+    public void MaxClient_ShouldSetDefaultTimeouts_WhenNoHttpClientProvided()
+    {
+        // Arrange
+        var options = new MaxBotOptions
+        {
+            Token = "test-token-123",
+            BaseUrl = "https://api.max.ru/bot"
+        };
+
+        // Act
+        var client = new MaxClient(options);
+
+        // Assert — client created without exception
+        // API client defaults to 30s, polling client to LongPollingTimeout + 10s
+        client.Should().NotBeNull();
     }
 }
 

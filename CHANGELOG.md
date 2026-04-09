@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.5.2-alpha] - 2026-04-09
+
+### Breaking Changes
+
+#### Attachment Models — Flat Format
+Все attachment-модели переведены на плоский формат (данные прямо на уровне attachment). Это соответствует реальному формату JSON от Max Bot API.
+
+- `PhotoAttachment.Photo` удалено → используй `photoAttachment.FileId`, `photoAttachment.Url`, `photoAttachment.Width`, `photoAttachment.Height` напрямую.
+- `VideoAttachment.Video` удалено → используй `videoAttachment.Duration`, `videoAttachment.MimeType`, `videoAttachment.Url` напрямую.
+- `AudioAttachment.Audio` удалено → используй `audioAttachment.Duration`, `audioAttachment.MimeType`, `audioAttachment.Url` напрямую.
+- `DocumentAttachment.Document` удалено → используй `documentAttachment.FileName`, `documentAttachment.MimeType`, `documentAttachment.Url` напрямую.
+- `ContactAttachment.Payload` удалено → используй `contactAttachment.VcfInfo` и `contactAttachment.MaxInfo` напрямую.
+- `ImageAttachment` удалён: объединён с `PhotoAttachment` (оба использовали `type="image"`).
+- `ContactHelpers.GetPhoneNumber()` и `GetFullName()` теперь принимают `ContactAttachment` вместо `Contact?`.
+
+#### Chats API — ChatMember вместо User
+- `GetChatMembersAsync()` и `GetChatAdminsAsync()` теперь возвращают `ChatMember[]` вместо `User[]`. Новый тип `ChatMember` содержит расширенные поля: `is_owner`, `is_admin`, `join_time`, `avatar_url`, `permissions` и др.
+
+#### MaxClient — Dual HttpClient
+- `MaxClient` принимает дополнительный параметр `pollingHttpClient` для отдельного клиента long polling.
+
+### Added
+
+- **`ChatMember`**: Новая модель для членов чата (ответ `GET /chats/{chatId}/members`). Содержит `user_id`, `name`, `first_name`, `is_owner`, `is_admin`, `join_time`, `avatar_url`, `full_avatar_url`, `permissions`.
+- **`ChatAdminPermission`**: Enum для админ-разрешений в чате.
+
+### Changed
+
+- **`AttachmentJsonConverter`**: Маршрутизация упрощена — теперь по полю `type` (primary), а не по наличию вложенных полей.
+- **`MaxClient`**: Два независимых `HttpClient` — API-клиент (30s timeout) для обычных запросов и polling-клиент (`LongPollingTimeout + 10s`) исключительно для `GET /updates`.
+- **HttpClient timeout respect**: `MaxClient` больше не перезаписывает `HttpClient.Timeout` пользовательских клиентов.
+- **`UpdatePoller`**: `pollClient` опционален — создаётся автоматически с правильным таймаутом, если не передан.
+- **Dispose safety**: `MaxClient` и `UpdatePoller` дизпозят только созданные ими HTTP-клиенты. Переданные снаружи клиенты никогда не дизпозятся.
+- **`MaxHttpClient`**: Добавлено логгирование на уровне Debug при отключённом Detailed Logging.
+
+### Fixed
+
+- **PhotoAttachment.Photo = null**: Критический баг — десериализация фото-аттачментов всегда возвращала `null`, т.к. API отдаёт данные плоско, а модель ожидала `{"photo": {...}}`.
+- **SendMessageAsync HTTP 404**: `SendMessageRequest.Attachments` теперь инициализируется `Array.Empty<AttachmentRequest>()` — сервер требовал присутствия этого поля.
+- **User-Agent header**: Добавлен обязательный заголовок `User-Agent: MaxMessenger.Bot/0.5.1-alpha` (требование API).
+- **`MessageTests.MessageBody_ShouldDeserialize`**: Обновлён тест на плоский формат.
+- **`ContactBotSample`**: Обновлён пример — `.Payload?.VcfInfo` → `.VcfInfo`.
+
 ## [0.5.1-alpha] - 2026-03-09
 
 ### Changed
@@ -187,7 +232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.1-alpha...HEAD
+[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.2-alpha...HEAD
+[0.5.2-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.1-alpha...v0.5.2-alpha
 [0.5.1-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.0-alpha...v0.5.1-alpha
 [0.5.0-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.4.1-alpha...v0.5.0-alpha
 [0.4.1-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.4.0-alpha...v0.4.1-alpha

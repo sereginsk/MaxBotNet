@@ -289,8 +289,7 @@ public class ContactHelpersTests
     [Fact]
     public void GetPhoneNumber_FromMaxInfo_ShouldReturnPhoneNumber()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nTEL:+9999999999\nEND:VCARD",
             MaxInfo = new ContactInfo
@@ -299,35 +298,29 @@ public class ContactHelpersTests
             }
         };
 
-        // Act
-        var phoneNumber = ContactHelpers.GetPhoneNumber(contact);
+        var phoneNumber = ContactHelpers.GetPhoneNumber(attachment);
 
-        // Assert
         phoneNumber.Should().Be("+1234567890");
     }
 
     [Fact]
     public void GetPhoneNumber_FromVcfInfo_WhenMaxInfoIsNull_ShouldParsePhoneNumber()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nTEL:+9876543210\nEND:VCARD",
             MaxInfo = null
         };
 
-        // Act
-        var phoneNumber = ContactHelpers.GetPhoneNumber(contact);
+        var phoneNumber = ContactHelpers.GetPhoneNumber(attachment);
 
-        // Assert
         phoneNumber.Should().Be("+9876543210");
     }
 
     [Fact]
     public void GetPhoneNumber_FromVcfInfo_WhenMaxInfoPhoneNumberIsNull_ShouldParsePhoneNumber()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nTEL:+5555555555\nEND:VCARD",
             MaxInfo = new ContactInfo
@@ -336,45 +329,29 @@ public class ContactHelpersTests
             }
         };
 
-        // Act
-        var phoneNumber = ContactHelpers.GetPhoneNumber(contact);
+        var phoneNumber = ContactHelpers.GetPhoneNumber(attachment);
 
-        // Assert
         phoneNumber.Should().Be("+5555555555");
-    }
-
-    [Fact]
-    public void GetPhoneNumber_WithNullContact_ShouldReturnNull()
-    {
-        // Act
-        var phoneNumber = ContactHelpers.GetPhoneNumber(null);
-
-        // Assert
-        phoneNumber.Should().BeNull();
     }
 
     [Fact]
     public void GetPhoneNumber_WithNoPhoneNumber_ShouldReturnNull()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nFN:No Phone\nEND:VCARD",
             MaxInfo = new ContactInfo()
         };
 
-        // Act
-        var phoneNumber = ContactHelpers.GetPhoneNumber(contact);
+        var phoneNumber = ContactHelpers.GetPhoneNumber(attachment);
 
-        // Assert
         phoneNumber.Should().BeNull();
     }
 
     [Fact]
     public void GetFullName_FromMaxInfo_ShouldReturnFullName()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nFN:Other Name\nEND:VCARD",
             MaxInfo = new ContactInfo
@@ -383,35 +360,29 @@ public class ContactHelpersTests
             }
         };
 
-        // Act
-        var fullName = ContactHelpers.GetFullName(contact);
+        var fullName = ContactHelpers.GetFullName(attachment);
 
-        // Assert
         fullName.Should().Be("John Doe");
     }
 
     [Fact]
     public void GetFullName_FromVcfInfo_WhenMaxInfoIsNull_ShouldParseFullName()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nFN:Jane Smith\nEND:VCARD",
             MaxInfo = null
         };
 
-        // Act
-        var fullName = ContactHelpers.GetFullName(contact);
+        var fullName = ContactHelpers.GetFullName(attachment);
 
-        // Assert
         fullName.Should().Be("Jane Smith");
     }
 
     [Fact]
     public void GetFullName_FromVcfInfo_WhenMaxInfoFullNameIsNull_ShouldParseFullName()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nFN:Bob Johnson\nEND:VCARD",
             MaxInfo = new ContactInfo
@@ -420,37 +391,22 @@ public class ContactHelpersTests
             }
         };
 
-        // Act
-        var fullName = ContactHelpers.GetFullName(contact);
+        var fullName = ContactHelpers.GetFullName(attachment);
 
-        // Assert
         fullName.Should().Be("Bob Johnson");
-    }
-
-    [Fact]
-    public void GetFullName_WithNullContact_ShouldReturnNull()
-    {
-        // Act
-        var fullName = ContactHelpers.GetFullName(null);
-
-        // Assert
-        fullName.Should().BeNull();
     }
 
     [Fact]
     public void GetPhoneNumber_WithEmptyVcf_ShouldReturnNull()
     {
-        // Arrange
-        var contact = new Contact
+        var attachment = new ContactAttachment
         {
             VcfInfo = "BEGIN:VCARD\nVERSION:3.0\nEND:VCARD",
             MaxInfo = null
         };
 
-        // Act
-        var phoneNumber = ContactHelpers.GetPhoneNumber(contact);
+        var phoneNumber = ContactHelpers.GetPhoneNumber(attachment);
 
-        // Assert
         phoneNumber.Should().BeNull();
     }
 
