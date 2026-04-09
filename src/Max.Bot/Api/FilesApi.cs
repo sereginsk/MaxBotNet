@@ -77,7 +77,7 @@ internal class FilesApi : BaseApi, IFilesApi
 
             var currentOffset = totalBytesRead;
             var currentBytesRead = bytesRead;
-            
+
             // Клонируем данные чанка, чтобы избежать перезаписи буфера при следующей итерации
             // (HttpClient отправляет данные асинхронно и может читать буфер, когда мы уже пишем в него следующий чанк)
             var chunkData = new byte[currentBytesRead];

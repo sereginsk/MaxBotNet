@@ -1,8 +1,8 @@
+using System.Net.Http;
 using FluentAssertions;
 using Max.Bot;
 using Max.Bot.Api;
 using Max.Bot.Configuration;
-using System.Net.Http;
 using Xunit;
 
 namespace Max.Bot.Tests.Unit;
