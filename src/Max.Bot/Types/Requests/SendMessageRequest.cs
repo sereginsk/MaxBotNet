@@ -23,9 +23,11 @@ public class SendMessageRequest
     /// <value>
     /// The attachments array. Each attachment must have a type (image, video, audio, file)
     /// and a payload object containing attachment data.
+    /// Defaults to an empty array to match the MAX API requirement — the server expects
+    /// this field to always be present in the request body.
     /// </value>
     [JsonPropertyName("attachments")]
-    public AttachmentRequest[]? Attachments { get; set; }
+    public AttachmentRequest[] Attachments { get; set; } = Array.Empty<AttachmentRequest>();
 
     /// <summary>
     /// Gets or sets the link to a message for forwarding or replying.

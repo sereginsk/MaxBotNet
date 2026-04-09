@@ -203,6 +203,9 @@ public class MaxHttpClient : IMaxHttpClient
         var url = request.BuildUrl(_options.BaseUrl);
         var httpRequest = new HttpRequestMessage(request.Method, url);
 
+        // MAX API requires User-Agent header (same as Go reference client)
+        httpRequest.Headers.TryAddWithoutValidation("User-Agent", "MaxMessenger.Bot/0.5.1-alpha");
+
         if (request.Headers != null)
         {
             foreach (var header in request.Headers)
