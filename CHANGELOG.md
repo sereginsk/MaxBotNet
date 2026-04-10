@@ -7,13 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.3-alpha] - 2026-04-10
+## [0.5.4-alpha] - 2026-04-10
 
 ### Fixed
 
-- **Long polling updates stopped arriving**: Исправлена регрессия в `UpdatePoller` после рефакторинга dual `HttpClient`. `GET /updates` снова отправляет заголовок `Authorization` в корректном формате `Authorization: <token>` вместо ошибочного `Authorization: Bearer <token>`.
-- **Incoming bot events restored**: Возвращена корректная доставка входящих событий при long polling, включая `message_created` и `message_callback` (текстовые сообщения и нажатия на inline-кнопки).
+- **Long polling events not delivered**: Корректно исправлена регрессия в `UpdatePoller`, из-за которой `GET /updates` отправлял заголовок `Authorization` в неверном формате. Polling снова использует `Authorization: <token>` вместо ошибочного `Authorization: Bearer <token>`.
+- **Incoming bot events restored**: Восстановлена доставка входящих событий при long polling, включая `message_created` и `message_callback` (текстовые сообщения и нажатия на inline-кнопки).
 - **Regression coverage**: Добавлен unit test на формат заголовка авторизации для polling-запросов.
+
+### Notes
+
+- **Supersedes 0.5.3-alpha**: Версия `0.5.3-alpha` была опубликована с неправильного тега и не содержала фактический фикс polling-регрессии. Используйте `0.5.4-alpha`.
+
+## [0.5.3-alpha] - 2026-04-10
+
+### Notes
+
+- **Incorrect release tag**: Версия была опубликована с неправильного коммита и не содержала ожидаемый фикс long polling. Заменена версией `0.5.4-alpha`.
 
 ## [0.5.2-alpha] - 2026-04-09
 
@@ -240,7 +250,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.3-alpha...HEAD
+[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.4-alpha...HEAD
+[0.5.4-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.3-alpha...v0.5.4-alpha
 [0.5.3-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.2-alpha...v0.5.3-alpha
 [0.5.2-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.1-alpha...v0.5.2-alpha
 [0.5.1-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.0-alpha...v0.5.1-alpha
