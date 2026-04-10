@@ -61,7 +61,7 @@ public sealed class UpdatePoller : IAsyncDisposable
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _logger = logger;
         _serviceProvider = serviceProvider;
-        _token = $"Bearer {options.Token}";
+        _token = options.Token;
 
         // Create default polling client if none provided
         if (pollClient == null)

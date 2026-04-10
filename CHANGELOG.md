@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.3-alpha] - 2026-04-10
+
+### Fixed
+
+- **Long polling updates stopped arriving**: Исправлена регрессия в `UpdatePoller` после рефакторинга dual `HttpClient`. `GET /updates` снова отправляет заголовок `Authorization` в корректном формате `Authorization: <token>` вместо ошибочного `Authorization: Bearer <token>`.
+- **Incoming bot events restored**: Возвращена корректная доставка входящих событий при long polling, включая `message_created` и `message_callback` (текстовые сообщения и нажатия на inline-кнопки).
+- **Regression coverage**: Добавлен unit test на формат заголовка авторизации для polling-запросов.
+
 ## [0.5.2-alpha] - 2026-04-09
 
 ### Breaking Changes
@@ -232,7 +240,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.2-alpha...HEAD
+[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.3-alpha...HEAD
+[0.5.3-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.2-alpha...v0.5.3-alpha
 [0.5.2-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.1-alpha...v0.5.2-alpha
 [0.5.1-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.0-alpha...v0.5.1-alpha
 [0.5.0-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.4.1-alpha...v0.5.0-alpha
