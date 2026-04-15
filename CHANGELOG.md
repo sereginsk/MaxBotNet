@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.5-alpha] - 2026-04-15
+
+### Added
+
+- Добавлена поддержка .NET 8.
+
 ## [0.5.4-alpha] - 2026-04-10
 
 ### Fixed
