@@ -1,7 +1,7 @@
 # Max.Bot — C# библиотека для Max Messenger Bot API
 
 [![.NET](https://img.shields.io/badge/.NET-10%20%7C%209%20%7C%208-purple.svg)](https://dotnet.microsoft.com/)
-[![NuGet](https://img.shields.io/badge/nuget-v0.6.0--alpha-blue)](https://www.nuget.org/packages/MaxMessenger.Bot)
+[![NuGet](https://img.shields.io/badge/nuget-v0.6.1--alpha-blue)](https://www.nuget.org/packages/MaxMessenger.Bot)
 [![Build](https://img.shields.io/github/actions/workflow/status/MaxBotNet/MaxBotNet/ci.yml?label=CI)](https://github.com/MaxBotNet/MaxBotNet/actions)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
@@ -129,6 +129,6 @@ Apache License 2.0 — см. [LICENSE](LICENSE).
 
 ---
 
-**Версия:** 0.6.0-alpha  
+**Версия:** 0.6.1-alpha  
 **Статус:** Активная разработка  
 **Контакты:** issues/PR в репозитории

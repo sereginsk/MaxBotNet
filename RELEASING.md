@@ -34,13 +34,13 @@ Inspect the generated `.nupkg`/`.snupkg` locally (for example, by expanding the 
 
 ## 3. Versioning and tagging
 
-1. Обновите `CHANGELOG.md` и `src/Max.Bot/Max.Bot.csproj` на один и тот же SemVer, например `0.6.0-alpha`.
+1. Обновите `CHANGELOG.md` и `src/Max.Bot/Max.Bot.csproj` на один и тот же SemVer, например `0.6.1-alpha`.
 2. Закоммитьте изменения.
 3. После зелёного CI создайте и запушьте тег:
 
 ```powershell
-git tag v0.6.0-alpha
-git push origin v0.6.0-alpha
+git tag v0.6.1-alpha
+git push origin v0.6.1-alpha
 ```
 
 Tag format must stay `vX.Y.Z` or `vX.Y.Z-alpha`, because `.github/workflows/release.yml` derives `PackageVersion` from the tag name.
@@ -67,7 +67,7 @@ Tag format must stay `vX.Y.Z` or `vX.Y.Z-alpha`, because `.github/workflows/rele
 ```powershell
 dotnet new console -n MaxBotNet.ReleaseSmoke
 cd MaxBotNet.ReleaseSmoke
-dotnet add package MaxMessenger.Bot --version 0.6.0-alpha --prerelease
+dotnet add package MaxMessenger.Bot --version 0.6.1-alpha --prerelease
 dotnet build
 ```
 

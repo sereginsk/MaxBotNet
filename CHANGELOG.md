@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.0-alpha] - 2026-04-28
+## [0.6.1-alpha] - 2026-04-28
 
 ### Breaking Changes
 
@@ -291,8 +291,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.6.0-alpha...HEAD
-[0.6.0-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.6-alpha...v0.6.0-alpha
+[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.6.1-alpha...HEAD
+[0.6.1-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.6-alpha...v0.6.1-alpha
 [0.5.6-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.5-alpha...v0.5.6-alpha
 [0.5.5-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.4-alpha...v0.5.5-alpha
 [0.5.4-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.3-alpha...v0.5.4-alpha
