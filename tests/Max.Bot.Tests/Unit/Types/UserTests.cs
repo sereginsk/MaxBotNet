@@ -11,7 +11,7 @@ public class UserTests
     public void Deserialize_ShouldDeserializeUser()
     {
         // Arrange
-        var json = """{"user_id":123,"username":"testuser","first_name":"Test","last_name":"User","is_bot":false}""";
+        var json = """{"user_id":123,"username":"testuser","first_name":"Test","last_name":"User","is_bot":false,"name":"Test User","description":"Bot description","avatar_url":"https://example.com/avatar.png","full_avatar_url":"https://example.com/avatar_full.png","commands":[{"name":"start","description":"Start bot"}]}""";
 
         // Act
         var result = MaxJsonSerializer.Deserialize<User>(json);
@@ -23,6 +23,12 @@ public class UserTests
         result.FirstName.Should().Be("Test");
         result.LastName.Should().Be("User");
         result.IsBot.Should().BeFalse();
+        result.Name.Should().Be("Test User");
+        result.Description.Should().Be("Bot description");
+        result.AvatarUrl.Should().Be("https://example.com/avatar.png");
+        result.FullAvatarUrl.Should().Be("https://example.com/avatar_full.png");
+        result.Commands.Should().ContainSingle();
+        result.Commands![0].Name.Should().Be("start");
     }
 
     [Fact]
@@ -53,7 +59,12 @@ public class UserTests
             Username = "testuser",
             FirstName = "Test",
             LastName = "User",
-            IsBot = false
+            IsBot = false,
+            Name = "Test User",
+            Description = "Bot description",
+            AvatarUrl = "https://example.com/avatar.png",
+            FullAvatarUrl = "https://example.com/avatar_full.png",
+            Commands = new[] { new BotCommand("start", "Start bot") }
         };
 
         // Act
@@ -66,6 +77,11 @@ public class UserTests
         json.Should().Contain("\"first_name\":\"Test\"");
         json.Should().Contain("\"last_name\":\"User\"");
         json.Should().Contain("\"is_bot\":false");
+        json.Should().Contain("\"name\":\"Test User\"");
+        json.Should().Contain("\"description\":\"Bot description\"");
+        json.Should().Contain("\"avatar_url\":\"https://example.com/avatar.png\"");
+        json.Should().Contain("\"full_avatar_url\":\"https://example.com/avatar_full.png\"");
+        json.Should().Contain("\"commands\"");
     }
 
     [Fact]

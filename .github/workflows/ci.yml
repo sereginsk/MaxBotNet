@@ -1,6 +1,6 @@
 # 📁 ci.yml - CI workflow for Max.Bot
 # 🎯 Core function: Build, lint, and test on push and pull requests
-# 🔗 Key dependencies: dotnet 9 SDK, coverlet.msbuild, ReportGenerator action
+# 🔗 Key dependencies: .NET 10/9/8 SDKs, coverlet.msbuild, ReportGenerator action
 # 💡 Usage: Enforces quality gates before merges and releases
 name: CI
 
@@ -34,7 +34,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: |
+            10.0.x
+            9.0.x
+            8.0.x
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -114,4 +117,3 @@ jobs:
           path: |
             src/Max.Bot/bin/Release/**/*.nupkg
             src/Max.Bot/bin/Release/**/*.snupkg
-

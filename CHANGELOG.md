@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0-alpha] - 2026-04-28
+
+### Breaking Changes
+
+- **Chats API membership contract**: `GetChatMembershipAsync()` теперь возвращает `ChatMember` вместо `Chat`, а `GetChatMembersAsync()` использует параметры `marker` / `count` и ответ `ChatMembersResponse`.
+- **Edit message request DTOs**: `EditMessageRequest.Attachments` теперь использует `AttachmentRequest[]`, а `Link` — `NewMessageLink`, чтобы соответствовать формату `PUT /messages`.
+- **Upload result contract**: `FileUploadResult` приведён к официально подтверждённому token-only формату; неподтверждённые `FileId`, `Photos` и `PhotoSizeToken` удалены.
+
+### Added
+
+- **.NET 10 support**: Библиотека, тесты и examples теперь таргетят `net10.0`, `net9.0` и `net8.0`.
+- **Chat members response**: Добавлена модель `ChatMembersResponse` для ответов endpoints участников и администраторов чата.
+- **MAX API model fields**: Добавлены актуальные поля в `User`, `ChatMember`, `Contact` и `ContactAttachment`, включая `contact.hash`.
+- **Bot started payload**: `Update`, `BotStartedUpdate` и `UpdateJsonConverter` теперь поддерживают `payload` для deep-link запуска бота.
+- **Chat admin permissions**: Добавлены недостающие значения `ChatAdminPermission` из актуального MAX API.
+
+### Changed
+
+- **MAX API model audit**: DTO, converters и request/response модели приведены к официальным схемам MAX Bot API там, где они подтверждены документацией.
+- **Chats and messages API contracts**: `ChatsApi`, `MessagesApi`, upload flow и attachment handling синхронизированы с актуальными response/request shapes.
+- **CI/CD release flow**: GitHub Actions обновлены под multi-target `.NET 10 / 9 / 8`, релизные проверки и автоматическое создание GitHub Release.
+
+### Fixed
+
+- **Contact vCard parsing**: Исправлен парсинг поля `N:` в `ContactHelpers`, которое ошибочно матчило `BEGIN:VCARD`.
+- **HTTP errors and logging**: Улучшено поведение `MaxHttpClient` при невалидном error body, retry и диагностическом логировании.
+- **Regression tests**: Обновлены тесты сериализации, API responses, samples и networking под актуальные контракты.
+
 ## [0.5.6-alpha] - 2026-04-28
 
 ### Fixed
@@ -263,7 +291,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.6-alpha...HEAD
+[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.6.0-alpha...HEAD
+[0.6.0-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.6-alpha...v0.6.0-alpha
 [0.5.6-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.5-alpha...v0.5.6-alpha
 [0.5.5-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.4-alpha...v0.5.5-alpha
 [0.5.4-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.3-alpha...v0.5.4-alpha

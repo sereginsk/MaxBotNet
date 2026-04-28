@@ -94,7 +94,7 @@ public class ChatTests
     public void Deserialize_ShouldDeserializeChatWithNewFields()
     {
         // Arrange - using official API field names
-        var json = """{"chat_id":123,"type":"chat","status":"active","title":"Test Chat","last_event_time":1609459200,"participants_count":5,"owner_id":789,"is_public":true,"link":"https://max.ru/chat/123","description":"Test description"}""";
+        var json = """{"chat_id":123,"type":"chat","status":"active","title":"Test Chat","icon":{"url":"https://example.com/icon.png"},"last_event_time":1609459200,"participants_count":5,"owner_id":789,"is_public":true,"link":"https://max.ru/chat/123","description":"Test description"}""";
 
         // Act
         var result = MaxJsonSerializer.Deserialize<Chat>(json);
@@ -105,6 +105,8 @@ public class ChatTests
         result.Type.Should().Be(ChatType.Chat);
         result.Status.Should().Be(ChatStatus.Active);
         result.Title.Should().Be("Test Chat");
+        result.Icon.Should().NotBeNull();
+        result.Icon!.Url.Should().Be("https://example.com/icon.png");
         result.LastEventTime.Should().Be(1609459200);
         result.ParticipantsCount.Should().Be(5);
         result.OwnerId.Should().Be(789);
@@ -144,6 +146,7 @@ public class ChatTests
             Type = ChatType.Chat,
             Status = ChatStatus.Active,
             Title = "Test Chat",
+            Icon = new Image { Url = "https://example.com/icon.png" },
             LastEventTime = 1609459200,
             ParticipantsCount = 5,
             OwnerId = 789,
@@ -161,6 +164,7 @@ public class ChatTests
         json.Should().Contain("\"type\":\"chat\"");
         json.Should().Contain("\"status\":\"active\"");
         json.Should().Contain("\"title\":\"Test Chat\"");
+        json.Should().Contain("\"icon\"");
         json.Should().Contain("\"last_event_time\":1609459200");
         json.Should().Contain("\"participants_count\":5");
         json.Should().Contain("\"owner_id\":789");

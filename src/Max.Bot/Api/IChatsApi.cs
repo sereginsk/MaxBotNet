@@ -130,7 +130,7 @@ public interface IChatsApi
     /// <exception cref="Max.Bot.Exceptions.MaxApiException">Thrown when the API returns an error response.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxNetworkException">Thrown when a network error occurs.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
-    Task<Chat> GetChatMembershipAsync(long chatId, CancellationToken cancellationToken = default);
+    Task<ChatMember> GetChatMembershipAsync(long chatId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Leaves a chat (removes the bot from the chat).
@@ -187,15 +187,15 @@ public interface IChatsApi
     /// Gets the list of chat members.
     /// </summary>
     /// <param name="chatId">The unique identifier of the chat.</param>
-    /// <param name="offset">The offset for pagination (optional).</param>
-    /// <param name="limit">The limit for pagination (optional).</param>
+    /// <param name="marker">The marker for pagination (optional).</param>
+    /// <param name="count">The number of members to return (optional).</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an array of members.</returns>
     /// <exception cref="ArgumentException">Thrown when chatId is less than or equal to zero.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxApiException">Thrown when the API returns an error response.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxNetworkException">Thrown when a network error occurs.</exception>
     /// <exception cref="Max.Bot.Exceptions.MaxUnauthorizedException">Thrown when authentication fails.</exception>
-    Task<ChatMember[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default);
+    Task<ChatMember[]> GetChatMembersAsync(long chatId, long? marker = null, int? count = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds members to a chat.

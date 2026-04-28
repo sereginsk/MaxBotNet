@@ -102,6 +102,12 @@ public class Update
     [JsonIgnore]
     public bool? IsMuted { get; set; }
 
+    /// <summary>
+    /// Gets or sets the bot start payload.
+    /// </summary>
+    [JsonIgnore]
+    public string? Payload { get; set; }
+
     #region Typed Update Wrappers
 
     /// <summary>
@@ -248,7 +254,8 @@ public class Update
                 Timestamp = Timestamp,
                 ChatId = ChatId,
                 User = User,
-                UserLocale = UserLocale
+                UserLocale = UserLocale,
+                Payload = Payload
             };
         }
     }

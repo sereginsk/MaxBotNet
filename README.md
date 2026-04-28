@@ -1,11 +1,11 @@
 # Max.Bot — C# библиотека для Max Messenger Bot API
 
-[![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
-[![NuGet](https://img.shields.io/badge/nuget-v0.5.4--alpha-blue)](https://www.nuget.org/packages/MaxMessenger.Bot)
+[![.NET](https://img.shields.io/badge/.NET-10%20%7C%209%20%7C%208-purple.svg)](https://dotnet.microsoft.com/)
+[![NuGet](https://img.shields.io/badge/nuget-v0.6.0--alpha-blue)](https://www.nuget.org/packages/MaxMessenger.Bot)
 [![Build](https://img.shields.io/github/actions/workflow/status/MaxBotNet/MaxBotNet/ci.yml?label=CI)](https://github.com/MaxBotNet/MaxBotNet/actions)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-Полнофункциональная библиотека для работы с [Max Messenger Bot API](https://dev.max.ru/docs-api) на .NET 9. Проект фокусируется на типобезопасности, удобстве интеграции и масштабируемости корпоративных ботов.
+Полнофункциональная библиотека для работы с [Max Messenger Bot API](https://dev.max.ru/docs-api) на .NET 10, .NET 9 и .NET 8. Проект фокусируется на типобезопасности, удобстве интеграции и масштабируемости корпоративных ботов.
 
 ## 📌 Основные возможности
 
@@ -40,7 +40,7 @@ await client.Messages.SendMessageAsync(
     text: "It works! ✅");
 ```
 
-✅ Полноценные примеры (echo-бот, команды, кнопки, файлы) живут в `examples/Max.Bot.Examples` и доступны как `RunAsync()` сценарии.
+✅ Полноценные примеры (echo-бот, команды, кнопки, файлы, контакты) живут в `examples/Max.Bot.Examples` и доступны как `RunAsync()` сценарии.
 
 ## 🧠 Архитектурные ориентиры
 
@@ -52,8 +52,8 @@ await client.Messages.SendMessageAsync(
 ## 🧪 Тесты и качество
 
 - `dotnet build -warnaserror` — проверяет, что все публичные API имеют XML-доки.
-- `dotnet test` — >400 модульных тестов, включая `DocumentationCoverageTests` и проверки сериализации.
-- GitHub Actions workflow `.github/workflows/ci.yml` (Ubuntu + Windows) гоняет форматирование, `dotnet format analyzers`, покрытие (>70 % линий, целимся в 85 %) и `dotnet pack`, загружая артефакты для ревью.
+- `dotnet test` — 635+ модульных тестов, включая `DocumentationCoverageTests` и проверки сериализации.
+- GitHub Actions workflow `.github/workflows/ci.yml` (Ubuntu + Windows) гоняет форматирование, `dotnet format analyzers`, покрытие (минимум 60 % линий, целимся в 85 %) и `dotnet pack`, загружая артефакты для ревью.
 - Smoke-тесты для примеров используют `LoopbackSampleRuntime` и проходят весь `SampleRegistry`, повторяя подход Telegram.Bot и VkNet к офлайн-интеграциям, чтобы код примеров и документация не расходились.
 - Фикстуры API (`tests/Max.Bot.Tests/Integration/Fixtures`) помогают детерминированно воспроизводить ответы `/subscriptions` и `/updates` без реального HTTP.
 
@@ -62,12 +62,12 @@ await client.Messages.SendMessageAsync(
 1. Обновите `CHANGELOG.md`, при необходимости скорректируйте версию в `src/Max.Bot/Max.Bot.csproj`.
 2. Выполните локальный прогон `dotnet format --verify-no-changes`, `dotnet format analyzers --verify-no-changes --no-restore` и `dotnet test -c Release /p:CollectCoverage=true`.
 3. Создайте тег `vX.Y.Z` (SemVer) и запушьте его.
-4. Workflow `.github/workflows/release.yml` повторно выполнит сборку/тесты, упакует с `/p:ContinuousIntegrationBuild=true` и отправит `.nupkg`/`.snupkg` на NuGet через секрет `NUGET_API_KEY`.
-5. После зелёного workflow проверьте запись на NuGet.org и оформите GitHub Release. Подробный чеклист в `RELEASING.md`.
+4. Workflow `.github/workflows/release.yml` повторно выполнит сборку/тесты, упакует с `/p:ContinuousIntegrationBuild=true`, отправит `.nupkg`/`.snupkg` на NuGet через секрет `NUGET_API_KEY` и создаст GitHub Release из `CHANGELOG.md`.
+5. После зелёного workflow проверьте запись на NuGet.org и GitHub Release. Подробный чеклист в `RELEASING.md`.
 
 ## 📚 Документация
 
-- Автогенерируемый XML-файл: `src/Max.Bot/bin/Debug/net9.0/Max.Bot.xml` (включён в NuGet).
+- Автогенерируемый XML-файл: `src/Max.Bot/bin/Debug/<target-framework>/Max.Bot.xml` (включён в NuGet).
 - Официальный Max Messenger API: [dev.max.ru/docs-api](https://dev.max.ru/docs-api) (локальная копия — `docs/max-api-docs/`).
 - Другие реализации для сравнения и проверки совместимости:
   - TypeScript — [max-bot-api-client-ts](https://github.com/max-messenger/max-bot-api-client-ts)
@@ -89,12 +89,13 @@ await client.Messages.SendMessageAsync(
 | `CommandBotExample` | Командный роутер (inspired by Telegram.Bot CommandHandlers). |
 | `KeyboardBotExample` | Reply/inline клавиатуры + работа с callback query. |
 | `FileBotExample` | Загрузка и отправка файлов, пересылка медиа. |
+| `ContactBotSample` | Обработка контактных вложений и vCard. |
 
 Каждый пример конфигурируется через переменные окружения (`MAX_BOT_TOKEN`, `MAX_WEBHOOK_URL`, и т.д.) и не хранит секреты в исходниках.
 
 ## 📦 Установка
 
-1. Установите .NET 9 SDK.
+1. Установите .NET 10 SDK или SDK целевого TFM (`net10.0`, `net9.0`, `net8.0`).
 2. В проекте выполните:
    ```powershell
    dotnet add package MaxMessenger.Bot
@@ -128,6 +129,6 @@ Apache License 2.0 — см. [LICENSE](LICENSE).
 
 ---
 
-**Версия:** 0.5.4-alpha  
+**Версия:** 0.6.0-alpha  
 **Статус:** Активная разработка  
 **Контакты:** issues/PR в репозитории

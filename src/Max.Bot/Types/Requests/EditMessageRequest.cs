@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Max.Bot.Types;
 using Max.Bot.Types.Enums;
 
 namespace Max.Bot.Types.Requests;
@@ -26,14 +25,14 @@ public class EditMessageRequest
     /// If empty array, all attachments will be removed.
     /// </value>
     [JsonPropertyName("attachments")]
-    public Attachment[]? Attachments { get; set; }
+    public AttachmentRequest[]? Attachments { get; set; }
 
     /// <summary>
     /// Gets or sets the link to a message (forwarded or reply).
     /// </summary>
     /// <value>The linked message, or null if not applicable.</value>
     [JsonPropertyName("link")]
-    public Message? Link { get; set; }
+    public NewMessageLink? Link { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to notify chat participants.

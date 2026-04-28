@@ -56,26 +56,19 @@ public class AttachmentJsonConverter : JsonConverter<Attachment>
             return JsonSerializer.Deserialize<ContactAttachment>(root.GetRawText(), options);
         }
 
-        // For type="file", use property presence to distinguish between video/audio/document
+        if (IsType(typeString, AttachmentTypeNames.Video))
+        {
+            return DeserializeAttachment<VideoAttachment>(root, "video", options);
+        }
+
+        if (IsType(typeString, AttachmentTypeNames.Audio))
+        {
+            return DeserializeAttachment<AudioAttachment>(root, "audio", options);
+        }
+
         if (IsType(typeString, AttachmentTypeNames.File))
         {
-            if (root.TryGetProperty("video", out _))
-            {
-                return JsonSerializer.Deserialize<VideoAttachment>(root.GetRawText(), options);
-            }
-
-            if (root.TryGetProperty("audio", out _))
-            {
-                return JsonSerializer.Deserialize<AudioAttachment>(root.GetRawText(), options);
-            }
-
-            if (root.TryGetProperty("document", out _))
-            {
-                return JsonSerializer.Deserialize<DocumentAttachment>(root.GetRawText(), options);
-            }
-
-            // Flat file format — default to DocumentAttachment (has all common fields)
-            return JsonSerializer.Deserialize<DocumentAttachment>(root.GetRawText(), options);
+            return DeserializeAttachment<DocumentAttachment>(root, "document", options);
         }
 
         // Fallback for unknown types — use DocumentAttachment as it has the most generic fields
@@ -111,6 +104,23 @@ public class AttachmentJsonConverter : JsonConverter<Attachment>
             default:
                 throw new JsonException($"Unknown attachment type: {value.GetType()}");
         }
+    }
+
+    private static T? DeserializeAttachment<T>(JsonElement root, string payloadPropertyName, JsonSerializerOptions options)
+        where T : Attachment
+    {
+        if (root.TryGetProperty(payloadPropertyName, out var payload) && payload.ValueKind == JsonValueKind.Object)
+        {
+            var attachment = JsonSerializer.Deserialize<T>(payload.GetRawText(), options);
+            if (attachment != null && root.TryGetProperty("type", out var typeElement) && typeElement.ValueKind == JsonValueKind.String)
+            {
+                attachment.Type = typeElement.GetString() ?? attachment.Type;
+            }
+
+            return attachment;
+        }
+
+        return JsonSerializer.Deserialize<T>(root.GetRawText(), options);
     }
 
     private static bool IsType(string? actualType, string expectedType)

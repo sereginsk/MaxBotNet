@@ -100,7 +100,7 @@ internal class FilesApi : BaseApi, IFilesApi
 
             // Check if this chunk's response already contains the token/result
             var result = ParseUploadResponse(responseBody);
-            if (result.Token != null || result.FileId != null || (result.Photos != null && result.Photos.Count > 0))
+            if (result.Token != null)
             {
                 return result;
             }

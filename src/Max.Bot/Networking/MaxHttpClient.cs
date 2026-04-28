@@ -93,18 +93,34 @@ public class MaxHttpClient : IMaxHttpClient
             try
             {
                 using var httpRequest = BuildHttpRequestMessage(request, cancellationToken);
+                _logger?.LogDebug("Sending HTTP {Method} {Endpoint}", request.Method, request.Endpoint);
+
+                if (_options.EnableDetailedLogging && httpRequest.Content != null)
+                {
+                    var requestBody = await httpRequest.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                    _logger?.LogTrace("Request body: {Body}", requestBody);
+                }
+
                 return await ExecuteWithResponseHandlingAsync(httpRequest, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ShouldRetry(ex, attempt, request) || attempt == _options.RetryCount)
             {
                 lastException = ex;
                 attempt++;
+                _logger?.LogWarning(ex, "HTTP request failed on attempt {Attempt} of {MaxAttempts}", attempt, _options.RetryCount + 1);
                 if (attempt > _options.RetryCount) break;
+                _logger?.LogInformation("Retrying HTTP request, attempt {Attempt} of {MaxAttempts}", attempt + 1, _options.RetryCount + 1);
                 await Task.Delay(CalculateRetryDelay(ex, attempt), cancellationToken).ConfigureAwait(false);
             }
         }
 
-        throw lastException ?? new MaxNetworkException("Request failed after retries.");
+        if (lastException != null)
+        {
+            _logger?.LogError(lastException, "HTTP request retry attempts failed");
+            throw lastException;
+        }
+
+        throw new MaxNetworkException("Request failed after retries.");
     }
 
     /// <summary>
@@ -164,12 +180,20 @@ public class MaxHttpClient : IMaxHttpClient
             {
                 lastException = ex;
                 attempt++;
+                _logger?.LogWarning(ex, "HTTP request failed on attempt {Attempt} of {MaxAttempts}", attempt, _options.RetryCount + 1);
                 if (attempt > _options.RetryCount) break;
+                _logger?.LogInformation("Retrying HTTP request, attempt {Attempt} of {MaxAttempts}", attempt + 1, _options.RetryCount + 1);
                 await Task.Delay(CalculateRetryDelay(ex, attempt), cancellationToken).ConfigureAwait(false);
             }
         }
 
-        throw lastException ?? new MaxNetworkException("Request to absolute URL failed.");
+        if (lastException != null)
+        {
+            _logger?.LogError(lastException, "HTTP request retry attempts failed");
+            throw lastException;
+        }
+
+        throw new MaxNetworkException("Request to absolute URL failed.");
     }
 
     private async Task<string> ExecuteWithResponseHandlingAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -186,14 +210,13 @@ public class MaxHttpClient : IMaxHttpClient
 
         if (_options.EnableDetailedLogging)
         {
-            _logger?.LogTrace("HTTP {Method} {Url} -> {StatusCode} ({ElapsedMs}ms)\nResponse: {Body}",
+            _logger?.LogTrace("HTTP {Method} {Url} -> {StatusCode} ({ElapsedMs}ms)\nResponse body: {Body}",
                 request.Method, request.RequestUri, (int)response.StatusCode, stopwatch.ElapsedMilliseconds, responseBody ?? "(null)");
         }
-        else if (_logger?.IsEnabled(LogLevel.Debug) == true)
+        else
         {
-            // Log response body at Debug level even when detailed logging is off
-            _logger?.LogDebug("HTTP {Method} {Url} -> {StatusCode} ({ElapsedMs}ms)",
-                request.Method, request.RequestUri, (int)response.StatusCode, stopwatch.ElapsedMilliseconds);
+            _logger?.LogDebug("HTTP request succeeded with status {StatusCode} for {Method} {Url} ({ElapsedMs}ms)",
+                (int)response.StatusCode, request.Method, request.RequestUri, stopwatch.ElapsedMilliseconds);
         }
 
         if (!response.IsSuccessStatusCode)
@@ -251,7 +274,9 @@ public class MaxHttpClient : IMaxHttpClient
             catch { /* Not a standard ErrorResponse */ }
         }
 
-        errorMessage ??= $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}";
+        errorMessage ??= string.IsNullOrWhiteSpace(responseBody)
+            ? $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}"
+            : responseBody;
 
         throw response.StatusCode switch
         {

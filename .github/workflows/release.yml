@@ -1,13 +1,16 @@
 # 📁 release.yml - NuGet publishing workflow
-# 🎯 Core function: Builds, tests, and publishes packages on version tags
-# 🔗 Key dependencies: dotnet 9 SDK, ReportGenerator, NuGet.org feed
-# 💡 Usage: Triggered via git tags (v*), pushes signed packages automatically
+# 🎯 Core function: Builds, tests, publishes packages, and creates GitHub releases on version tags
+# 🔗 Key dependencies: .NET 10/9/8 SDKs, NuGet.org feed, GitHub Releases
+# 💡 Usage: Triggered via git tags (v*), pushes packages automatically
 name: Release
 
 on:
   push:
     tags:
       - "v*"
+
+permissions:
+  contents: write
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -27,7 +30,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: |
+            10.0.x
+            9.0.x
+            8.0.x
 
       - name: Restore
         run: dotnet restore Max.Bot.sln
@@ -42,9 +48,6 @@ jobs:
         run: dotnet build Max.Bot.sln --configuration Release --no-restore -warnaserror
 
       - name: Test with coverage
-        # Skip tests for alpha releases to allow rapid iteration
-        # Tests still run in CI workflow for validation
-        if: ${{ !contains(github.ref, '-alpha') }}
         run: >
           dotnet test Max.Bot.sln
           --configuration Release
@@ -52,11 +55,56 @@ jobs:
           /p:CollectCoverage=true
           /p:CoverletOutput=TestResults/Coverage/
           /p:CoverletOutputFormat="cobertura%2copencover"
+          /p:Threshold=${{ env.COVERAGE_THRESHOLD }}
+          /p:ThresholdType=line
+          /p:ThresholdStat=total
           /p:ExcludeByAttribute="GeneratedCodeAttribute"
 
       - name: Determine package version
         id: version
+        shell: bash
         run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate release metadata
+        shell: bash
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag version '$VERSION' is not a valid SemVer value."
+            exit 1
+          fi
+
+          if ! grep -q "<Version>$VERSION</Version>" src/Max.Bot/Max.Bot.csproj; then
+            echo "::error::src/Max.Bot/Max.Bot.csproj does not contain <Version>$VERSION</Version>."
+            exit 1
+          fi
+
+          if ! grep -q "^## \[$VERSION\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md does not contain a release section for $VERSION."
+            exit 1
+          fi
+
+      - name: Extract release notes
+        shell: bash
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          NOTES_FILE="${RUNNER_TEMP}/release-notes.md"
+
+          awk -v version="$VERSION" '
+            BEGIN { found = 0 }
+            $0 ~ "^## \\[" version "\\]" { found = 1; next }
+            found && /^## \\[/ { exit }
+            found { print }
+            END { if (!found) exit 1 }
+          ' CHANGELOG.md > "$NOTES_FILE"
+
+          if ! grep -q '[^[:space:]]' "$NOTES_FILE"; then
+            echo "::error::Release notes for $VERSION are empty."
+            exit 1
+          fi
+
+          echo "Release notes extracted to $NOTES_FILE"
 
       - name: Pack
         run: >
@@ -79,6 +127,7 @@ jobs:
       - name: Publish to NuGet
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        shell: bash
         run: |
           if [ -z "$NUGET_API_KEY" ]; then
             echo "::error::NUGET_API_KEY secret is not configured."
@@ -117,3 +166,12 @@ jobs:
             fi
           done
 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MaxMessenger.Bot ${{ github.ref_name }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            ./nupkgs/*.nupkg
+            ./nupkgs/*.snupkg

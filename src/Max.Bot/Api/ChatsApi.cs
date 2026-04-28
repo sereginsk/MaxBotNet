@@ -112,10 +112,10 @@ internal class ChatsApi : BaseApi, IChatsApi
     }
 
     /// <inheritdoc />
-    public async Task<Chat> GetChatMembershipAsync(long chatId, CancellationToken cancellationToken = default)
+    public async Task<ChatMember> GetChatMembershipAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members/me");
-        return await ExecuteRequestAsync<Chat>(request, cancellationToken).ConfigureAwait(false);
+        return await ExecuteRequestAsync<ChatMember>(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -129,7 +129,8 @@ internal class ChatsApi : BaseApi, IChatsApi
     public async Task<ChatMember[]> GetChatAdminsAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members/admins");
-        return await ExecuteRequestAsync<ChatMember[]>(request, cancellationToken).ConfigureAwait(false);
+        var response = await ExecuteRequestAsync<ChatMembersResponse>(request, cancellationToken).ConfigureAwait(false);
+        return response.Members ?? [];
     }
 
     /// <inheritdoc />
@@ -151,20 +152,21 @@ internal class ChatsApi : BaseApi, IChatsApi
     }
 
     /// <inheritdoc />
-    public async Task<ChatMember[]> GetChatMembersAsync(long chatId, int? offset = null, int? limit = null, CancellationToken cancellationToken = default)
+    public async Task<ChatMember[]> GetChatMembersAsync(long chatId, long? marker = null, int? count = null, CancellationToken cancellationToken = default)
     {
         var queryParams = new Dictionary<string, string?>();
-        if (offset.HasValue)
+        if (marker.HasValue)
         {
-            queryParams["offset"] = offset.Value.ToString();
+            queryParams["marker"] = marker.Value.ToString();
         }
-        if (limit.HasValue)
+        if (count.HasValue)
         {
-            queryParams["limit"] = limit.Value.ToString();
+            queryParams["count"] = count.Value.ToString();
         }
 
         var request = CreateRequest(HttpMethod.Get, $"/chats/{chatId}/members", null, queryParams.Count > 0 ? queryParams : null);
-        return await ExecuteRequestAsync<ChatMember[]>(request, cancellationToken).ConfigureAwait(false);
+        var response = await ExecuteRequestAsync<ChatMembersResponse>(request, cancellationToken).ConfigureAwait(false);
+        return response.Members ?? [];
     }
 
     /// <inheritdoc />

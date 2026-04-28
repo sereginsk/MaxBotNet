@@ -59,10 +59,16 @@ public class ChatMember
     public long? LastActivityTime { get; set; }
 
     /// <summary>
-    /// Gets or sets the user's last access time in this chat (Unix timestamp in seconds).
+    /// Gets or sets the user's description.
+    /// </summary>
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user's last access time in this chat.
     /// </summary>
     [JsonPropertyName("last_access_time")]
-    public int? LastAccessTime { get; set; }
+    public long? LastAccessTime { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the user is the owner of the chat.
@@ -80,7 +86,7 @@ public class ChatMember
     /// Gets or sets the time when the user joined the chat (Unix timestamp in seconds).
     /// </summary>
     [JsonPropertyName("join_time")]
-    public int? JoinTime { get; set; }
+    public long? JoinTime { get; set; }
 
     /// <summary>
     /// Gets or sets the URL of the user's avatar.
@@ -100,4 +106,10 @@ public class ChatMember
     /// </summary>
     [JsonPropertyName("permissions")]
     public ChatAdminPermission[]? Permissions { get; set; }
+
+    /// <summary>
+    /// Gets or sets the alias shown by clients.
+    /// </summary>
+    [JsonPropertyName("alias")]
+    public string? Alias { get; set; }
 }

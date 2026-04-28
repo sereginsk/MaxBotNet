@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Max.Bot.Configuration;
@@ -217,26 +216,12 @@ internal class MessagesApi : BaseApi, IMessagesApi
             throw new ArgumentException("Message ID cannot be null or empty.", nameof(messageId));
         }
 
-        // Получаем текущее сообщение, чтобы сохранить другие вложения (изображения, файлы и т.д.)
-        var currentMessage = await GetMessageAsync(messageId, cancellationToken).ConfigureAwait(false);
-        var attachments = currentMessage.Body?.Attachments ?? Array.Empty<Attachment>();
-        var attachmentsWithoutKeyboard = attachments
-            .Where(a => a is not InlineKeyboardAttachment)
-            .ToList();
-
-        var editRequest = new EditMessageRequest();
-
-        if (keyboard == null)
+        var editRequest = new EditMessageRequest
         {
-            // Удаляем только клавиатуру, сохраняя остальные вложения
-            editRequest.Attachments = attachmentsWithoutKeyboard.ToArray();
-        }
-        else
-        {
-            // Заменяем клавиатуру новой, сохраняя остальные вложения
-            attachmentsWithoutKeyboard.Add(CreateInlineKeyboardAttachmentForEdit(keyboard));
-            editRequest.Attachments = attachmentsWithoutKeyboard.ToArray();
-        }
+            Attachments = keyboard == null
+                ? Array.Empty<AttachmentRequest>()
+                : new[] { CreateInlineKeyboardAttachment(keyboard) }
+        };
 
         return await EditMessageAsync(messageId, editRequest, cancellationToken).ConfigureAwait(false);
     }
@@ -506,26 +491,4 @@ internal class MessagesApi : BaseApi, IMessagesApi
         };
     }
 
-    private static InlineKeyboardAttachment CreateInlineKeyboardAttachmentForEdit(InlineKeyboard keyboard)
-    {
-        ArgumentNullException.ThrowIfNull(keyboard);
-
-        var sourceRows = keyboard.Buttons ?? Array.Empty<InlineKeyboardButton[]>();
-        var normalizedRows = new InlineKeyboardButton[sourceRows.Length][];
-        for (var i = 0; i < sourceRows.Length; i++)
-        {
-            normalizedRows[i] = sourceRows[i] ?? Array.Empty<InlineKeyboardButton>();
-        }
-
-        var payloadKeyboard = new InlineKeyboard(normalizedRows);
-
-        // Сериализуем клавиатуру в JSON, затем десериализуем в Dictionary для payload
-        var keyboardJson = Networking.MaxJsonSerializer.Serialize(payloadKeyboard);
-        var payloadDict = Networking.MaxJsonSerializer.Deserialize<Dictionary<string, object>>(keyboardJson);
-
-        return new InlineKeyboardAttachment
-        {
-            Payload = payloadDict
-        };
-    }
 }

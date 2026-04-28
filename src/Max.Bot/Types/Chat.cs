@@ -49,7 +49,7 @@ public class Chat
     /// Gets or sets the icon of the chat.
     /// </summary>
     [JsonPropertyName("icon")]
-    public Photo? Icon { get; set; }
+    public Image? Icon { get; set; }
 
     /// <summary>
     /// Gets or sets the time of the last event in the chat (Unix timestamp in milliseconds).

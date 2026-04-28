@@ -42,4 +42,34 @@ public enum ChatAdminPermission
     /// Serializes as "write".
     /// </summary>
     Write,
+
+    /// <summary>
+    /// Permission to make calls.
+    /// Serializes as "can_call".
+    /// </summary>
+    CanCall,
+
+    /// <summary>
+    /// Permission to edit the chat link.
+    /// Serializes as "edit_link".
+    /// </summary>
+    EditLink,
+
+    /// <summary>
+    /// Permission to edit or delete posted messages.
+    /// Serializes as "post_edit_delete_message".
+    /// </summary>
+    PostEditDeleteMessage,
+
+    /// <summary>
+    /// Permission to edit messages.
+    /// Serializes as "edit_message".
+    /// </summary>
+    EditMessage,
+
+    /// <summary>
+    /// Permission to delete messages.
+    /// Serializes as "delete_message".
+    /// </summary>
+    DeleteMessage,
 }

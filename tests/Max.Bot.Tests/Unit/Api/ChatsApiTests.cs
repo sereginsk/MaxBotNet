@@ -473,24 +473,22 @@ public class ChatsApiTests
     #region GetChatMembershipAsync Tests
 
     [Fact]
-    public async Task GetChatMembershipAsync_ShouldReturnChat_WhenRequestSucceeds()
+    public async Task GetChatMembershipAsync_ShouldReturnChatMember_WhenRequestSucceeds()
     {
         // Arrange
         var chatId = 123456L;
-        var expectedChat = new Chat
+        var expectedMember = new ChatMember
         {
-            ChatId = chatId,
-            Type = ChatType.Chat,
-            Title = "Test Chat"
+            Id = 100L,
+            FirstName = "MAX Bot",
+            IsBot = true,
+            IsAdmin = true,
+            LastAccessTime = 1710000000000,
+            JoinTime = 1700000000000,
+            Permissions = new[] { ChatAdminPermission.ReadAllMessages, ChatAdminPermission.Write }
         };
 
-        var response = new Response<Chat>
-        {
-            Ok = true,
-            Result = expectedChat
-        };
-
-        var responseJson = MaxJsonSerializer.Serialize(response);
+        var responseJson = MaxJsonSerializer.Serialize(expectedMember);
         _mockHttpClient
             .Setup(x => x.SendAsyncRaw(
                 It.Is<MaxApiRequest>(req =>
@@ -506,8 +504,9 @@ public class ChatsApiTests
 
         // Assert
         result.Should().NotBeNull();
-        result.ChatId.Should().Be(expectedChat.ChatId);
-        result.Title.Should().Be(expectedChat.Title);
+        result.Id.Should().Be(expectedMember.Id);
+        result.IsAdmin.Should().BeTrue();
+        result.Permissions.Should().Contain(ChatAdminPermission.Write);
     }
 
     #endregion
@@ -555,10 +554,9 @@ public class ChatsApiTests
             new ChatMember { Id = 200L, FirstName = "Admin2", IsAdmin = true }
         };
 
-        var response = new Response<ChatMember[]>
+        var response = new ChatMembersResponse
         {
-            Ok = true,
-            Result = expectedAdmins
+            Members = expectedAdmins
         };
 
         var responseJson = MaxJsonSerializer.Serialize(response);
@@ -688,10 +686,9 @@ public class ChatsApiTests
             new ChatMember { Id = 200L, FirstName = "User2", IsAdmin = false }
         };
 
-        var response = new Response<ChatMember[]>
+        var response = new ChatMembersResponse
         {
-            Ok = true,
-            Result = expectedMembers
+            Members = expectedMembers
         };
 
         var responseJson = MaxJsonSerializer.Serialize(response);
@@ -717,21 +714,20 @@ public class ChatsApiTests
     }
 
     [Fact]
-    public async Task GetChatMembersAsync_ShouldReturnMembers_WhenOffsetAndLimitProvided()
+    public async Task GetChatMembersAsync_ShouldReturnMembers_WhenMarkerAndCountProvided()
     {
         // Arrange
         var chatId = 123456L;
-        var offset = 10;
-        var limit = 20;
+        var marker = 10L;
+        var count = 20;
         var expectedMembers = new[]
         {
             new ChatMember { Id = 100L, FirstName = "User1", IsAdmin = false }
         };
 
-        var response = new Response<ChatMember[]>
+        var response = new ChatMembersResponse
         {
-            Ok = true,
-            Result = expectedMembers
+            Members = expectedMembers
         };
 
         var responseJson = MaxJsonSerializer.Serialize(response);
@@ -741,17 +737,17 @@ public class ChatsApiTests
                     req.Method == HttpMethod.Get &&
                     req.Endpoint == $"/chats/{chatId}/members" &&
                     req.QueryParameters != null &&
-                    req.QueryParameters.ContainsKey("offset") &&
-                    req.QueryParameters["offset"] == "10" &&
-                    req.QueryParameters.ContainsKey("limit") &&
-                    req.QueryParameters["limit"] == "20"),
+                    req.QueryParameters.ContainsKey("marker") &&
+                    req.QueryParameters["marker"] == "10" &&
+                    req.QueryParameters.ContainsKey("count") &&
+                    req.QueryParameters["count"] == "20"),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(responseJson);
 
         var chatsApi = new ChatsApi(_mockHttpClient.Object, _options);
 
         // Act
-        var result = await chatsApi.GetChatMembersAsync(chatId, offset, limit);
+        var result = await chatsApi.GetChatMembersAsync(chatId, marker, count);
 
         // Assert
         result.Should().NotBeNull();

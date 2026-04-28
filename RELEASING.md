@@ -1,53 +1,76 @@
 # Release Guide
 
-This checklist keeps the release flow deterministic and mirrors the Telegram.Bot / VkNet cadence.
+Этот чеклист держит выпуск MaxBotNet воспроизводимым: версия, changelog, NuGet package и GitHub Release должны совпадать.
 
 ## 1. Pre-flight
 
-- Ensure every user-facing change is documented in `CHANGELOG.md` under `[Unreleased]`.
-- Confirm `src/Max.Bot/Max.Bot.csproj` has the correct `<Version>` / `<PackageId>` metadata.
-- Verify secrets: `NUGET_API_KEY` (GitHub), `MAX_BOT_TOKEN` (local testing) stay out of source control.
+- Убедитесь, что все user-facing изменения описаны в `CHANGELOG.md` в секции новой версии.
+- Проверьте `src/Max.Bot/Max.Bot.csproj`: `<Version>`, `<PackageId>`, package metadata и target frameworks.
+- Для полного локального multi-target прогона должны быть установлены SDK/runtime `.NET 10`, `.NET 9` и `.NET 8`.
+- Проверьте секреты: `NUGET_API_KEY` в GitHub Actions и локальные токены (`MAX_BOT_TOKEN`, webhook secrets) не должны попадать в исходники.
 
 ## 2. Local verification
 
 ```powershell
+dotnet --list-sdks
+dotnet --list-runtimes
+dotnet restore Max.Bot.sln
 dotnet format Max.Bot.sln --verify-no-changes
 dotnet format analyzers Max.Bot.sln --verify-no-changes --no-restore
-dotnet test Max.Bot.sln -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=\"cobertura%2copencover\" /p:CoverletOutput=TestResults/Coverage/ /p:Threshold=60 /p:ThresholdType=line /p:ThresholdStat=total
-dotnet pack src/Max.Bot/Max.Bot.csproj -c Release /p:ContinuousIntegrationBuild=true
+dotnet build Max.Bot.sln --configuration Release --no-restore -warnaserror
+dotnet test Max.Bot.sln --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=\"cobertura%2copencover\" /p:CoverletOutput=TestResults/Coverage/ /p:Threshold=60 /p:ThresholdType=line /p:ThresholdStat=total
+dotnet pack src/Max.Bot/Max.Bot.csproj --configuration Release --no-build /p:ContinuousIntegrationBuild=true
 ```
 
-Inspect the generated `.nupkg`/`.snupkg` locally (e.g., `nuget package -Expanded` or `nuget locals`) to ensure README and XML docs are embedded.
-
-## 3. Tagging
-
-1. Bump `Version` in `Max.Bot.csproj` if needed (`0.3.0-alpha`, etc.).
-2. Commit the changes and tag:
+Если локально отсутствует один из runtime, допустимо перед push выполнить частичный smoke-прогон по доступному target framework, например:
 
 ```powershell
-git tag v0.3.0-alpha
-git push origin v0.3.0-alpha
+dotnet test tests/Max.Bot.Tests/Max.Bot.Tests.csproj -f net10.0
 ```
 
-## 4. GitHub Actions
+Полный multi-target gate всё равно должен пройти в GitHub Actions, где workflow устанавливает `.NET 10`, `.NET 9` и `.NET 8`.
+
+Inspect the generated `.nupkg`/`.snupkg` locally (for example, by expanding the package) to ensure README, CHANGELOG, symbols and XML docs are embedded.
+
+## 3. Versioning and tagging
+
+1. Обновите `CHANGELOG.md` и `src/Max.Bot/Max.Bot.csproj` на один и тот же SemVer, например `0.6.0-alpha`.
+2. Закоммитьте изменения.
+3. После зелёного CI создайте и запушьте тег:
+
+```powershell
+git tag v0.6.0-alpha
+git push origin v0.6.0-alpha
+```
+
+Tag format must stay `vX.Y.Z` or `vX.Y.Z-alpha`, because `.github/workflows/release.yml` derives `PackageVersion` from the tag name.
+
+## 4. GitHub Actions release
 
 - Tag push triggers `.github/workflows/release.yml`.
-- Workflow steps: restore → format → analyzers → build → tests (with coverage) → `dotnet pack` → upload artifacts → `dotnet nuget push` (skipping duplicates).
-- Monitor the run at `https://github.com/MaxBotNet/MaxBotNet/actions`. The run must be green before announcing the release.
+- Workflow steps: restore → format → analyzers → build → tests → validate version/changelog → `dotnet pack` → upload artifacts → `dotnet nuget push` → GitHub Release.
+- Release notes are extracted from the matching `CHANGELOG.md` section.
+- NuGet publishing requires the `NUGET_API_KEY` secret.
+- GitHub Release creation requires workflow `contents: write` permission.
+- Monitor the run in GitHub Actions. The run must be green before announcing the release.
 
 ## 5. Post-publish validation
 
-1. Confirm package visibility on NuGet.org.
-2. Smoke test the package in a clean project:
+1. Confirm package visibility on NuGet.org: `MaxMessenger.Bot` with the expected version.
+2. Confirm GitHub Release:
+   - tag matches the package version;
+   - prerelease is enabled for `-alpha` versions;
+   - release notes match `CHANGELOG.md`;
+   - `.nupkg` and `.snupkg` artifacts are attached.
+3. Smoke test the package in a clean project:
 
 ```powershell
 dotnet new console -n MaxBotNet.ReleaseSmoke
 cd MaxBotNet.ReleaseSmoke
-dotnet add package MaxMessenger.Bot --prerelease
+dotnet add package MaxMessenger.Bot --version 0.6.0-alpha --prerelease
+dotnet build
 ```
 
-3. Create a GitHub Release that references the changelog entry and attaches any notable artifacts if necessary.
+## 6. External-action boundary
 
-Following these steps keeps parity with the Telegram.Bot / VkNet release discipline and prevents drift between libraries, docs, and shipped packages.
-
-
+`git push`, `git tag`, `git push origin v...`, NuGet publish and GitHub Release creation affect shared external state. Run them only after explicit release confirmation.

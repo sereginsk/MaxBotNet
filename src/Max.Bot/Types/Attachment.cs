@@ -123,7 +123,7 @@ public class VideoAttachment : Attachment
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoAttachment"/> class.
     /// </summary>
-    public VideoAttachment() => Type = AttachmentTypeNames.File;
+    public VideoAttachment() => Type = AttachmentTypeNames.Video;
 }
 
 /// <summary>
@@ -171,7 +171,7 @@ public class AudioAttachment : Attachment
     /// <summary>
     /// Initializes a new instance of the <see cref="AudioAttachment"/> class.
     /// </summary>
-    public AudioAttachment() => Type = AttachmentTypeNames.File;
+    public AudioAttachment() => Type = AttachmentTypeNames.Audio;
 }
 
 /// <summary>
@@ -263,6 +263,12 @@ public class ContactAttachment : Attachment
     public ContactInfo? MaxInfo { get; set; }
 
     /// <summary>
+    /// Gets or sets the contact attachment hash.
+    /// </summary>
+    [JsonPropertyName("hash")]
+    public string? Hash { get; set; }
+
+    /// <summary>
     /// Gets the phone number from the contact.
     /// Tries MaxInfo.PhoneNumber first, then parses from VcfInfo.
     /// Returns null if no phone number is available.
@@ -310,6 +316,8 @@ public class InlineKeyboardAttachment : Attachment
 internal static class AttachmentTypeNames
 {
     public const string Image = "image";
+    public const string Video = "video";
+    public const string Audio = "audio";
     public const string File = "file";
     public const string InlineKeyboard = "inline_keyboard";
     public const string Location = "location";

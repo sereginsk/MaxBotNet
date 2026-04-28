@@ -62,7 +62,7 @@ public class AttachmentFormatTests
     [Fact]
     public void Video_NestedFormat_ShouldDeserialize_VideoAttachment()
     {
-        var json = """{"type":"file","video":{"id":456,"file_id":"video456","width":1280,"height":720,"duration":60}}""";
+        var json = """{"type":"video","video":{"id":456,"file_id":"video456","width":1280,"height":720,"duration":60}}""";
 
         var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
 
@@ -73,17 +73,16 @@ public class AttachmentFormatTests
     }
 
     [Fact]
-    public void Video_FlatFormat_ShouldDeserialize_AsDocumentAttachment()
+    public void Video_FlatFormat_ShouldDeserialize_VideoAttachment()
     {
-        // Flat file without "video" wrapper → DocumentAttachment (fallback for type="file")
-        var json = """{"type":"file","id":456,"file_id":"video456","mime_type":"video/mp4"}""";
+        var json = """{"type":"video","id":456,"file_id":"video456","mime_type":"video/mp4"}""";
 
         var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
 
-        attachment.Should().BeOfType<DocumentAttachment>();
-        var doc = (DocumentAttachment)attachment;
-        doc.Id.Should().Be(456);
-        doc.MimeType.Should().Be("video/mp4");
+        attachment.Should().BeOfType<VideoAttachment>();
+        var video = (VideoAttachment)attachment;
+        video.Id.Should().Be(456);
+        video.MimeType.Should().Be("video/mp4");
     }
 
     // ==================== AUDIO ====================
@@ -91,7 +90,7 @@ public class AttachmentFormatTests
     [Fact]
     public void Audio_NestedFormat_ShouldDeserialize_AudioAttachment()
     {
-        var json = """{"type":"file","audio":{"id":789,"file_id":"audio789","duration":180}}""";
+        var json = """{"type":"audio","audio":{"id":789,"file_id":"audio789","duration":180}}""";
 
         var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
 
@@ -102,15 +101,15 @@ public class AttachmentFormatTests
     }
 
     [Fact]
-    public void Audio_FlatFormat_ShouldDeserialize_AsDocumentAttachment()
+    public void Audio_FlatFormat_ShouldDeserialize_AudioAttachment()
     {
-        var json = """{"type":"file","id":789,"file_id":"audio789","mime_type":"audio/mpeg"}""";
+        var json = """{"type":"audio","id":789,"file_id":"audio789","mime_type":"audio/mpeg"}""";
 
         var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
 
-        attachment.Should().BeOfType<DocumentAttachment>();
-        var doc = (DocumentAttachment)attachment;
-        doc.Id.Should().Be(789);
+        attachment.Should().BeOfType<AudioAttachment>();
+        var audio = (AudioAttachment)attachment;
+        audio.Id.Should().Be(789);
     }
 
     // ==================== DOCUMENT ====================

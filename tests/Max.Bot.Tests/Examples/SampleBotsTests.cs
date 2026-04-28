@@ -133,7 +133,7 @@ public class SampleBotsTests
     [Fact]
     public void SampleRegistry_ShouldExposeAllSamples()
     {
-        SampleRegistry.AvailableSamples.Should().BeEquivalentTo(new[] { "echo", "commands", "keyboard", "files" });
+        SampleRegistry.AvailableSamples.Should().BeEquivalentTo(new[] { "echo", "commands", "keyboard", "files", "contact" });
     }
 
     [Theory]

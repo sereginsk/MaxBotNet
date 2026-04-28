@@ -20,4 +20,10 @@ public class Contact
     /// <value>Contact information.</value>
     [JsonPropertyName("max_info")]
     public ContactInfo? MaxInfo { get; set; }
+
+    /// <summary>
+    /// Gets or sets the contact hash.
+    /// </summary>
+    [JsonPropertyName("hash")]
+    public string? Hash { get; set; }
 }

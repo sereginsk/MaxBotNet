@@ -100,10 +100,9 @@ public class MessagesApiTests
             new Message { Timestamp = 1609459200000, Recipient = new MessageRecipient { ChatId = chatId, ChatType = "chat" }, Body = new MessageBody { Mid = "mid.2", Text = "Message 2" } }
         };
 
-        var response = new Response<Message[]>
+        var response = new GetMessagesResponse
         {
-            Ok = true,
-            Result = expectedMessages
+            Messages = expectedMessages
         };
 
         var responseJson = MaxJsonSerializer.Serialize(response);

@@ -54,5 +54,37 @@ public class User
     [Range(0, long.MaxValue, ErrorMessage = "Last activity time cannot be negative.")]
     [JsonPropertyName("last_activity_time")]
     public long? LastActivityTime { get; set; }
+
+    /// <summary>
+    /// Gets or sets the deprecated display name.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets the bot or profile description.
+    /// </summary>
+    [StringLength(16000, ErrorMessage = "Description must not exceed 16000 characters.")]
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// Gets or sets the small avatar URL.
+    /// </summary>
+    [JsonPropertyName("avatar_url")]
+    public string? AvatarUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the full-size avatar URL.
+    /// </summary>
+    [JsonPropertyName("full_avatar_url")]
+    public string? FullAvatarUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the bot commands.
+    /// </summary>
+    [MaxLength(32, ErrorMessage = "Commands must not exceed 32 items.")]
+    [JsonPropertyName("commands")]
+    public BotCommand[]? Commands { get; set; }
 }
 

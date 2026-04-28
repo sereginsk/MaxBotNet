@@ -11,7 +11,7 @@ public static class ContactHelpers
     // Pre-compiled regex patterns for performance
     private static readonly Regex TelRegex = new(@"TEL(?:;[^:\r\n]*)?:(.+?)(?:\r?\n|$)", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
     private static readonly Regex FnRegex = new(@"FN(?:;[^:\r\n]*)?:(.+?)(?:\r?\n|$)", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
-    private static readonly Regex NRegex = new(@"N:(.+?)(?:\r?\n|$)", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
+    private static readonly Regex NRegex = new(@"^N(?:;[^:\r\n]*)?:(.*)(?:\r?\n|$)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
     /// <summary>
     /// Parses vCard (VCF) data and extracts contact information.

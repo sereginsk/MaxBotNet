@@ -213,7 +213,7 @@ public class UpdateTests
     public void Deserialize_BotStarted_ShouldDeserializeCorrectly()
     {
         // Arrange
-        var json = """{"update_id":7,"update_type":"bot_started","timestamp":1609459200000,"chat_id":123,"user":{"user_id":456,"username":"testuser","is_bot":false},"user_locale":"ru"}""";
+        var json = """{"update_id":7,"update_type":"bot_started","timestamp":1609459200000,"chat_id":123,"user":{"user_id":456,"username":"testuser","is_bot":false},"user_locale":"ru","payload":"promo_summer2025"}""";
 
         // Act
         var result = MaxJsonSerializer.Deserialize<Update>(json);
@@ -226,12 +226,14 @@ public class UpdateTests
         result.User.Should().NotBeNull();
         result.User!.Id.Should().Be(456);
         result.UserLocale.Should().Be("ru");
+        result.Payload.Should().Be("promo_summer2025");
 
         // Test typed wrapper
         result.BotStartedUpdate.Should().NotBeNull();
         result.BotStartedUpdate!.ChatId.Should().Be(123);
         result.BotStartedUpdate.User!.Id.Should().Be(456);
         result.BotStartedUpdate.UserLocale.Should().Be("ru");
+        result.BotStartedUpdate.Payload.Should().Be("promo_summer2025");
     }
 
     #endregion
@@ -549,7 +551,8 @@ public class UpdateTests
             Timestamp = 1609459200000,
             Chat = new Chat { ChatId = 123, Title = "Test" },
             User = new User { Id = 456 },
-            InviterId = 789
+            InviterId = 789,
+            Payload = "promo_summer2025"
         };
 
         // Act
@@ -559,6 +562,7 @@ public class UpdateTests
         json.Should().Contain("\"chat\"");
         json.Should().Contain("\"user\"");
         json.Should().Contain("\"inviter_id\":789");
+        json.Should().Contain("\"payload\":\"promo_summer2025\"");
     }
 
     #endregion
