@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using Max.Bot.Configuration;
 using Max.Bot.Networking;
@@ -337,7 +338,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
             Format = format
         };
 
-        return await SendMessageAsync(request, chatId, userId, disableLinkPreview, cancellationToken).ConfigureAwait(false);
+        return await SendMessageWithAttachmentRetryAsync(request, chatId, userId, disableLinkPreview, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -361,7 +362,7 @@ internal class MessagesApi : BaseApi, IMessagesApi
             Format = format
         };
 
-        return await SendMessageAsync(request, chatId, userId, disableLinkPreview, cancellationToken).ConfigureAwait(false);
+        return await SendMessageWithAttachmentRetryAsync(request, chatId, userId, disableLinkPreview, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -459,6 +460,30 @@ internal class MessagesApi : BaseApi, IMessagesApi
         };
 
         return await SendMessageAsync(request, chatId, userId, disableLinkPreview, cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<Message> SendMessageWithAttachmentRetryAsync(
+        SendMessageRequest request,
+        long? chatId,
+        long? userId,
+        bool? disableLinkPreview,
+        CancellationToken cancellationToken)
+    {
+        const int retryCount = 3;
+        var delay = TimeSpan.FromMilliseconds(500);
+
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                return await SendMessageAsync(request, chatId, userId, disableLinkPreview, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exceptions.MaxApiException ex) when (ex.HttpStatusCode == HttpStatusCode.BadRequest && attempt < retryCount)
+            {
+                await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+                delay = TimeSpan.FromMilliseconds(delay.TotalMilliseconds * 2);
+            }
+        }
     }
 
     private static AttachmentRequest CreateInlineKeyboardAttachment(InlineKeyboard keyboard)

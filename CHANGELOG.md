@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.6-alpha] - 2026-04-28
+
+### Fixed
+
+- **Attachment send race after upload**: `SendMessageWithAttachmentAsync()` и `SendMessageWithAttachmentsAsync()` теперь автоматически повторяют `POST /messages`, если API временно возвращает `400 Bad Request` сразу после `UploadFileDataAsync()`. Это убирает необходимость в ручном `Thread.Sleep(...)` перед отправкой файла.
+- **Regression coverage**: Добавлен unit test, который проверяет успешный повторный вызов после временного `400 Bad Request` при отправке сообщения с вложением.
+
 ## [0.5.5-alpha] - 2026-04-15
 
 ### Added
@@ -256,7 +263,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.4-alpha...HEAD
+[Unreleased]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.6-alpha...HEAD
+[0.5.6-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.5-alpha...v0.5.6-alpha
+[0.5.5-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.4-alpha...v0.5.5-alpha
 [0.5.4-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.3-alpha...v0.5.4-alpha
 [0.5.3-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.2-alpha...v0.5.3-alpha
 [0.5.2-alpha]: https://github.com/NanoAgents/MaxBotNet/compare/v0.5.1-alpha...v0.5.2-alpha

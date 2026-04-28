@@ -740,6 +740,48 @@ public class MessagesApiTests
     }
 
     [Fact]
+    public async Task SendMessageWithAttachmentAsync_ShouldRetry_WhenApiReturnsBadRequestOnce()
+    {
+        // Arrange
+        var chatId = 123456L;
+        var attachment = new AttachmentRequest
+        {
+            Type = "file",
+            Payload = new { token = "test-token" }
+        };
+
+        var expectedMessage = new Message
+        {
+            Text = "With attachment",
+            Timestamp = 1609459200000,
+            Recipient = new MessageRecipient { ChatId = chatId, ChatType = "chat" },
+            Body = new MessageBody { Mid = "mid.retry", Text = "With attachment" }
+        };
+
+        _mockHttpClient
+            .SetupSequence(x => x.SendAsync<MessageResponse>(
+                It.Is<MaxApiRequest>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.Endpoint == "/messages" &&
+                    req.QueryParameters != null &&
+                    req.QueryParameters.ContainsKey("chat_id") &&
+                    req.Body != null),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new MaxApiException("attachment is not ready", null, HttpStatusCode.BadRequest))
+            .ReturnsAsync(new MessageResponse { Message = expectedMessage });
+
+        var messagesApi = new MessagesApi(_mockHttpClient.Object, _options);
+
+        // Act
+        var result = await messagesApi.SendMessageWithAttachmentAsync(attachment, chatId: chatId, text: "With attachment");
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Mid.Should().Be("mid.retry");
+        _mockHttpClient.Verify(x => x.SendAsync<MessageResponse>(It.IsAny<MaxApiRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+    }
+
+    [Fact]
     public async Task ForwardMessageAsync_ShouldReturnMessage_WhenRequestSucceeds()
     {
         // Arrange
