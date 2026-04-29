@@ -53,7 +53,7 @@ public class AttachmentJsonConverter : JsonConverter<Attachment>
 
         if (IsType(typeString, AttachmentTypeNames.Contact))
         {
-            return JsonSerializer.Deserialize<ContactAttachment>(root.GetRawText(), options);
+            return DeserializeContactAttachment(root, options);
         }
 
         if (IsType(typeString, AttachmentTypeNames.Video))
@@ -182,6 +182,22 @@ public class AttachmentJsonConverter : JsonConverter<Attachment>
         }
 
         return JsonSerializer.Deserialize<PhotoAttachment>(root.GetRawText(), options);
+    }
+
+    private static ContactAttachment? DeserializeContactAttachment(JsonElement root, JsonSerializerOptions options)
+    {
+        if (root.TryGetProperty("payload", out var payload) && payload.ValueKind == JsonValueKind.Object)
+        {
+            var attachment = JsonSerializer.Deserialize<ContactAttachment>(payload.GetRawText(), options);
+            if (attachment != null)
+            {
+                // Ensure type is always set even when payload does not include it.
+                attachment.Type = AttachmentTypeNames.Contact;
+            }
+            return attachment;
+        }
+
+        return JsonSerializer.Deserialize<ContactAttachment>(root.GetRawText(), options);
     }
 
     private static T? DeserializeMediaAttachment<T>(JsonElement root, string payloadPropertyName, JsonSerializerOptions options)
