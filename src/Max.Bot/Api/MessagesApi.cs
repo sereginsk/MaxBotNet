@@ -216,11 +216,14 @@ internal class MessagesApi : BaseApi, IMessagesApi
             throw new ArgumentException("Message ID cannot be null or empty.", nameof(messageId));
         }
 
+        // PUT /messages replaces the whole attachments array. Load the message so we keep
+        // existing media/link attachments and only swap or drop inline_keyboard.
+        var current = await GetMessageAsync(messageId, cancellationToken).ConfigureAwait(false);
+        var merged = BuildAttachmentsForReplyMarkupEdit(current.Body?.Attachments, keyboard);
+
         var editRequest = new EditMessageRequest
         {
-            Attachments = keyboard == null
-                ? Array.Empty<AttachmentRequest>()
-                : new[] { CreateInlineKeyboardAttachment(keyboard) }
+            Attachments = merged
         };
 
         return await EditMessageAsync(messageId, editRequest, cancellationToken).ConfigureAwait(false);
@@ -470,6 +473,75 @@ internal class MessagesApi : BaseApi, IMessagesApi
             }
         }
     }
+
+    private static AttachmentRequest[] BuildAttachmentsForReplyMarkupEdit(
+        Attachment[]? existing,
+        InlineKeyboard? keyboard)
+    {
+        var list = new List<AttachmentRequest>();
+        if (existing != null)
+        {
+            foreach (var attachment in existing)
+            {
+                if (attachment == null ||
+                    attachment.Type.Equals(AttachmentTypeNames.InlineKeyboard, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var converted = TryConvertAttachmentForReplyMarkupEdit(attachment);
+                if (converted != null)
+                {
+                    list.Add(converted);
+                }
+            }
+        }
+
+        if (keyboard != null)
+        {
+            list.Add(CreateInlineKeyboardAttachment(keyboard));
+        }
+
+        return list.ToArray();
+    }
+
+    /// <summary>
+    /// Builds an <see cref="AttachmentRequest"/> suitable for PUT /messages from an existing incoming attachment.
+    /// Returns null when the attachment cannot be reconstructed (missing token/id).
+    /// </summary>
+    private static AttachmentRequest? TryConvertAttachmentForReplyMarkupEdit(Attachment attachment)
+    {
+        return attachment switch
+        {
+            PhotoAttachment photo when !string.IsNullOrWhiteSpace(photo.FileId) =>
+                AttachmentRequestFromToken(AttachmentTypeNames.Image, photo.FileId),
+            VideoAttachment video when !string.IsNullOrWhiteSpace(video.FileId) =>
+                AttachmentRequestFromToken(AttachmentTypeNames.Video, video.FileId),
+            AudioAttachment audio when !string.IsNullOrWhiteSpace(audio.FileId) =>
+                AttachmentRequestFromToken(AttachmentTypeNames.Audio, audio.FileId),
+            DocumentAttachment doc when !string.IsNullOrWhiteSpace(doc.FileId) =>
+                AttachmentRequestFromToken(
+                    string.IsNullOrWhiteSpace(doc.Type) ? AttachmentTypeNames.File : doc.Type,
+                    doc.FileId),
+            LocationAttachment loc => new AttachmentRequest
+            {
+                Type = AttachmentTypeNames.Location,
+                Payload = new { latitude = loc.Latitude, longitude = loc.Longitude }
+            },
+            ContactAttachment contact when !string.IsNullOrWhiteSpace(contact.Hash) => new AttachmentRequest
+            {
+                Type = AttachmentTypeNames.Contact,
+                Payload = new { hash = contact.Hash }
+            },
+            _ => null
+        };
+    }
+
+    private static AttachmentRequest AttachmentRequestFromToken(string type, string token) => new()
+    {
+        Type = type,
+        Payload = new { token }
+    };
 
     private static AttachmentRequest CreateInlineKeyboardAttachment(InlineKeyboard keyboard)
     {

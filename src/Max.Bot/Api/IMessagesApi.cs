@@ -100,6 +100,7 @@ public interface IMessagesApi
 
     /// <summary>
     /// Edits only the reply markup (inline keyboard) of a message.
+    /// Loads the message first so other attachments are preserved (PUT /messages replaces the full attachments list).
     /// If keyboard is null, removes the keyboard. If keyboard is provided, replaces the existing keyboard.
     /// </summary>
     /// <param name="messageId">The unique identifier of the message to edit.</param>
