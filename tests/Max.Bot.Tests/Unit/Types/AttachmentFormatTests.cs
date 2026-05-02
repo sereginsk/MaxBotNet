@@ -169,6 +169,36 @@ public class AttachmentFormatTests
         doc.MimeType.Should().Be("application/pdf");
     }
 
+    [Fact]
+    public void Document_PayloadEnvelopeWithFilenameAtRoot_ShouldDeserialize_TokenUrlAndMetadata()
+    {
+        // Real MAX dialog format: filename/size on attachment, url/token/fileId inside payload
+        var json = """
+            {"type":"file","filename":"document.pdf","size":173593,"payload":{"url":"https://fd.oneme.ru/getfile?sig=x","token":"f9LHodD0cOKHfCsFu2iNF","fileId":3390749828}}
+            """;
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<DocumentAttachment>();
+        var doc = (DocumentAttachment)attachment;
+        doc.FileName.Should().Be("document.pdf");
+        doc.FileSize.Should().Be(173593);
+        doc.FileId.Should().Be("f9LHodD0cOKHfCsFu2iNF");
+        doc.Url.Should().Be("https://fd.oneme.ru/getfile?sig=x");
+    }
+
+    [Fact]
+    public void Document_PayloadEnvelope_UsesNumericFileId_WhenTokenMissing()
+    {
+        var json = """{"type":"file","filename":"a.bin","size":1,"payload":{"url":"https://example.com/f","fileId":3390749828}}""";
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<DocumentAttachment>();
+        var doc = (DocumentAttachment)attachment;
+        doc.FileId.Should().Be("3390749828");
+    }
+
     // ==================== LOCATION ====================
 
     [Fact]
@@ -262,5 +292,39 @@ public class AttachmentFormatTests
         var photo = (PhotoAttachment)message.Body.Attachments[0];
         photo.Id.Should().Be(456);
         photo.Url.Should().Be("https://example.com/pic.jpg");
+    }
+
+    [Fact]
+    public void Contact_PayloadFormat_ShouldDeserialize_VcfInfoAndMaxInfo()
+    {
+        var json = """
+            {
+              "type": "contact",
+              "payload": {
+                "vcf_info": "BEGIN:VCARD\r\nVERSION:3.0\r\nTEL;TYPE=cell:79133882296\r\nFN:Екатерина Архипова\r\nEND:VCARD",
+                "max_info": {
+                  "user_id": 62397197,
+                  "first_name": "Екатерина",
+                  "last_name": "Архипова",
+                  "name": "Екатерина Архипова",
+                  "is_bot": false,
+                  "last_activity_time": 0
+                },
+                "hash": "contact-hash"
+              }
+            }
+            """;
+
+        var attachment = MaxJsonSerializer.Deserialize<Attachment>(json);
+
+        attachment.Should().BeOfType<ContactAttachment>();
+        var contact = (ContactAttachment)attachment;
+
+        contact.VcfInfo.Should().Contain("TEL;TYPE=cell:79133882296");
+        contact.Hash.Should().Be("contact-hash");
+        contact.MaxInfo.Should().NotBeNull();
+        contact.MaxInfo!.Id.Should().Be(62397197);
+        contact.FullName.Should().Be("Екатерина Архипова");
+        contact.PhoneNumber.Should().Be("79133882296");
     }
 }

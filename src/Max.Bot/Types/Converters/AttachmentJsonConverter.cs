@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Max.Bot.Types;
@@ -230,10 +231,76 @@ public class AttachmentJsonConverter : JsonConverter<Attachment>
                     break;
             }
 
+            if (attachment is DocumentAttachment documentFromPayload)
+            {
+                ApplyDocumentAttachmentFromEnvelope(root, payload, documentFromPayload);
+            }
+
             return attachment;
         }
 
         return DeserializeAttachment<T>(root, payloadPropertyName, options);
+    }
+
+    /// <summary>
+    /// MAX often sends files as <c>{"type":"file","filename":"…","size":n,"payload":{"url","token","fileId"}}</c>
+    /// where name/size live on the attachment object, not inside <c>payload</c>.
+    /// </summary>
+    private static void ApplyDocumentAttachmentFromEnvelope(
+        JsonElement root,
+        JsonElement payload,
+        DocumentAttachment document)
+    {
+        if (string.IsNullOrWhiteSpace(document.FileName))
+        {
+            if (root.TryGetProperty("filename", out var filenameEl) && filenameEl.ValueKind == JsonValueKind.String)
+            {
+                document.FileName = filenameEl.GetString();
+            }
+            else if (root.TryGetProperty("file_name", out var legacyName) && legacyName.ValueKind == JsonValueKind.String)
+            {
+                document.FileName = legacyName.GetString();
+            }
+        }
+
+        if (document.FileSize is null
+            && root.TryGetProperty("size", out var sizeEl)
+            && sizeEl.ValueKind == JsonValueKind.Number
+            && sizeEl.TryGetInt64(out var sizeBytes))
+        {
+            document.FileSize = sizeBytes;
+        }
+
+        if (string.IsNullOrWhiteSpace(document.FileId) && payload.ValueKind == JsonValueKind.Object)
+        {
+            if (payload.TryGetProperty("token", out var tokenEl) && tokenEl.ValueKind == JsonValueKind.String)
+            {
+                var t = tokenEl.GetString();
+                if (!string.IsNullOrWhiteSpace(t))
+                {
+                    document.FileId = t;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(document.FileId) && payload.TryGetProperty("fileId", out var fileIdEl))
+            {
+                if (fileIdEl.ValueKind == JsonValueKind.String)
+                {
+                    document.FileId = fileIdEl.GetString() ?? string.Empty;
+                }
+                else if (fileIdEl.ValueKind == JsonValueKind.Number && fileIdEl.TryGetInt64(out var numericId))
+                {
+                    document.FileId = numericId.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(document.FileId)
+                && payload.TryGetProperty("file_id", out var fileIdStr)
+                && fileIdStr.ValueKind == JsonValueKind.String)
+            {
+                document.FileId = fileIdStr.GetString() ?? string.Empty;
+            }
+        }
     }
 
     private static bool IsType(string? actualType, string expectedType)
