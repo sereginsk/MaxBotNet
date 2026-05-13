@@ -448,6 +448,27 @@ public class MessagesApiTests
         capturedPut.Attachments[1].Type.Should().Be("inline_keyboard");
     }
 
+    [Fact]
+    public void BuildAttachmentsPreservingMediaWithKeyboard_ShouldPreserveImageAndKeyboard()
+    {
+        var messagesApi = new MessagesApi(_mockHttpClient.Object, _options);
+        var keyboard = new InlineKeyboard(new[]
+        {
+            new[]
+            {
+                new InlineKeyboardButton { Text = "L", Url = "https://x", Type = ButtonType.Link }
+            }
+        });
+        var photo = new PhotoAttachment { FileId = "tok-a" };
+
+        var result = messagesApi.BuildAttachmentsPreservingMediaWithKeyboard([photo], keyboard);
+
+        result.Should().HaveCount(2);
+        result[0].Type.Should().Be("image");
+        result[1].Type.Should().Be("inline_keyboard");
+        MaxJsonSerializer.Serialize(result[0].Payload).Should().Contain("tok-a");
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]

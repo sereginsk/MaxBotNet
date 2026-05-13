@@ -258,6 +258,14 @@ internal class MessagesApi : BaseApi, IMessagesApi
     }
 
     /// <inheritdoc />
+    public AttachmentRequest[] BuildAttachmentsPreservingMediaWithKeyboard(
+        Attachment[]? existingBodyAttachments,
+        InlineKeyboard? keyboard)
+    {
+        return BuildAttachmentsForReplyMarkupEdit(existingBodyAttachments, keyboard);
+    }
+
+    /// <inheritdoc />
     public async Task<Response> DeleteMessageAsync(string messageId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(messageId))

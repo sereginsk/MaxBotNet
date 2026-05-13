@@ -129,6 +129,12 @@ public interface IMessagesApi
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Builds payloads for a new send: keeps image/video/audio/file tokens from an existing message body and appends <paramref name="keyboard"/>.
+    /// Same merge rules as <see cref="EditMessageReplyMarkupAsync"/>.
+    /// </summary>
+    AttachmentRequest[] BuildAttachmentsPreservingMediaWithKeyboard(Attachment[]? existingBodyAttachments, InlineKeyboard? keyboard);
+
+    /// <summary>
     /// Deletes a message from the specified chat.
     /// </summary>
     /// <param name="messageId">The unique identifier of the message to delete.</param>
