@@ -230,6 +230,34 @@ internal class MessagesApi : BaseApi, IMessagesApi
     }
 
     /// <inheritdoc />
+    public async Task<Response> EditMessageTextAndReplyMarkupAsync(
+        string messageId,
+        string text,
+        TextFormat? format,
+        InlineKeyboard? keyboard = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(messageId))
+        {
+            throw new ArgumentException("Message ID cannot be null or empty.", nameof(messageId));
+        }
+
+        ArgumentNullException.ThrowIfNull(text);
+
+        var current = await GetMessageAsync(messageId, cancellationToken).ConfigureAwait(false);
+        var merged = BuildAttachmentsForReplyMarkupEdit(current.Body?.Attachments, keyboard);
+
+        var editRequest = new EditMessageRequest
+        {
+            Text = text,
+            Format = format,
+            Attachments = merged,
+        };
+
+        return await EditMessageAsync(messageId, editRequest, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
     public async Task<Response> DeleteMessageAsync(string messageId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(messageId))

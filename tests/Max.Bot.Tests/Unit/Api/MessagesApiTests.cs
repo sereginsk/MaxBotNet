@@ -388,6 +388,66 @@ public class MessagesApiTests
         imagePayloadJson.Should().Contain("media-token-99");
     }
 
+    [Fact]
+    public async Task EditMessageTextAndReplyMarkupAsync_ShouldPreserveMedia_AndSetTextAndKeyboard()
+    {
+        var messageId = "msg-foot";
+        var keyboard = new InlineKeyboard(new[]
+        {
+            new[]
+            {
+                new InlineKeyboardButton { Text = "Site", Url = "https://example.com", Type = ButtonType.Link }
+            }
+        });
+
+        var photo = new PhotoAttachment { FileId = "tok-photo" };
+        var currentMessage = new Message
+        {
+            Text = "Caption",
+            Recipient = new MessageRecipient { ChatId = 1, ChatType = "channel" },
+            Body = new MessageBody
+            {
+                Mid = "mid.x",
+                Attachments = [photo]
+            }
+        };
+
+        var getMessageResponse = new Response<Message> { Ok = true, Result = currentMessage };
+        _mockHttpClient
+            .Setup(x => x.SendAsyncRaw(
+                It.Is<MaxApiRequest>(req =>
+                    req.Method == HttpMethod.Get &&
+                    req.Endpoint == $"/messages/{messageId}"),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(MaxJsonSerializer.Serialize(getMessageResponse));
+
+        EditMessageRequest? capturedPut = null;
+        _mockHttpClient
+            .Setup(x => x.SendAsync<Response>(
+                It.Is<MaxApiRequest>(req =>
+                    req.Method == HttpMethod.Put &&
+                    req.Endpoint == "/messages" &&
+                    req.QueryParameters != null &&
+                    req.QueryParameters["message_id"] == messageId),
+                It.IsAny<CancellationToken>()))
+            .Callback<MaxApiRequest, CancellationToken>((req, _) =>
+            {
+                capturedPut = req.Body as EditMessageRequest;
+            })
+            .ReturnsAsync(new Response { Success = true });
+
+        var messagesApi = new MessagesApi(_mockHttpClient.Object, _options);
+
+        await messagesApi.EditMessageTextAndReplyMarkupAsync(messageId, "Line1\nfooter", TextFormat.Html, keyboard);
+
+        capturedPut.Should().NotBeNull();
+        capturedPut!.Text.Should().Be("Line1\nfooter");
+        capturedPut.Format.Should().Be(TextFormat.Html);
+        capturedPut.Attachments.Should().NotBeNull().And.HaveCount(2);
+        capturedPut.Attachments![0].Type.Should().Be("image");
+        capturedPut.Attachments[1].Type.Should().Be("inline_keyboard");
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]

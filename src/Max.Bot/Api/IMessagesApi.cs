@@ -114,6 +114,21 @@ public interface IMessagesApi
     Task<Response> EditMessageReplyMarkupAsync(string messageId, InlineKeyboard? keyboard = null, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Updates message text and inline keyboard in one PUT. Loads the message first so non-keyboard attachments are preserved.
+    /// </summary>
+    /// <param name="messageId">The unique identifier of the message to edit.</param>
+    /// <param name="text">New message text (replaces body text).</param>
+    /// <param name="format">Text format for <paramref name="text"/>; null to omit (API keeps existing when supported).</param>
+    /// <param name="keyboard">Inline keyboard to attach; null removes the keyboard.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task<Response> EditMessageTextAndReplyMarkupAsync(
+        string messageId,
+        string text,
+        TextFormat? format,
+        InlineKeyboard? keyboard = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Deletes a message from the specified chat.
     /// </summary>
     /// <param name="messageId">The unique identifier of the message to delete.</param>
