@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Max.Bot.Configuration;
@@ -56,7 +57,7 @@ internal class FilesApi : BaseApi, IFilesApi
             return content;
         }
 
-        var responseBody = await HttpClient.SendAsyncRaw(uploadUrl, CreateContent, cancellationToken).ConfigureAwait(false);
+        var responseBody = await HttpClient.SendAsyncRaw(uploadUrl, CreateContent, cancellationToken, headers: UploadAuthHeaders).ConfigureAwait(false);
         return ParseUploadResponse(responseBody);
     }
 
@@ -94,7 +95,7 @@ internal class FilesApi : BaseApi, IFilesApi
                 return content;
             }
 
-            var responseBody = await HttpClient.SendAsyncRaw(uploadUrl, CreateChunkContent, cancellationToken).ConfigureAwait(false);
+            var responseBody = await HttpClient.SendAsyncRaw(uploadUrl, CreateChunkContent, cancellationToken, headers: UploadAuthHeaders).ConfigureAwait(false);
 
             totalBytesRead += bytesRead;
 
@@ -109,23 +110,45 @@ internal class FilesApi : BaseApi, IFilesApi
         }
 
         // Finalize: If we reached here without a token, try a final GET
-        var finalResponseBody = await HttpClient.SendAsyncRaw(uploadUrl, null, cancellationToken, HttpMethod.Get).ConfigureAwait(false);
+        var finalResponseBody = await HttpClient.SendAsyncRaw(uploadUrl, null, cancellationToken, HttpMethod.Get, UploadAuthHeaders).ConfigureAwait(false);
         return ParseUploadResponse(finalResponseBody);
     }
 
+    private IReadOnlyDictionary<string, string> UploadAuthHeaders =>
+        new Dictionary<string, string> { ["Authorization"] = Options.Token };
+
     private static FileUploadResult ParseUploadResponse(string responseBody)
     {
-        if (string.IsNullOrWhiteSpace(responseBody)) return new FileUploadResult();
+        if (string.IsNullOrWhiteSpace(responseBody))
+        {
+            return new FileUploadResult();
+        }
+
+        // Video/audio CDN success: <retval>1</retval> — token comes from POST /uploads, not this body.
+        if (RetvalXmlPattern.IsMatch(responseBody))
+        {
+            return new FileUploadResult();
+        }
+
         try
         {
             return JsonSerializer.Deserialize<FileUploadResult>(responseBody, MaxJsonSerializer.Options) ?? new FileUploadResult();
         }
         catch (JsonException)
         {
-            // Fallback for raw token strings
-            return new FileUploadResult { Token = responseBody };
+            var trimmed = responseBody.Trim();
+            if (trimmed.Length > 0 && !trimmed.StartsWith('<') && !trimmed.StartsWith('{'))
+            {
+                return new FileUploadResult { Token = trimmed };
+            }
+
+            return new FileUploadResult();
         }
     }
+
+    private static readonly Regex RetvalXmlPattern = new(
+        @"<retval>\s*\d+\s*</retval>",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
     private sealed class NonDisposingStreamWrapper : Stream
     {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -130,12 +131,14 @@ public class MaxHttpClient : IMaxHttpClient
     /// <param name="contentFactory">The content factory.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="method">The HTTP method.</param>
+    /// <param name="headers">Optional request headers (e.g. Authorization for Max upload URLs).</param>
     /// <returns>The response body.</returns>
     public async Task<string> SendAsyncRaw(
         string absoluteUrl,
         Func<HttpContent?>? contentFactory = null,
         CancellationToken cancellationToken = default,
-        HttpMethod? method = null)
+        HttpMethod? method = null,
+        IReadOnlyDictionary<string, string>? headers = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(absoluteUrl);
 
@@ -156,18 +159,16 @@ public class MaxHttpClient : IMaxHttpClient
             {
                 using var httpRequest = new HttpRequestMessage(requestMethod, absoluteUrl);
 
-                // Max API requires Authorization header even for upload URLs (often)
-                // We extract it from DefaultRequestHeaders if it was set there, or rely on options
-                // In our implementation, we don't store token in DefaultRequestHeaders, we add it per request.
-                // But wait, the token is in MaxBotOptions. 
-                // Let's ensure the token is passed. Since MaxHttpClient doesn't have MaxBotOptions (only client options),
-                // we assume the token is already managed. 
-                // Correction: In MaxClient, we pass token via MaxApiRequest. 
-                // For absolute URLs, we should probably have the token accessible.
-
-                // For now, let's assume if the user didn't provide a token in the URL, they might need the header.
-                // However, without access to the token here, we can't add it.
-                // Let's check where the token is stored. It's in MaxBotOptions.
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                    {
+                        if (!string.IsNullOrWhiteSpace(header.Value))
+                        {
+                            httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                        }
+                    }
+                }
 
                 if (contentFactory != null)
                 {

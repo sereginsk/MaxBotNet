@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,12 @@ public interface IMaxHttpClient : IDisposable
     /// <param name="contentFactory">A factory that creates the HTTP content to send. Needed for retries.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <param name="method">The HTTP method for the request (default is POST).</param>
+    /// <param name="headers">Optional request headers (e.g. Authorization for Max upload URLs).</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the raw response body.</returns>
-    Task<string> SendAsyncRaw(string absoluteUrl, Func<HttpContent?>? contentFactory = null, CancellationToken cancellationToken = default, HttpMethod? method = null);
+    Task<string> SendAsyncRaw(
+        string absoluteUrl,
+        Func<HttpContent?>? contentFactory = null,
+        CancellationToken cancellationToken = default,
+        HttpMethod? method = null,
+        IReadOnlyDictionary<string, string>? headers = null);
 }

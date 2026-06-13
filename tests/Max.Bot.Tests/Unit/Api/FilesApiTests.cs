@@ -252,20 +252,43 @@ public class FilesApiTests
     }
 
     [Fact]
-    public async Task UploadFileDataAsync_ShouldReturnFileUploadResult_WhenRequestSucceeds()
+    public async Task UploadFileDataAsync_ShouldReturnEmptyToken_WhenCdnReturnsRetvalXml()
     {
-        // Arrange
-        var responseJson = "{\"token\":\"test-token\",\"file_id\":12345}";
-        var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = new StringContent(responseJson)
-        };
+        _mockHttpClient
+            .Setup(x => x.SendAsyncRaw(
+                "https://vu.okcdn.ru/upload.do",
+                It.IsAny<Func<HttpContent?>>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<HttpMethod?>(),
+                It.IsAny<IReadOnlyDictionary<string, string>?>()))
+            .ReturnsAsync("<retval>1</retval>");
 
-        // We need to use a real HttpClient or mock the SendAsync
-        // Since FilesApi creates its own HttpClient, we might need to adjust it for testing
-        // or rely on the IMaxHttpClient if it was used.
-        // Wait, FilesApi.cs: _httpClient = new HttpClient { ... };
-        // This makes it hard to test without reflection or a wrapper.
+        var filesApi = new FilesApi(_mockHttpClient.Object, _options);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("video-bytes"));
+
+        var result = await filesApi.UploadFileDataAsync("https://vu.okcdn.ru/upload.do", stream, "clip.mp4");
+
+        result.Token.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UploadFileDataAsync_ShouldReturnToken_WhenCdnReturnsJson()
+    {
+        _mockHttpClient
+            .Setup(x => x.SendAsyncRaw(
+                "https://fu.oneme.ru/upload.do",
+                It.IsAny<Func<HttpContent?>>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<HttpMethod?>(),
+                It.IsAny<IReadOnlyDictionary<string, string>?>()))
+            .ReturnsAsync("{\"token\":\"file-token-abc\"}");
+
+        var filesApi = new FilesApi(_mockHttpClient.Object, _options);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("file-bytes"));
+
+        var result = await filesApi.UploadFileDataAsync("https://fu.oneme.ru/upload.do", stream, "doc.pdf");
+
+        result.Token.Should().Be("file-token-abc");
     }
 }
 
